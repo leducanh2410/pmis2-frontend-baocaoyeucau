@@ -1,0 +1,228 @@
+<div class="flex flex-col flex-auto overflow-y-auto lg:overflow-hidden bg-card dark:bg-default">
+
+    <ng-container *ngIf="obj; else selectObjToRead">
+
+        <!-- Header -->
+        <div class="z-10 relative flex flex-col flex-0 w-full border-b">
+
+            <!-- Toolbar -->
+            <div class="flex items-center min-h-16 px-4 md:px-6 border-b bg-gray-50 dark:bg-transparent">
+
+                <button mat-flat-button [color]="'primary'" *ngIf="actionSave" (click)="onSaveObject()">
+                    <mat-icon svgIcon="mat_outline:save"></mat-icon>
+                    <span class="ml-2 mr-1">Ghi</span>
+                </button>
+
+                <button mat-flat-button [color]="'warn'" class="mx-1" *ngIf="actionDelete" (click)="onDeleteObject()">
+                    <mat-icon svgIcon="mat_outline:delete"></mat-icon>
+                    <span class="ml-2 mr-1">Xóa</span>
+                </button>
+
+                <button mat-flat-button [color]="'accent'" class="mx-1" *ngIf="actionEdit" (click)="onEditObject()">
+                    <mat-icon svgIcon="mat_outline:edit"></mat-icon>
+                    <span class="ml-2 mr-1">Sửa</span>
+                </button>
+
+                <button mat-flat-button [color]="'accent'" class="mx-1" *ngIf="actionCancel" (click)="onCancelObject()">
+                    <mat-icon svgIcon="mat_outline:restore"></mat-icon>
+                    <span class="ml-2 mr-1">Hủy bỏ</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Threads -->
+        <div class="flex flex-col flex-auto shrink-0 lg:shrink p-3 lg:overflow-y-auto" fuseScrollReset>
+            <!-- Thread -->
+            <div
+                class="flex flex-col flex-0 w-full shadow rounded-2xl overflow-hidden bg-card dark:bg-black dark:bg-opacity-10">
+                <div class="flex flex-col w-full border bg-gray-50 dark:bg-transparent py-5 px-6" *ngIf="viewMode">
+                    <div>
+                        <span class="leading-4 truncate">Tên bảng: </span>
+                        <span class="leading-4 truncate text-green-500">{{obj.TEN_BANG}}</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Mô tả: </span>
+                        <span class="leading-4 truncate text-green-500">{{obj.MO_TA}}</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Nguồn dữ liệu: </span>
+                        <span class="leading-4 truncate text-green-500">{{obj.TEN_KETNOI}}</span>
+                        <span class="leading-4 truncate text-green-500"> ({{obj.TEN_CSDL}})</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Tác giả: </span>
+                        <span class="leading-4 truncate text-green-500">{{obj.USER_CR_ID}} - {{obj.USER_CR_DTIME |
+                            date:'dd/MM/yyyy HH:mm:ss'}}</span>
+                    </div>
+                </div>
+                <div class="flex w-full" *ngIf="viewMode">
+                    <div class="w-full py-5 px-6">
+                        <table mat-table [dataSource]="lstColumns(obj.LST_COT)">
+                            <ng-container matColumnDef="STT">
+                                <th style="width: 50px" mat-header-cell *matHeaderCellDef>STT
+                                </th>
+                                <td mat-cell *matCellDef="let element; let i = index"> {{ i + 1 }} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="TEN_COT">
+                                <th style="width: 20%;" mat-header-cell *matHeaderCellDef>Tên cột
+                                </th>
+                                <td mat-cell *matCellDef="let element"> {{element.TEN_COT}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="MO_TA">
+                                <th mat-header-cell *matHeaderCellDef>Mô tả
+                                </th>
+                                <td mat-cell *matCellDef="let element"> {{element.MO_TA}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="KIEU_DLIEU">
+                                <th style="width: 10%;" mat-header-cell *matHeaderCellDef>Kiểu dữ liệu
+                                </th>
+                                <td mat-cell *matCellDef="let element"> {{element.KIEU_DLIEU}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="USER_CR_ID">
+                                <th style="width: 80px;" mat-header-cell *matHeaderCellDef>Người tạo</th>
+                                <td mat-cell *matCellDef="let element"> {{element.USER_CR_ID}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="USER_CR_DTIME">
+                                <th style="width: 145px;" mat-header-cell *matHeaderCellDef>Ngày tạo</th>
+                                <td mat-cell *matCellDef="let element"> {{element.USER_CR_DTIME |
+                                    date:'dd/MM/yyyy HH:mm:ss'}} </td>
+
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </div>
+                </div>
+                <form id="dialogForm" class="flex flex-col flex-auto p-1 sm:p-1 overflow-y-auto"
+                    [formGroup]="dialogForm" *ngIf="inputMode">
+                    <div class="grid grid-cols-5 grid-flow-row gap-2 w-full border dark:bg-transparent py-5 px-2">
+                        <mat-form-field class="col-span-5">
+                            <mat-label>Nguồn dữ liệu</mat-label>
+                            <mat-select [formControlName]="'MA_KETNOI'" (selectionChange)="onChangeKetNoi($event)">
+                                <mat-option>
+                                    <ngx-mat-select-search [formControlName]="'MA_KETNOIFilter'"
+                                        placeholderLabel="Tìm nguồn dữ liệu...">
+                                    </ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let t of filteredNguonDuLieu | async" [value]="t.MA_KETNOI">
+                                    <span>{{t.TEN_KETNOI}}</span>:
+                                    <span class="leading-4 truncate text-green-500">{{t.TEN_CSDL}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Tên bảng</mat-label>
+                            <!-- <input matInput class="w-full" [formControlName]="'TEN_BANG'" maxlength="50"> -->
+                            <mat-select [formControlName]="'TEN_BANG'" (selectionChange)="onChangeBang($event)">
+                                <mat-option>
+                                    <ngx-mat-select-search [formControlName]="'BANGFilter'"
+                                        placeholderLabel="Tìm bảng...">
+                                    </ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let t of filteredBang | async" [value]="t.TEN_BANG">
+                                    <!-- <span>{{t.TEN_BANG}}</span>:
+                                    <span class="leading-4 truncate text-green-500">{{t.MO_TA}}</span> -->
+                                    <span>{{t.TEN_BANG}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="col-span-4">
+                            <mat-label>Mô tả bảng</mat-label>
+                            <input class="w-full" matInput [formControlName]="'MO_TA'" maxlength="250">
+                        </mat-form-field>
+                    </div>
+                    <div class="flex w-full">
+                        <div class="w-full">
+                            <table mat-table [dataSource]="lstCotOfBang" #MatTableDetail>
+                                <ng-container matColumnDef="STT">
+                                    <th style="width: 100px; text-align: center;" mat-header-cell *matHeaderCellDef> STT </th>
+                                    <td mat-cell *matCellDef="let element;let i = index" class="text-center">
+                                        <!-- <mat-form-field class="w-15 my-form-field" cdkDragHandle>
+                                            <input type="number" class="w-full" matInput [formControlName]="'STT'"
+                                                maxlength="50">
+                                        </mat-form-field> -->
+                                        <span>{{ i + 1 }}</span>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="TEN_COT">
+                                    <th style="width: 20%;" mat-header-cell *matHeaderCellDef> Tên cột </th>
+                                    <td mat-cell *matCellDef="let element;let i = index">
+                                        <!-- <mat-form-field class="w-full my-form-field">
+                                            <input class="w-full" matInput [formControlName]="'TEN_COT'" maxlength="50">
+                                        </mat-form-field> -->
+                                        <span>{{ element.TEN_COT }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="MO_TA">
+                                    <th style="width: 60%" mat-header-cell *matHeaderCellDef> Mô tả </th>
+                                    <td mat-cell *matCellDef="let element;">
+                                        <!-- <mat-form-field class="w-full my-form-field" floatLabel="never">
+                                            <input class="w-full" matInput [formControlName]="'MO_TA'" maxlength="250">
+                                        </mat-form-field> -->
+                                        <span>{{ element.MO_TA }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="MA_KIEU_DLIEU">
+                                    <th style="width: 200px" mat-header-cell *matHeaderCellDef> Kiểu dữ liệu </th>
+                                    <td mat-cell *matCellDef="let element;">
+                                        <!-- <mat-form-field class="w-full my-form-field">
+                                            <mat-select class="w-full" [formControlName]="'MA_KIEU_DLIEU'">
+                                                <mat-option *ngFor="let t of lstKieuDuLieu" [value]="t.MA_KIEU_DLIEU">
+                                                    <span
+                                                        class="leading-4 truncate text-green-500">{{t.KIEU_DLIEU}}</span>
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field> -->
+                                        <span>{{ getTenMaKieuDuLieu(element.MA_KIEU_DIEU) }}</span>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="ACTION">
+                                    <th mat-header-cell *matHeaderCellDef>
+                                        <mat-checkbox (change)="onCheckAll($event)"></mat-checkbox>
+                                    </th>
+                                    <td mat-cell *matCellDef="let element; let i = index">
+                                        <!-- <button mat-icon-button [color]="'warn'" class="mx-1" *ngIf="actionDeleteDetail"
+                                            (click)="onDeleteObjectDetail(i)">
+                                            <mat-icon svgIcon="mat_outline:delete"></mat-icon>
+                                        </button> -->
+                                        <mat-checkbox [checked]="element.SELECTED == 1 ? true : false" (change)="setSelected(element)"></mat-checkbox>
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedColumnsInput"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumnsInput;" cdkDrag [cdkDragData]="row"></tr>                                
+                            </table>
+                            <!-- <button mat-flat-button [color]="'primary'" class="mx-1 mt-2" *ngIf="actionEditDetail"
+                                (click)="onSortObjectDetail()">
+                                <mat-icon svgIcon="mat_outline:sort"></mat-icon>
+                            </button>
+                            <button mat-flat-button [color]="'primary'" class="mx-1 mt-2" *ngIf="actionEditDetail"
+                                (click)="onAddObjectDetail()">
+                                <mat-icon svgIcon="mat_outline:add"></mat-icon>
+                                <span class="ml-2 mr-1">Thêm cột</span>
+                            </button> -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </ng-container>
+
+    
+    <ng-template #selectObjToRead>
+
+        <div class="flex flex-col flex-auto items-center justify-center bg-gray-100 dark:bg-transparent">
+            <mat-icon class="icon-size-24" [svgIcon]="'heroicons_outline:database'"></mat-icon>
+            <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Chọn cấu trúc dữ liệu để xem</div>
+        </div>
+
+    </ng-template>
+
+</div>

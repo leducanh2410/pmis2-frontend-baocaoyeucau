@@ -1,0 +1,303 @@
+<div class="absolute w-full h-full overflow-hidden">
+    <div
+        class="flex flex-col p-4 w-full h-full space-y-4 overflow-y-auto"
+        *ngIf="showDashboard()"
+    >
+         <!-- <div class="flex flex-row w-full justify-end space-x-4 items-center">
+            <button
+                mat-flat-button
+                class="mx-1 bg-sky-500 text-white"
+                (click)="onAddDashboard()"
+            >
+                <mat-icon>add</mat-icon>
+                <span class="ml-2 mr-1">Thêm tab</span>
+            </button>
+            <button
+                mat-flat-button
+                [color]="'accent'"
+                class="mx-1"
+                (click)="onEditDashboard()"
+            >
+                <mat-icon svgIcon="mat_outline:edit"></mat-icon>
+                <span class="ml-2 mr-1">Sửa</span>
+            </button>
+            <button
+                mat-flat-button
+                [color]="'warn'"
+                class="mx-1"
+                (click)="onDeleteDashboard()"
+            >
+                <mat-icon svgIcon="mat_outline:delete"></mat-icon>
+                <span class="ml-2 mr-1">Xóa</span>
+            </button>
+        </div>  -->
+        <!-- <nav mat-tab-nav-bar [backgroundColor]="background" [tabPanel]="tabPanel">
+            <a mat-tab-link *ngFor="let link of links"
+               (click)="activeLink = link"
+               [active]="activeLink == link"> {{link}} </a>
+            
+          </nav>
+          <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+          
+          <button mat-raised-button class="example-action-button" (click)="addLink()">
+            Thêm tab
+          </button> -->
+        <!-- <app-dashboard-tab></app-dashboard-tab> -->
+        <!-- <div>
+        <button mat-raised-button
+                class="example-add-tab-button"
+                >
+          Add new tab
+        </button>
+        <mat-checkbox #selectAfterAdding> Select tab after adding </mat-checkbox>
+      </div> -->
+      <div class="flex flex-row w-full justify-end space-x-4 items-center">
+        <button
+            mat-flat-button
+            class="mx-1 bg-sky-500 text-white"
+            (click)="onAddDashboard()"
+        >
+            <mat-icon>add</mat-icon>
+            <span class="ml-2 mr-1">Thêm tab</span>
+        </button>
+        <button
+            mat-flat-button
+            [color]="'accent'"
+            class="mx-1"
+            (click)="onEditDashboard(dashboardId)"
+        >
+            <mat-icon svgIcon="mat_outline:edit"></mat-icon>
+            <span class="ml-2 mr-1">Sửa</span>
+        </button>
+        <button
+            mat-flat-button
+            [color]="'warn'"
+            class="mx-1"
+            (click)="onDeleteDashboard()"
+        >
+            <mat-icon svgIcon="mat_outline:delete"></mat-icon>
+            <span class="ml-2 mr-1">Xóa</span>
+        </button>
+    </div> 
+        <mat-tab-group
+            [(selectedIndex)]="tabIndex"
+             (selectedIndexChange)="selectedTabValue($event)" 
+        >
+            <!-- <mat-tab label="First">
+                content
+                 <div
+                    class="flex flex-row w-full justify-start space-x-4 items-center"
+                >
+                    <div class="flex flex-row w-full space-x-4">
+                        <div
+                            class="flex flex-col space-y-4"
+                            [ngClass]="getFrame1Width()"
+                            *ngIf="getFrame1Width() != 'none'"
+                        >
+                            <mat-card
+                                class="w-full"
+                                *ngFor="let item of lstFrame1Charts; index as i"
+                            >
+                                <div class="w-full flex justify-end space-x-4">
+                                    <mat-icon
+                                        matTooltip="Tải ảnh"
+                                        (click)="downloadCanvas(item, 'F1' + i)"
+                                        class="cursor-pointer"
+                                        >image</mat-icon
+                                    >
+                                    <mat-icon
+                                        matTooltip="Xuất excel"
+                                        (click)="downloadExcel('F1', i)"
+                                        class="cursor-pointer"
+                                        >insert_drive_file</mat-icon
+                                    >
+                                </div>
+                                <canvas
+                                    baseChart
+                                    [data]="item.data"
+                                    [options]="item.chartOptions"
+                                    [type]="item.type"
+                                    class="max-h-[400px]"
+                                    [id]="'F1' + i"
+                                ></canvas>
+                            </mat-card>
+                        </div>
+                        <div
+                            class="flex flex-col space-y-4"
+                            [ngClass]="getFrame2Width()"
+                            *ngIf="getFrame2Width() != 'none'"
+                        >
+                            <mat-card
+                                class="w-full"
+                                *ngFor="let item of lstFrame2Charts; index as i"
+                            >
+                                <div class="w-full flex justify-end space-x-4">
+                                    <mat-icon
+                                        matTooltip="Tải ảnh"
+                                        (click)="downloadCanvas(item, 'F2' + i)"
+                                        class="cursor-pointer"
+                                        >image</mat-icon
+                                    >
+                                    <mat-icon
+                                        matTooltip="Xuất excel"
+                                        (click)="downloadExcel('F2', i)"
+                                        class="cursor-pointer"
+                                        >insert_drive_file</mat-icon
+                                    >
+                                </div>
+                                <canvas
+                                    baseChart
+                                    [data]="item.data"
+                                    [options]="item.chartOptions"
+                                    [type]="item.type"
+                                    class="max-h-[400px]"
+                                    [id]="'F2' + i"
+                                ></canvas>
+                            </mat-card>
+                        </div>
+                        <div
+                            class="flex flex-col space-y-4"
+                            [ngClass]="getFrame3Width()"
+                            *ngIf="getFrame3Width() != 'none'"
+                        >
+                            <mat-card
+                                class="w-full"
+                                *ngFor="let item of lstFrame3Charts; index as i"
+                            >
+                                <div class="w-full flex justify-end space-x-4">
+                                    <mat-icon
+                                        matTooltip="Tải ảnh"
+                                        (click)="downloadCanvas(item, 'F3' + i)"
+                                        class="cursor-pointer"
+                                        >image</mat-icon
+                                    >
+                                    <mat-icon
+                                        matTooltip="Xuất excel"
+                                        (click)="downloadExcel('F3', i)"
+                                        class="cursor-pointer"
+                                        >insert_drive_file</mat-icon
+                                    >
+                                </div>
+                                <canvas
+                                    baseChart
+                                    [data]="item.data"
+                                    [options]="item.chartOptions"
+                                    [type]="item.type"
+                                    class="max-h-[400px]"
+                                    [id]="'F3' + i"
+                                ></canvas>
+                            </mat-card>
+                        </div>
+                    </div>
+                </div> 
+                
+            </mat-tab> -->
+             <mat-tab *ngFor="let tab of tabs; let index = index" [label]="dashboard.NAME">
+             <!-- [label]="dashboardName"> -->
+               <!-- [label]=" 'tab' + index"  >    -->
+                  <!-- <ng-template mat-tab-label>
+                   {{dashboard.NAME}}
+                   
+                  </ng-template>   -->
+                <!-- {{ tab | json}} -->
+                <div class="flex flex-row w-full space-x-4">
+                    <div class="flex flex-col space-y-4" [ngClass]="getFrame1Width()" *ngIf="getFrame1Width() != 'none'">
+                        <mat-card class="w-full" *ngFor="let item of lstFrame1Charts;index as i">
+                            <div class="w-full flex justify-end space-x-4">
+                                <mat-icon matTooltip="Tải ảnh" (click)="downloadCanvas(item, 'F1' + i)" class="cursor-pointer">image</mat-icon>
+                                <mat-icon matTooltip="Xuất excel" (click)="downloadExcel('F1', i)" class="cursor-pointer">insert_drive_file</mat-icon>
+                            </div>
+                            <canvas baseChart [data]="item.data" [options]="item.chartOptions" [type]="item.type" class="max-h-[400px]" [id]="'F1' + i"></canvas>
+                        </mat-card>
+                    </div>
+                    <div class="flex flex-col space-y-4" [ngClass]="getFrame2Width()" *ngIf="getFrame2Width() != 'none'">
+                        <mat-card class="w-full" *ngFor="let item of lstFrame2Charts;index as i">
+                            <div class="w-full flex justify-end space-x-4">
+                                <mat-icon matTooltip="Tải ảnh" (click)="downloadCanvas(item, 'F2' + i)" class="cursor-pointer">image</mat-icon>
+                                <mat-icon matTooltip="Xuất excel" (click)="downloadExcel('F2', i)" class="cursor-pointer">insert_drive_file</mat-icon>
+                            </div>
+                            <canvas baseChart [data]="item.data" [options]="item.chartOptions" [type]="item.type" class="max-h-[400px]" [id]="'F2' + i"></canvas>
+                        </mat-card>
+                    </div>
+                    <div class="flex flex-col space-y-4" [ngClass]="getFrame3Width()" *ngIf="getFrame3Width() != 'none'">
+                        <mat-card class="w-full" *ngFor="let item of lstFrame3Charts;index as i">
+                            <div class="w-full flex justify-end space-x-4">
+                                <mat-icon matTooltip="Tải ảnh" (click)="downloadCanvas(item, 'F3' + i)" class="cursor-pointer">image</mat-icon>
+                                <mat-icon matTooltip="Xuất excel" (click)="downloadExcel('F3', i)" class="cursor-pointer">insert_drive_file</mat-icon>
+                            </div>
+                            <canvas baseChart [data]="item.data" [options]="item.chartOptions" [type]="item.type" class="max-h-[400px]" [id]="'F3' + i"></canvas>
+                        </mat-card>
+                    </div>
+                </div>  
+            </mat-tab>
+        </mat-tab-group>
+        <!-- <div class="flex flex-row w-full justify-start space-x-4 items-center">
+          
+                    <div class="flex flex-row w-full space-x-4">
+                        <div class="flex flex-col space-y-4" [ngClass]="getFrame1Width()" *ngIf="getFrame1Width() != 'none'">
+                            <mat-card class="w-full" *ngFor="let item of lstFrame1Charts;index as i">
+                                <div class="w-full flex justify-end space-x-4">
+                                    <mat-icon matTooltip="Tải ảnh" (click)="downloadCanvas(item, 'F1' + i)" class="cursor-pointer">image</mat-icon>
+                                    <mat-icon matTooltip="Xuất excel" (click)="downloadExcel('F1', i)" class="cursor-pointer">insert_drive_file</mat-icon>
+                                </div>
+                                <canvas baseChart [data]="item.data" [options]="item.chartOptions" [type]="item.type" class="max-h-[400px]" [id]="'F1' + i"></canvas>
+                            </mat-card>
+                        </div>
+                        <div class="flex flex-col space-y-4" [ngClass]="getFrame2Width()" *ngIf="getFrame2Width() != 'none'">
+                            <mat-card class="w-full" *ngFor="let item of lstFrame2Charts;index as i">
+                                <div class="w-full flex justify-end space-x-4">
+                                    <mat-icon matTooltip="Tải ảnh" (click)="downloadCanvas(item, 'F2' + i)" class="cursor-pointer">image</mat-icon>
+                                    <mat-icon matTooltip="Xuất excel" (click)="downloadExcel('F2', i)" class="cursor-pointer">insert_drive_file</mat-icon>
+                                </div>
+                                <canvas baseChart [data]="item.data" [options]="item.chartOptions" [type]="item.type" class="max-h-[400px]" [id]="'F2' + i"></canvas>
+                            </mat-card>
+                        </div>
+                        <div class="flex flex-col space-y-4" [ngClass]="getFrame3Width()" *ngIf="getFrame3Width() != 'none'">
+                            <mat-card class="w-full" *ngFor="let item of lstFrame3Charts;index as i">
+                                <div class="w-full flex justify-end space-x-4">
+                                    <mat-icon matTooltip="Tải ảnh" (click)="downloadCanvas(item, 'F3' + i)" class="cursor-pointer">image</mat-icon>
+                                    <mat-icon matTooltip="Xuất excel" (click)="downloadExcel('F3', i)" class="cursor-pointer">insert_drive_file</mat-icon>
+                                </div>
+                                <canvas baseChart [data]="item.data" [options]="item.chartOptions" [type]="item.type" class="max-h-[400px]" [id]="'F3' + i"></canvas>
+                            </mat-card>
+                        </div>
+                    </div>
+                  
+               
+        </div> -->
+         <!-- <div class="flex flex-row w-full space-x-4">
+            <div class="flex flex-col space-y-4" [ngClass]="getFrame1Width()" *ngIf="getFrame1Width() != 'none'">
+                <mat-card class="w-full" *ngFor="let item of lstFrame1Charts;index as i">
+                    <div class="w-full flex justify-end space-x-4">
+                        <mat-icon matTooltip="Tải ảnh" (click)="downloadCanvas(item, 'F1' + i)" class="cursor-pointer">image</mat-icon>
+                        <mat-icon matTooltip="Xuất excel" (click)="downloadExcel('F1', i)" class="cursor-pointer">insert_drive_file</mat-icon>
+                    </div>
+                    <canvas baseChart [data]="item.data" [options]="item.chartOptions" [type]="item.type" class="max-h-[400px]" [id]="'F1' + i"></canvas>
+                </mat-card>
+            </div>
+            <div class="flex flex-col space-y-4" [ngClass]="getFrame2Width()" *ngIf="getFrame2Width() != 'none'">
+                <mat-card class="w-full" *ngFor="let item of lstFrame2Charts;index as i">
+                    <div class="w-full flex justify-end space-x-4">
+                        <mat-icon matTooltip="Tải ảnh" (click)="downloadCanvas(item, 'F2' + i)" class="cursor-pointer">image</mat-icon>
+                        <mat-icon matTooltip="Xuất excel" (click)="downloadExcel('F2', i)" class="cursor-pointer">insert_drive_file</mat-icon>
+                    </div>
+                    <canvas baseChart [data]="item.data" [options]="item.chartOptions" [type]="item.type" class="max-h-[400px]" [id]="'F2' + i"></canvas>
+                </mat-card>
+            </div>
+            <div class="flex flex-col space-y-4" [ngClass]="getFrame3Width()" *ngIf="getFrame3Width() != 'none'">
+                <mat-card class="w-full" *ngFor="let item of lstFrame3Charts;index as i">
+                    <div class="w-full flex justify-end space-x-4">
+                        <mat-icon matTooltip="Tải ảnh" (click)="downloadCanvas(item, 'F3' + i)" class="cursor-pointer">image</mat-icon>
+                        <mat-icon matTooltip="Xuất excel" (click)="downloadExcel('F3', i)" class="cursor-pointer">insert_drive_file</mat-icon>
+                    </div>
+                    <canvas baseChart [data]="item.data" [options]="item.chartOptions" [type]="item.type" class="max-h-[400px]" [id]="'F3' + i"></canvas>
+                </mat-card>
+            </div>
+        </div>   -->
+    </div>
+    <!-- <div class="flex w-full h-full overflow-hidden">
+
+        <router-outlet></router-outlet>
+    </div>   -->
+    <router-outlet></router-outlet>
+</div>

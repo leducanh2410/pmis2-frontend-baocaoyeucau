@@ -1,0 +1,21 @@
+<div class="flex flex-col min-w-0 flex-auto w-full">
+  <!-- Navigation -->  
+  <mat-tree [dataSource]="lstTreeNhom" [treeControl]="lstTreeNhomControl" class="tree-list">
+    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle [routerLink]="['./group/'+node.object.API_SERVICE_GROUPID]"
+      [ngClass]="{'bg-primary-50 dark:bg-black dark:bg-opacity-5 selectObject': group && group.API_SERVICE_GROUPID === node.object.API_SERVICE_GROUPID}"
+      matTreeNodePadding matTreeNodePaddingIndent="10">
+      <mat-icon class="mat-icon-rtl-mirror" [svgIcon]="node.object.API_SERVICE_GROUP_ICON"></mat-icon>
+      <div class="ml-1">
+        {{node.object.API_SERVICE_GROUPDESC}}
+      </div>
+    </mat-tree-node>
+    <mat-tree-node *matTreeNodeDef="let node; when: lstTreeNhomHasChild" [routerLink]="['./group/'+node.object.API_SERVICE_GROUPID]"
+      [ngClass]="{'bg-primary-50 dark:bg-black dark:bg-opacity-5 selectObject': group && group.API_SERVICE_GROUPID === node.object.API_SERVICE_GROUPID}"
+      matTreeNodePadding matTreeNodePaddingIndent="10">
+      <mat-icon class="mat-icon-rtl-mirror" [svgIcon]="node.object.API_SERVICE_GROUP_ICON"></mat-icon>
+      <div class="ml-1">
+        {{node.object.API_SERVICE_GROUPDESC}}
+      </div>
+    </mat-tree-node>
+  </mat-tree>
+</div>

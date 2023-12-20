@@ -1,0 +1,13 @@
+<div class="absolute inset-0 flex flex-col min-w-0 ">
+  <mat-drawer-container class="flex-auto h-full">
+    <mat-drawer class="w-90 dark:bg-gray-900 overflow-hidden" [mode]="drawerMode" [opened]="drawerOpened" #drawer>
+      <api-group></api-group>
+    </mat-drawer>
+    <mat-drawer-content class="flex flex-col">
+      <!-- Main -->
+      <div class="flex flex-auto overflow-hidden">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-drawer-content>
+  </mat-drawer-container>
+</div>

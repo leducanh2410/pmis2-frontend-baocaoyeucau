@@ -1,0 +1,129 @@
+<!-- <component-details_bieudo_bar *ngIf="object.MA_LOAI_BIEUDO=='BAR'"></component-details_bieudo_bar> -->
+<span [(colorPicker)]="colorPicked" 
+    [cpToggle]="toggle" 
+    [cpDialogDisplay]="'popup'" 
+    [cpPosition]="'left'"
+    [cpOutputFormat]="'hex'" 
+    [cpOKButton]="true"
+    (colorPickerSelect)="onColorPickerSelect($event)"
+    [cpSaveClickOutside]="false"
+    (colorPickerClose)="toggle=false"
+    style="position: absolute;">
+</span>
+<div class="flex flex-col flex-auto overflow-hidden h-full">
+    <div class="grid grid-cols-4 grid-flow-row w-full overflow-hidden" style="min-height: 100%; height: auto;">
+        <div class="w-full overflow-y-auto col-span-1" *ngIf="inputMode">
+            <table class="w-full overflow-y-auto" mat-table [dataSource]="rows" #MatTableColumnDetail>
+                <ng-container matColumnDef="STT">
+                    <th class="px-2" style="width: 35px;" mat-header-cell *matHeaderCellDef> STT </th>
+                    <td class="px-2" mat-cell *matCellDef="let element; let i = index">
+                        <span>{{element.STT}}</span>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="MO_TA">
+                    <th mat-header-cell *matHeaderCellDef> Mô tả </th>
+                    <td mat-cell *matCellDef="let element; let i = index">
+                        <span>{{element.MO_TA}}</span>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="LABEL">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <span *ngIf="object.MA_LOAI_BIEUDO == 'PIE'">Nhãn</span>
+                        <span *ngIf="object.MA_LOAI_BIEUDO == 'BAR' || object.MA_LOAI_BIEUDO == 'LINE'">Nhóm</span>
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index">
+                        <mat-checkbox *ngIf="object.MA_LOAI_BIEUDO == 'PIE'"
+                            [checked]="element.TEN_COT == columnsPie[0]"
+                            (click)="changeLabelSelect($event, element);false">
+                        </mat-checkbox>
+                        <mat-checkbox *ngIf="object.MA_LOAI_BIEUDO == 'BAR'" [checked]="element.TEN_COT == columnsX"
+                            (click)="changeLabelSelect($event, element);false">
+                        </mat-checkbox>
+                        <mat-checkbox *ngIf="object.MA_LOAI_BIEUDO == 'LINE'" [checked]="element.TEN_COT == x_coord"
+                            (click)="changeLabelSelect($event, element);false">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="DATA">
+                    <th mat-header-cell *matHeaderCellDef class="pr-0 pl-2">
+                        <span *ngIf="object.MA_LOAI_BIEUDO == 'PIE'">Dữ liệu</span>
+                        <span *ngIf="object.MA_LOAI_BIEUDO == 'BAR'">Cột</span>
+                        <span *ngIf="object.MA_LOAI_BIEUDO == 'LINE'">Đường</span>
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index" class="pr-0 pl-2">
+                        <mat-checkbox *ngIf="object.MA_LOAI_BIEUDO == 'PIE'" [disabled]="!validKieuDuLieu(element)"
+                            [checked]="element.TEN_COT == columnsPie[1]"
+                            (click)="changeDataSelect($event, element);false">
+                        </mat-checkbox>
+                        <mat-checkbox *ngIf="object.MA_LOAI_BIEUDO == 'BAR'" [disabled]="!validKieuDuLieu(element)"
+                            [checked]="_data_include(element)" (click)="changeDataSelect($event, element);false">
+                        </mat-checkbox>
+                        <mat-checkbox *ngIf="object.MA_LOAI_BIEUDO == 'LINE'" [disabled]="!validKieuDuLieu(element)"
+                            [checked]="_data_include(element)" (click)="changeDataSelect($event, element);false">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+                <!-- <ng-container matColumnDef="LINE_SPLIT">
+                    <th mat-header-cell *matHeaderCellDef class="pr-0 pl-2">
+                        <span *ngIf="object.MA_LOAI_BIEUDO == 'LINE'">Tách đường</span>
+                        <span *ngIf="object.MA_LOAI_BIEUDO == 'BAR'">Tách cột</span>
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index" class="pr-0 pl-2">
+                        <mat-checkbox *ngIf="object.MA_LOAI_BIEUDO == 'LINE' || object.MA_LOAI_BIEUDO == 'BAR'" [disabled]="!isStringDataType(element)"
+                            [checked]="element.TEN_COT == selectedColumnToSplit" (click)="changeSplitSelect($event, element);false">
+                        </mat-checkbox>
+                    </td>
+                </ng-container> -->
+                <!-- <ng-container matColumnDef="SUM_COL">
+                    <th mat-header-cell *matHeaderCellDef class="pr-0 pl-2">
+                        <span *ngIf="object.MA_LOAI_BIEUDO == 'PIE' || object.MA_LOAI_BIEUDO == 'LINE'">Tính tổng</span>
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index" class="pr-0 pl-2">
+                        <mat-checkbox *ngIf="object.MA_LOAI_BIEUDO == 'BAR'" [disabled]="!validKieuDuLieu(element)"
+                            [checked]="_sum_col_include(element)" (click)="changeSumColSelect($event, element);false">
+                        </mat-checkbox>
+                        <mat-checkbox *ngIf="object.MA_LOAI_BIEUDO == 'LINE'" [disabled]="!validKieuDuLieu(element)"
+                            [checked]="_sum_col_include(element)" (click)="changeSumColSelect($event, element);false">
+                        </mat-checkbox>
+                    </td>
+                </ng-container> -->
+                <ng-container matColumnDef="COLOR">
+                    <th mat-header-cell *matHeaderCellDef class="pr-0 pl-1">
+                        <span>Màu sắc</span>
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index">
+                        <div class="w-5 h-5 border-2 ml-2 cursor-pointer" 
+                            *ngIf="colorShow(element)" 
+                            (click)="onRowClick(element)"
+                            [ngStyle]="{'background-color': getBgrColor(element)}">
+                        </div>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsInput; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsInput;"></tr>
+            </table>
+        </div>
+
+        <div class="flex flex-col flex-auto h-full text-center overflow-auto" 
+            [ngClass]="inputMode ? 'col-span-3' : 'col-span-4'" id="chart">
+            <div class="flex flex-row w-full" [ngClass]="inputMode ? 'justify-between' : 'justify-end'">
+                <div class="w-full text-center" *ngIf="inputMode">
+                    <span class="font-medium text-2xl" style="color: '#000000';">{{object?.MO_TA}}</span>
+                </div>
+                <div class="flex flex-row space-x-4">
+                    <mat-icon matTooltip="Tải ảnh" (click)="downloadCanvas()" class="cursor-pointer">image</mat-icon>
+                    <mat-icon matTooltip="Xuất excel" (click)="downloadExcel()" class="cursor-pointer">insert_drive_file</mat-icon>
+                </div>
+            </div>
+            <canvas baseChart [data]="chartInfoMapper?.data" [options]="chartInfoMapper?.chartOptions" [type]="chartInfoMapper?.type" class="max-h-[500px]" id="chartCanvas"></canvas>
+            <div *ngIf="object.MA_LOAI_BIEUDO == 'BAR' && inputMode" class="flex flex-row space-x-4 pl-8">
+                <label>Chiều của cột: </label>
+                <mat-radio-group [value]="object.CHIEU" (change)="changeChieu($event)" class="flex flex-row space-x-4">
+                    <mat-radio-button *ngFor="let item of lstChieu" [value]="item.key">
+                        {{ item.value }}
+                    </mat-radio-button>
+                </mat-radio-group>
+            </div>
+        </div>
+    </div>
+</div>

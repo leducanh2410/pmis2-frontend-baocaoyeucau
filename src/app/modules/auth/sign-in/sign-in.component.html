@@ -1,0 +1,93 @@
+<div class="flex flex-col flex-auto items-center sm:justify-center min-w-0 ng-tns-c427-50">
+    <div class="sm:w-auto py-8 px-4 sm:p-12 sm:rounded-2xl sm:shadow sm:bg-card ng-tns-c349-50 w-[400px] max-w-[400px]">
+        <div class="w-full mx-auto sm:mx-0">
+            <!-- Logo -->
+            <div class="w-24 mx-auto">
+                <img src="assets/images/logo/logo.svg">
+            </div>
+
+            <!-- Alert -->
+            <fuse-alert class="mt-8 -mb-4" *ngIf="showAlert" [appearance]="'outline'" [showIcon]="false"
+                [type]="alert.type" [@shake]="alert.type === 'error'">
+                {{alert.message}}
+            </fuse-alert>
+
+            <div class="flex w-full justify-center items-center my-4" *ngIf="showOTPInput">
+                <div *ngIf="otpExpire > 0">
+                    <span class="mt-4">{{ 'Mã OTP hết hạn trong: ' + otpExpire + 's' }}</span>
+                </div>
+            </div>
+
+            <!-- Sign in form -->
+            <form class="mt-8" [formGroup]="signInForm" #signInNgForm="ngForm">
+
+                <!-- Email field -->
+                <mat-form-field class="w-full">
+                    <mat-label>Tên đăng nhập</mat-label>
+                    <input id="userid" matInput [formControlName]="'userid'">
+                    <mat-error *ngIf="signInForm.get('userid').hasError('required')">
+                        Tên đăng nhập không được để trống.
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Password field -->
+                <mat-form-field class="w-full">
+                    <mat-label>Mật khẩu</mat-label>
+                    <input id="password" matInput type="password" [formControlName]="'password'" #passwordField>
+                    <button mat-icon-button type="button"
+                        (click)="passwordField.type === 'password' ? passwordField.type = 'text' : passwordField.type = 'password'"
+                        matSuffix>
+                        <mat-icon class="icon-size-5" *ngIf="passwordField.type === 'password'"
+                            [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                        <mat-icon class="icon-size-5" *ngIf="passwordField.type === 'text'"
+                            [svgIcon]="'heroicons_solid:eye-off'"></mat-icon>
+                    </button>
+                    <mat-error>
+                        Yêu cầu nhập mật khẩu
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Email field -->
+                <mat-form-field class="w-full" *ngIf="showOTPInput">
+                    <mat-label>Mã OTP</mat-label>
+                    <input id="otp" matInput [formControlName]="'otp'">
+                    <mat-error *ngIf="signInForm.get('otp').value.length == 0 && showOTPInput">
+                        Mã OTP không được để trống.
+                    </mat-error>
+                    <mat-error *ngIf="signInForm.get('otp').value.length != 8 && showOTPInput">
+                        Mã OTP chỉ chứa 8 ký tự.
+                    </mat-error>
+                </mat-form-field>
+
+                <div class="flex w-full justify-end items-center" *ngIf="showOTPInput">
+                    <span class="underline cursor-pointer" [style]="{color: '#2a3493'}" (click)="resendOTP()">Gửi lại mã OTP</span>
+                </div>
+
+                <div class="flex w-full py-4 flex-col space-y-2 items-center justify-center" *ngIf="showCaptcha">
+                    <ngx-captcha [config]="captchaConfig" class="w-full"></ngx-captcha>
+                    <mat-error *ngIf="captchaStatus == 0">
+                        Mã Captcha không hợp hợp lệ.
+                    </mat-error>
+                </div>
+
+                <!-- Actions -->
+                <div class="inline-flex items-end justify-between w-full mt-1.5">
+                    <mat-checkbox [color]="'primary'" [formControlName]="'rememberMe'">
+                        Nhớ tài khoản
+                    </mat-checkbox>
+                </div>
+
+                <!-- Submit button -->
+                <button class="fuse-mat-button-large w-full mt-6" mat-flat-button [color]="'primary'"
+                    [disabled]="signInForm.disabled || (signInForm.get('otp').value.length != 8 && showOTPInput) || (showCaptcha && captchaStatus != 1)" (click)="signIn()">
+                    <span *ngIf="!signInForm.disabled">
+                        Đăng nhập
+                    </span>
+                    <mat-progress-spinner *ngIf="signInForm.disabled" [diameter]="24" [mode]="'indeterminate'">
+                    </mat-progress-spinner>
+                </button>
+            </form>
+        </div>
+    </div>
+
+</div>

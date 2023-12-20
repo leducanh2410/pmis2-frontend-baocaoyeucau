@@ -1,0 +1,30 @@
+.mat-column-FUNCTIONID {
+    padding: 2px !important;
+}
+
+.mat-column-FUNCTIONNAME {
+    padding: 2px !important;
+}
+
+.mat-column-ENABLE {
+    padding: 2px !important;
+}
+
+.mat-column-ISPUPLIC {
+    padding: 2px !important;
+}
+
+
+.mat-column-USER_CR_ID {
+    padding: 2px !important;
+}
+
+
+.mat-column-USER_CR_DTIME {
+    padding: 2px !important;
+}
+
+
+table {
+    width: 100%;
+}

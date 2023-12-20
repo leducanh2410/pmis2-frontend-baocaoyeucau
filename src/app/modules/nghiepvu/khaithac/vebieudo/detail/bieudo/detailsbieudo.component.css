@@ -1,0 +1,12 @@
+table {
+    width: 100%;
+}
+
+.flexContainer {
+    display: flex;
+    width: 100%;
+}
+
+.mat-row:hover .mat-cell{
+    background-color: #D5DBDB;
+}

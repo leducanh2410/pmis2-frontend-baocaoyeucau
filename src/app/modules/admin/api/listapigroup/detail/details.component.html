@@ -1,0 +1,182 @@
+<div class="flex flex-col flex-auto overflow-y-auto lg:overflow-hidden bg-card dark:bg-default">
+
+    <ng-container *ngIf="object; else selectObjectToRead">
+
+        <!-- Header -->
+        <div class="z-10 relative flex flex-col flex-0 w-full border-b">
+
+            <!-- Toolbar -->
+            <div class="flex items-center min-h-16 px-4 md:px-6 border-b bg-gray-50 dark:bg-transparent">
+
+                <button mat-flat-button form="dialogForm" [color]="'primary'" *ngIf="actionSave"
+                    (click)="onSaveObject()">
+                    <mat-icon svgIcon="mat_outline:save"></mat-icon>
+                    <span class="ml-2 mr-1">Ghi</span>
+                </button>
+
+                <button mat-flat-button [color]="'warn'" class="mx-1" *ngIf="actionDelete" (click)="onDeleteObject()">
+                    <mat-icon svgIcon="mat_outline:delete"></mat-icon>
+                    <span class="ml-2 mr-1">Xóa</span>
+                </button>
+
+                <button mat-flat-button [color]="'accent'" class="mx-1" *ngIf="actionEdit" (click)="onEditObject()">
+                    <mat-icon svgIcon="mat_outline:edit"></mat-icon>
+                    <span class="ml-2 mr-1">Sửa</span>
+                </button>
+
+                <button mat-flat-button [color]="'accent'" class="mx-1" *ngIf="actionCancel" (click)="onCancelObject()">
+                    <mat-icon svgIcon="mat_outline:restore"></mat-icon>
+                    <span class="ml-2 mr-1">Hủy bỏ</span>
+                </button>
+            </div>
+
+            <!-- Subject and Labels -->
+            <div class="flex flex-wrap items-center py-5 px-6" *ngIf="viewMode">
+                <div class="flex flex-auto my-1 mr-4 text-2xl">
+                    {{object.TEN_KETNOI}}</div>
+
+            </div>
+        </div>
+
+        <!-- Threads -->
+        <div class="flex flex-col flex-auto shrink-0 lg:shrink p-3 lg:overflow-y-auto" fuseScrollReset>
+            <!-- Thread -->
+            <div
+                class="flex flex-col flex-0 w-full shadow rounded-2xl overflow-hidden bg-card dark:bg-black dark:bg-opacity-10">
+                <div class="flex flex-col w-full border bg-gray-50 dark:bg-transparent py-5 px-6" *ngIf="viewMode">
+
+                    <div>
+                        <span class="leading-4 truncate">Mã: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.API_SERVICE_GROUPID}}</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Tên nhóm dịch vụ: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.API_SERVICE_GROUPDESC}}</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Hình đại diện: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.API_SERVICE_GROUP_ICON}}</span>
+                    </div>                    
+                    <div>
+                        <span class="leading-4 truncate">Sắp xếp: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.API_SERVICE_GROUPORD}}</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Tác giả: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.USER_CR_ID}} - {{object.USER_CR_DTIME |
+                            date:'dd/MM/yyyy HH:mm:ss'}}</span>
+                    </div>
+                </div>
+                <div class="flex w-full" *ngIf="viewMode">
+                    <div class="w-full py-5 px-6">
+                        <table mat-table [dataSource]="lstColumns(object.LST_SERVICE)">
+                            <ng-container matColumnDef="API_SERVICEID">
+                                <th style="width: 120px" mat-header-cell *matHeaderCellDef>Mã
+                                </th>
+                                <td mat-cell *matCellDef="let element"> {{element.API_SERVICEID}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="API_SERVICE_DESC">
+                                <th style="width: 70%;" mat-header-cell *matHeaderCellDef>Tên dịch vụ
+                                </th>
+                                <td mat-cell *matCellDef="let element"> {{element.API_SERVICE_DESC}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="USER_CR_ID">
+                                <th style="width: 80px;" mat-header-cell *matHeaderCellDef>Người tạo</th>
+                                <td mat-cell *matCellDef="let element"> {{element.USER_CR_ID}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="USER_CR_DTIME">
+                                <th style="width: 145px;" mat-header-cell *matHeaderCellDef>Ngày tạo</th>
+                                <td mat-cell *matCellDef="let element"> {{element.USER_CR_DTIME |
+                                    date:'dd/MM/yyyy HH:mm:ss'}} </td>
+
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </div>
+                </div>
+                <form id="dialogForm" class="flex flex-col flex-auto p-1 sm:p-1 overflow-y-auto"
+                    [formGroup]="dialogForm" *ngIf="inputMode">
+                    <div class="py-5 px-2">
+                        <div class="grid grid-col grid-flow-row gap-2 w-full">
+                            <mat-form-field>
+                                <mat-label>Mã nhóm cha</mat-label>
+                                <div class="flexContainer">
+                                    <input type="text" style="width: 100%" matInput #selectAPI_SERVICE_PARENT_GROUPID
+                                        #trigger="matAutocompleteTrigger" [formControlName]="'API_SERVICE_PARENT_GROUPID'"
+                                        [matAutocomplete]="auto" readonly="true" class="inputField"
+                                        (focus)="onOpenApiGroupParentSelect()">
+                                    <button class="ml-2 -mr-3 inputFieldButton" mat-flat-button [color]="'primary'"
+                                        (click)="onOpenApiGroupParentSelect()">...</button>
+                                </div>
+                                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                    <mat-option value=""></mat-option>
+                                    <mat-tree [dataSource]="lstTreeListApiGroup"
+                                        [treeControl]="lstTreeListApiGroupControl" class="tree-list">
+                                        <mat-tree-node
+                                            (click)="onTreeNodeApiGroupParent(node);trigger.panelOpen ? trigger.closePanel() : trigger.openPanel()"
+                                            *matTreeNodeDef="let node" matTreeNodeToggle
+                                            [ngClass]="{'bg-primary-50 dark:bg-black dark:bg-opacity-5 selectObject': dialogForm.controls['API_SERVICE_PARENT_GROUPID'] && dialogForm.controls['API_SERVICE_PARENT_GROUPID'].value === node.object.API_SERVICE_GROUPID}"
+                                            matTreeNodePadding matTreeNodePaddingIndent="25">
+                                            <mat-icon class="mat-icon-rtl-mirror" [svgIcon]="node.object.API_SERVICE_GROUP_ICON"></mat-icon>
+                                            <div class="ml-1">
+                                                {{node.object.API_SERVICE_GROUPDESC}}
+                                            </div>
+                                        </mat-tree-node>
+                                        <mat-tree-node
+                                            (click)="onTreeNodeApiGroupParent(node);trigger.panelOpen ? trigger.closePanel() : trigger.openPanel()"
+                                            *matTreeNodeDef="let node; when: lstTreeListApiGroupnHasChild"
+                                            [ngClass]="{'bg-primary-50 dark:bg-black dark:bg-opacity-5 selectObject': dialogForm.controls['API_SERVICE_PARENT_GROUPID'] && dialogForm.controls['API_SERVICE_PARENT_GROUPID'].value === node.object.API_SERVICE_GROUPID}"
+                                            matTreeNodePadding matTreeNodePaddingIndent="25">
+                                            <mat-icon class="mat-icon-rtl-mirror" [svgIcon]="node.object.API_SERVICE_GROUP_ICON"></mat-icon>                                            
+                                            <div class="ml-1">
+                                                {{node.object.API_SERVICE_GROUPDESC}}
+                                            </div>
+                                        </mat-tree-node>
+                                    </mat-tree>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                        </div>
+                        <div class="grid grid-cols-2 grid-flow-row gap-2 w-full">                            
+                            <div class="flex flex-col flex-auto">
+                                <mat-form-field>
+                                    <mat-label>Tên nhóm</mat-label>
+                                    <input class="w-full" matInput [formControlName]="'API_SERVICE_GROUPDESC'" maxlength="250">
+                                </mat-form-field>
+                            </div>
+                            <div class="flex flex-col flex-auto">
+                                <mat-form-field>
+                                    <mat-label>Hình đại diện</mat-label>
+                                    <input class="w-full" matInput [formControlName]="'API_SERVICE_GROUP_ICON'" maxlength="50">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 grid-flow-row gap-2 w-full">
+                            <div class="flex flex-col flex-auto">
+                                <mat-form-field>
+                                    <mat-label>Số thứ tự</mat-label>
+                                    <input matInput [formControlName]="'API_SERVICE_GROUPORD'" maxlength="10" type="number">
+                                </mat-form-field>
+                            </div>                            
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </ng-container>
+
+    
+    <ng-template #selectObjectToRead>
+
+        <div class="flex flex-col flex-auto items-center justify-center bg-gray-100 dark:bg-transparent">
+            <mat-icon class="icon-size-24" [svgIcon]="'mat_solid:account_tree'"></mat-icon>
+            <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Chọn nhóm dịch vụ để xem
+            </div>
+        </div>
+
+    </ng-template>
+
+</div>

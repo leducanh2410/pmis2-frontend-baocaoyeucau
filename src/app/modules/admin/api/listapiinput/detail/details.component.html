@@ -1,0 +1,163 @@
+<div class="flex flex-col flex-auto overflow-y-auto lg:overflow-hidden bg-card dark:bg-default">
+
+    <ng-container *ngIf="object; else selectObjectToRead">
+
+        <!-- Header -->
+        <div class="z-10 relative flex flex-col flex-0 w-full border-b">
+
+            <!-- Toolbar -->
+            <div class="flex items-center min-h-16 px-4 md:px-6 border-b bg-gray-50 dark:bg-transparent">
+
+                <button mat-flat-button form="dialogForm" [color]="'primary'" *ngIf="actionSave"
+                    (click)="onSaveObject()">
+                    <mat-icon svgIcon="mat_outline:save"></mat-icon>
+                    <span class="ml-2 mr-1">Ghi</span>
+                </button>
+
+                <button mat-flat-button [color]="'warn'" class="mx-1" *ngIf="actionDelete" (click)="onDeleteObject()">
+                    <mat-icon svgIcon="mat_outline:delete"></mat-icon>
+                    <span class="ml-2 mr-1">Xóa</span>
+                </button>
+
+                <button mat-flat-button [color]="'accent'" class="mx-1" *ngIf="actionEdit" (click)="onEditObject()">
+                    <mat-icon svgIcon="mat_outline:edit"></mat-icon>
+                    <span class="ml-2 mr-1">Sửa</span>
+                </button>
+
+                <button mat-flat-button [color]="'accent'" class="mx-1" *ngIf="actionCancel" (click)="onCancelObject()">
+                    <mat-icon svgIcon="mat_outline:restore"></mat-icon>
+                    <span class="ml-2 mr-1">Hủy bỏ</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Threads -->
+        <div class="flex flex-col flex-auto shrink-0 lg:shrink p-3 lg:overflow-y-auto" fuseScrollReset>
+            <!-- Thread -->
+            <div
+                class="flex flex-col flex-0 w-full shadow rounded-2xl overflow-hidden bg-card dark:bg-black dark:bg-opacity-10">
+                <div class="flex flex-col w-full border bg-gray-50 dark:bg-transparent py-5 px-6" *ngIf="viewMode">
+
+                    <div>
+                        <span class="leading-4 truncate">Tham số: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.API_SERVICE_INPUTNAME}}</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Mô tả tham số: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.API_SERVICE_INPUTDESC}}</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Kiểu dữ liệu: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.API_SERVICE_INPUT_TYPEID}}</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Tham số hệ thống: </span>
+                        <span style="width: 120px" *ngIf="object.DEFAULT_VALUE_SYSTEM"
+                            class="leading-4 truncate text-red-500">Có</span>
+                        <span *ngIf="!object.DEFAULT_VALUE_SYSTEM"
+                            class="leading-4 truncate text-green-500">Không</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Giá trị tham số hệ thống: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.DEFAULT_VALUE_NAME}}</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Tác giả: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.USER_CR_ID}} - {{object.USER_CR_DTIME |
+                            date:'dd/MM/yyyy HH:mm:ss'}}</span>
+                    </div>
+                </div>
+                <div class="flex w-full" *ngIf="viewMode">
+                    <div class="w-full py-5 px-6">
+                        <table mat-table [dataSource]="lstColumns(object.LST_SERVICE)">
+                            <ng-container matColumnDef="API_SERVICEID">
+                                <th style="width: 120px" mat-header-cell *matHeaderCellDef>Mã
+                                </th>
+                                <td mat-cell *matCellDef="let element"> {{element.API_SERVICEID}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="API_SERVICE_DESC">
+                                <th style="width: 70%;" mat-header-cell *matHeaderCellDef>Tên dịch vụ
+                                </th>
+                                <td mat-cell *matCellDef="let element"> {{element.API_SERVICE_DESC}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="USER_CR_ID">
+                                <th style="width: 80px;" mat-header-cell *matHeaderCellDef>Người tạo</th>
+                                <td mat-cell *matCellDef="let element"> {{element.USER_CR_ID}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="USER_CR_DTIME">
+                                <th style="width: 145px;" mat-header-cell *matHeaderCellDef>Ngày tạo</th>
+                                <td mat-cell *matCellDef="let element"> {{element.USER_CR_DTIME |
+                                    date:'dd/MM/yyyy HH:mm:ss'}} </td>
+
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </div>
+                </div>
+                <form id="dialogForm" class="flex flex-col flex-auto p-1 sm:p-1 overflow-y-auto"
+                    [formGroup]="dialogForm" *ngIf="inputMode">
+                    <div class="py-5 px-2">
+                        <div class="grid grid-cols-2 grid-flow-row gap-2 w-full">
+                            <div class="flex flex-col flex-auto">
+                                <mat-form-field class="col-span-4">
+                                    <mat-label>Tham số</mat-label>
+                                    <input class="w-full" pattern="[a-zA-Z0-9_]*" matInput
+                                        [formControlName]="'API_SERVICE_INPUTNAME'" maxlength="50">
+                                </mat-form-field>
+                            </div>
+                            <div class="grid grid-cols-2 grid-flow-row gap-2 w-full">
+                                <mat-form-field class="col-span-4">
+                                    <mat-label>Kiểu tham số</mat-label>
+                                    <mat-select [formControlName]="'API_SERVICE_INPUT_TYPEID'" #singleSelectTitle>
+                                        <mat-option [value]="'NUM'">NUM</mat-option>
+                                        <mat-option [value]="'STR'">STR</mat-option>
+                                        <mat-option [value]="'STR_PASS'">STR_PASS</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 grid-flow-row gap-2 w-full">
+                            <div class="grid grid-cols-1 grid-flow-row gap-2 w-full">
+                                <mat-form-field class="col-span-4">
+                                    <mat-label>Mô tả tham số</mat-label>
+                                    <input class="w-full" matInput [formControlName]="'API_SERVICE_INPUTDESC'"
+                                        maxlength="250">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 grid-flow-row gap-2 w-full">
+                            <div class="grid grid-cols-2 grid-flow-row gap-2 w-full items-center justify-center">
+                                <mat-slide-toggle [formControlName]="'DEFAULT_VALUE_SYSTEM'"
+                                    style="font-weight: normal;">
+                                    Tham số hệ thống</mat-slide-toggle>
+                            </div>
+                            <div class="grid grid-cols-2 grid-flow-row gap-2 w-full">
+                                <mat-form-field class="col-span-4">
+                                    <mat-label>Giá trị tham số hệ thống</mat-label>
+                                    <input class="w-full" type="text" pattern="[a-zA-Z0-9]*" matInput
+                                        [formControlName]="'DEFAULT_VALUE_NAME'" maxlength="50">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </ng-container>
+
+
+    <ng-template #selectObjectToRead>
+
+        <div class="flex flex-col flex-auto items-center justify-center bg-gray-100 dark:bg-transparent">
+            <mat-icon class="icon-size-24" [svgIcon]="'heroicons_outline:cloud-upload'"></mat-icon>
+            <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Chọn tham số đầu vào để xem</div>
+        </div>
+
+    </ng-template>
+
+</div>

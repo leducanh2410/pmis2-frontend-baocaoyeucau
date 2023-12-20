@@ -1,0 +1,34 @@
+.mat-column-TEN_COT {
+    padding: 2px !important;
+}
+
+.mat-column-MO_TA {
+    padding: 2px !important;
+}
+
+.mat-column-STATUS {
+    padding: 2px !important;
+}
+
+
+table {
+    width: 100%;
+}
+
+.flexContainer {
+    display: flex;
+    width: 100%;
+}
+
+.inputField {
+    flex: 1;
+
+}
+
+.inputFieldButton {
+    height: 31px;
+    min-height: 31px;
+}
+.mat-header-cell {
+    background: #f1f5f9 !important
+}

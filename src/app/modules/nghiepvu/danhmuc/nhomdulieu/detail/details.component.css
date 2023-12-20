@@ -1,0 +1,16 @@
+table {
+    width: 100%;
+}
+.flexContainer {
+    display: flex;
+    width: 100%;
+}
+
+.inputField {
+    flex: 1;
+
+}
+.inputFieldButton {
+    height: 31px;
+    min-height: 31px;
+}

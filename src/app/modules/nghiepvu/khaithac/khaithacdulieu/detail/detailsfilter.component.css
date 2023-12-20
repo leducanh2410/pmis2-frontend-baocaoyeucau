@@ -1,0 +1,30 @@
+.mat-column-STT {
+    padding: 2px !important;
+}
+
+.mat-column-NHOM_DKIEU {
+    padding: 2px !important;
+}
+
+.mat-column-LOAI_DKIEN {
+    padding: 2px !important;
+}
+
+.mat-column-GIA_TRI_LOC {
+    padding: 2px !important;
+}
+
+.mat-column-ACTION {
+    padding: 2px !important;
+}
+
+
+
+table {
+    width: 100%;
+}
+
+.flexContainer {
+    display: flex;
+    width: 100%;
+}

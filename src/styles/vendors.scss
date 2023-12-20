@@ -1,0 +1,67 @@
+@import '~perfect-scrollbar/css/perfect-scrollbar.css';
+@import '~quill/dist/quill.snow.css';
+@import 'node_modules/ng-alt-snotify/styles/material.scss';
+// @import '~roboto-fontface/css/roboto/roboto-fontface.css';
+
+@import '~highlight.js/styles/github.css';
+@import '~codemirror/lib/codemirror.css';
+@import '~codemirror/addon/lint/lint.css';
+@import '~codemirror/addon/hint/show-hint.css';
+
+.snotify-icon {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    line-height: 0;
+    transform: translate(0, -50%);
+    max-height: 24px;
+    max-width: 24px;
+}
+
+.snotifyToast__title {
+    font-size: 12px;
+}
+
+.snotifyToast__body {
+    font-size: 12px;
+}
+
+.mat-cell,
+.mat-footer-cell {
+    font-size: 12px;
+}
+.mat-button, .mat-raised-button, .mat-icon-button, .mat-stroked-button, .mat-flat-button, .mat-fab, .mat-mini-fab {    
+    font-size: 12px;
+}
+
+.mat-form-field {
+    font: 400 12px / 1.2857142857 Roboto;    
+}
+
+.mat-tree-node, .mat-nested-tree-node {
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.mat-header-cell {
+    font-size: 12px !important;
+}
+.mat-form-field.mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix .mat-form-field-label-wrapper .mat-form-field-label
+{
+    font-size: 12px !important;    
+}
+.snotifyToast__inner {
+    padding: 2px 45px 2px 5px;
+    font-size: 12px;
+}
+
+.snotifyToast__inner {
+    min-height: 48px;
+    font-size: 12px;
+}
+
+.snotify-confirm {
+    background-color: #2a3493;
+}

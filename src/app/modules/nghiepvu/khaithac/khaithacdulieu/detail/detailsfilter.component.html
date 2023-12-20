@@ -1,0 +1,169 @@
+<div class="flex flex-col max-w-240 md:min-w-160 max-h-screen -m-6">
+
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg font-medium">{{columnNameFilter}}</div>
+        <button mat-icon-button (click)="onCloseClick()" [tabIndex]="-1">
+            <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+    <div class="flex flex-col flex-auto p-6 sm:p-2 overflow-y-auto" *ngIf="viewMode">
+        <div class="flex w-full">
+            <div class="w-full">
+                <table mat-table [dataSource]="lstColumns(listFilter)" class="tableCotInsert" #MatTableDetail>
+                    <ng-container matColumnDef="STT">
+                        <th style="width: 70px;" mat-header-cell *matHeaderCellDef> STT </th>
+                        <td mat-cell *matCellDef="let element;let i = index">
+                            <span>{{element.STT}}</span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="NHOM_DKIEU">
+                        <th style="width: 25%;" mat-header-cell *matHeaderCellDef> Nhóm điều kiện </th>
+                        <td mat-cell *matCellDef="let element;let i = index">
+                            <mat-form-field>
+                                <mat-select [value]="element.NHOM_DKIEU" disabled="true">
+                                    <mat-option *ngFor="let t of lstNhomDieuKien" [value]="t.value">{{t.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="LOAI_DKIEN">
+                        <th style="width: 20%;" mat-header-cell *matHeaderCellDef> Điều kiện </th>
+                        <td mat-cell *matCellDef="let element;let i = index">
+                            <mat-form-field>
+                                <mat-select [value]="element.LOAI_DKIEN" disabled="true">
+                                    <mat-option *ngFor="let t of lstLoaiDieuKien" [value]="t.value">{{t.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="GIA_TRI_LOC">
+                        <th style="width: 70%" mat-header-cell *matHeaderCellDef> Giá trị lọc </th>
+                        <td mat-cell *matCellDef="let element;">                            
+                            <mat-form-field class="w-full my-form-field" floatLabel="never" *ngIf="columnTypeDataFilter=='KDL-1' 
+                                || columnTypeDataFilter=='KDL-2'">
+                                <input class="w-full" matInput [value]="element.GIA_TRI_LOC" maxlength="50"
+                                    [type]="columnTypeDataFilter=='KDL-2'?'number':'text'" disabled="true">
+                            </mat-form-field>
+                            <mat-form-field class="w-full my-form-field" floatLabel="never"
+                                *ngIf="columnTypeDataFilter=='KDL-3'">
+                                <input matInput [matDatepicker]="GIA_TRI_LOCDATE" [value]="element.GIA_TRI_LOC" disabled="true">
+                                <mat-datepicker-toggle matSuffix [for]="GIA_TRI_LOCDATE"></mat-datepicker-toggle>
+                                <mat-datepicker #GIA_TRI_LOCDATE></mat-datepicker>
+                            </mat-form-field>
+                            <mat-form-field class="w-full my-form-field" floatLabel="never"
+                                *ngIf="columnTypeDataFilter=='KDL-4'">
+                                <input matInput [matDatetimepicker]="GIA_TRI_LOCDATE" [value]="element.GIA_TRI_LOC" disabled="true">
+                                <mat-datetimepicker-toggle [for]="GIA_TRI_LOCDATE" matSuffix>
+                                </mat-datetimepicker-toggle>
+                                <mat-datetimepicker #GIA_TRI_LOCDATE type="datetime"></mat-datetimepicker>
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsView"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsView;"></tr>
+                </table>                
+            </div>
+        </div>
+    </div>
+    <form id="dialogFormFilter" class="flex flex-col flex-auto p-6 sm:p-8 overflow-y-auto"
+        [formGroup]="dialogFormFilter" *ngIf="inputMode">
+        <div class="flex w-full">
+            <div class="w-full" formArrayName="LST_FILTER">
+                <table mat-table [dataSource]="lstFilter.controls" cdkDropList cdkDropListData="lstCot.controls"
+                    (cdkDropListDropped)="dropSortRowTable($event)" class="tableCotInsert" #MatTableDetail>
+                    <ng-container matColumnDef="STT">
+                        <th style="width: 70px;" mat-header-cell *matHeaderCellDef> STT </th>
+                        <td mat-cell *matCellDef="let element;let i = index" [formGroup]="element">
+                            <mat-form-field class="w-15 my-form-field" cdkDragHandle>
+                                <input type="number" class="w-full" matInput [formControlName]="'STT'" maxlength="50">
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="NHOM_DKIEU">
+                        <th style="width: 25%;" mat-header-cell *matHeaderCellDef> Nhóm điều kiện </th>
+                        <td mat-cell *matCellDef="let element;let i = index" [formGroup]="element">
+                            <mat-form-field>
+                                <mat-select [formControlName]="'NHOM_DKIEU'">
+                                    <mat-option *ngFor="let t of lstNhomDieuKien" [value]="t.value">{{t.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="LOAI_DKIEN">
+                        <th style="width: 20%;" mat-header-cell *matHeaderCellDef> Điều kiện </th>
+                        <td mat-cell *matCellDef="let element;let i = index" [formGroup]="element">
+                            <mat-form-field>
+                                <mat-select [formControlName]="'LOAI_DKIEN'">
+                                    <mat-option *ngFor="let t of lstLoaiDieuKien" [value]="t.value">{{t.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="GIA_TRI_LOC">
+                        <th style="width: 70%" mat-header-cell *matHeaderCellDef> Giá trị lọc </th>
+                        <td mat-cell *matCellDef="let element;" [formGroup]="element">
+                            <mat-form-field class="w-full my-form-field" floatLabel="never" *ngIf="dialogFormFilter.controls['MA_KIEU_DLIEU']?.value=='KDL-1' 
+                                || dialogFormFilter.controls['MA_KIEU_DLIEU']?.value=='KDL-2'">
+                                <input class="w-full" matInput [formControlName]="'GIA_TRI_LOC'" maxlength="50"
+                                    [type]="dialogFormFilter.controls['MA_KIEU_DLIEU']?.value=='KDL-2'?'number':'text'">
+                            </mat-form-field>
+                            <mat-form-field class="w-full my-form-field" floatLabel="never"
+                                *ngIf="dialogFormFilter.controls['MA_KIEU_DLIEU']?.value=='KDL-3'">
+                                <input matInput [matDatepicker]="GIA_TRI_LOCDATE" [formControlName]="'GIA_TRI_LOC'" readonly>
+                                <mat-datepicker-toggle matSuffix [for]="GIA_TRI_LOCDATE"></mat-datepicker-toggle>
+                                <mat-datepicker #GIA_TRI_LOCDATE></mat-datepicker>
+                            </mat-form-field>
+                            <mat-form-field class="w-full my-form-field" floatLabel="never"
+                                *ngIf="dialogFormFilter.controls['MA_KIEU_DLIEU']?.value=='KDL-4'">
+                                <input matInput [matDatetimepicker]="GIA_TRI_LOCDATE" [formControlName]="'GIA_TRI_LOC'" readonly>
+                                <mat-datetimepicker-toggle [for]="GIA_TRI_LOCDATE" matSuffix>
+                                </mat-datetimepicker-toggle>
+                                <mat-datetimepicker #GIA_TRI_LOCDATE type="datetime"></mat-datetimepicker>
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="ACTION">
+                        <th style="width: 30px" mat-header-cell *matHeaderCellDef> </th>
+                        <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                            <button mat-icon-button [color]="'warn'" class="mx-1" *ngIf="actionDeleteDetail"
+                                (click)="onDeleteObjectDetail(i)">
+                                <mat-icon svgIcon="mat_outline:delete"></mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsInput"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsInput;" cdkDrag [cdkDragData]="row"></tr>
+                </table>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between mt-4 sm:mt-6">
+
+                    <div class="flex items-center mt-4 sm:mt-0">
+                        <button mat-flat-button [color]="'warn'" *ngIf="actionCreate" (click)="onAddObjectDetail()">
+                            <mat-icon svgIcon="mat_outline:add"></mat-icon>
+                            <span class="ml-2 mr-1">Thêm điều
+                                kiện</span>
+                        </button>
+                        <button class="order-first sm:order-last ml-2" mat-flat-button [color]="'primary'"
+                            (click)="onConfirmClick()">
+                            <mat-icon svgIcon="mat_outline:save"></mat-icon>
+                            <span class="ml-2 mr-1">Đồng ý</span>
+                        </button>
+                        <button mat-flat-button [color]="'accent'" class="order-first sm:order-last ml-2"
+                            *ngIf="actionCancel" (click)="onCancelObject()">
+                            <mat-icon svgIcon="mat_outline:restore"></mat-icon>
+                            <span class="ml-2 mr-1">Hủy bỏ</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>

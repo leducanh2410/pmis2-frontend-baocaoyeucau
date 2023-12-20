@@ -1,0 +1,49 @@
+.mat-column-API_SERVICEID {
+    padding: 2px !important;
+}
+
+.mat-column-API_SERVICE_DESC {
+    padding: 2px !important;
+}
+
+.mat-column-R_INSERT {
+    padding: 2px !important;
+}
+
+.mat-column-R_EDIT {
+    padding: 2px !important;
+}
+
+
+.mat-column-R_DELETE {
+    padding: 2px !important;
+}
+
+
+.mat-column-USER_CR_ID {
+    padding: 2px !important;
+}
+
+
+.mat-column-USER_CR_DTIME {
+    padding: 2px !important;
+}
+
+
+table {
+    width: 100%;
+}
+
+.flexContainer {
+    display: flex;
+    width: 100%;
+}
+
+.inputField {
+    flex: 1;
+
+}
+.inputFieldButton {
+    height: 31px;
+    min-height: 31px;
+}

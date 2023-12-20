@@ -1,0 +1,414 @@
+<div class="flex flex-col flex-auto overflow-y-auto lg:overflow-hidden bg-card dark:bg-default">
+
+    <ng-container *ngIf="object; else selectObjectToRead">
+
+        <!-- Header -->
+        <div class="z-10 relative flex flex-col flex-0 w-full border-b">
+
+            <!-- Toolbar -->
+            <div class="flex items-center min-h-16 px-4 md:px-6 border-b bg-gray-50 dark:bg-transparent">
+
+                <button mat-flat-button form="dialogForm" [color]="'primary'" *ngIf="actionSave"
+                    (click)="onSaveObject()">
+                    <mat-icon svgIcon="mat_outline:save"></mat-icon>
+                    <span class="ml-2 mr-1">Ghi</span>
+                </button>
+
+                <button mat-flat-button [color]="'warn'" class="mx-1" *ngIf="actionDelete" (click)="onDeleteObject()">
+                    <mat-icon svgIcon="mat_outline:delete"></mat-icon>
+                    <span class="ml-2 mr-1">Xóa</span>
+                </button>
+
+                <button mat-flat-button [color]="'accent'" class="mx-1" *ngIf="actionEdit" (click)="onEditObject()">
+                    <mat-icon svgIcon="mat_outline:edit"></mat-icon>
+                    <span class="ml-2 mr-1">Sửa</span>
+                </button>
+
+                <button mat-flat-button [color]="'accent'" class="mx-1" *ngIf="actionCancel" (click)="onCancelObject()">
+                    <mat-icon svgIcon="mat_outline:restore"></mat-icon>
+                    <span class="ml-2 mr-1">Hủy bỏ</span>
+                </button>
+            </div>
+            
+        </div>
+
+        <!-- Threads -->
+        <div class="flex flex-col flex-auto shrink-0 lg:shrink p-3 lg:overflow-y-auto" fuseScrollReset>
+            <!-- Thread -->
+            <div
+                class="flex flex-col flex-0 w-full shadow rounded-2xl overflow-hidden bg-card dark:bg-black dark:bg-opacity-10">
+                <div class="flex flex-col w-full border bg-gray-50 dark:bg-transparent py-5 px-6" *ngIf="viewMode">
+
+                    <div>
+                        <span class="leading-4 truncate">Mã nhóm/chức năng: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.FUNCTIONID_KEY}}</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Tên nhóm/chức năng: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.FUNCTIONNAME}}</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Mô tả nhóm/chức năng: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.FUNCTIONNAME_SUB}}</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Phân loại: </span>
+                        <span class="leading-4 truncate text-green-500" *ngIf="object.FUNCTION_TYPE=='group'">Nhóm chức
+                            năng</span>
+                        <span class="leading-4 truncate text-green-500" *ngIf="object.FUNCTION_TYPE=='basic'">Chức
+                            năng</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Đường dẫn: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.LINK}}</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Biểu tượng: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.ICON}}</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Chức năng mở rộng: </span>
+                        <span *ngIf="object.FUNCTION_EXTERNAL" class="leading-4 truncate text-red-500">Có</span>
+                        <span *ngIf="!object.FUNCTION_EXTERNAL" class="leading-4 truncate text-green-500">Không</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Đường dẫn mở rộng: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.FUNCTION_EXTERNAL_TARGET}}</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Sử dụng: </span>
+                        <span *ngIf="object.ENABLE" class="leading-4 truncate text-red-500">Có</span>
+                        <span *ngIf="!object.ENABLE" class="leading-4 truncate text-green-500">Không</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Dùng chung: </span>
+                        <span *ngIf="object.ISPUPLIC" class="leading-4 truncate text-red-500">Có</span>
+                        <span *ngIf="!object.ISPUPLIC" class="leading-4 truncate text-green-500">Không</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Số thứ tự: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.FUNCTIONORD}}</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Sử dụng nội bộ: </span>
+                        <span *ngIf="object.AUTH_LOCAL" class="leading-4 truncate text-red-500">Có</span>
+                        <span *ngIf="!object.AUTH_LOCAL" class="leading-4 truncate text-green-500">Không</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Sử dụng ngoài Internet: </span>
+                        <span *ngIf="object.AUTH_INTERNET" class="leading-4 truncate text-red-500">Có</span>
+                        <span *ngIf="!object.AUTH_INTERNET" class="leading-4 truncate text-green-500">Không</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Ứng dụng sử dụng: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.APPID}}</span>
+                    </div>
+                    <div>
+                        <span class="leading-4 truncate">Tác giả: </span>
+                        <span class="leading-4 truncate text-green-500">{{object.USER_CR_ID}} - {{object.USER_CR_DTIME |
+                            date:'dd/MM/yyyy HH:mm:ss'}}</span>
+                    </div>
+                </div>
+                <div class="flex w-full" *ngIf="viewMode">
+                    <div class="w-full py-5 px-6">
+                        <table mat-table [dataSource]="lstColumns(object.LST_SERVICE)">
+                            <ng-container matColumnDef="API_SERVICEID">
+                                <th style="width: 120px" mat-header-cell *matHeaderCellDef>Mã
+                                </th>
+                                <td mat-cell *matCellDef="let element"> {{element.API_SERVICEID}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="API_SERVICE_DESC">
+                                <th style="width: 50%;" mat-header-cell *matHeaderCellDef>Tên dịch vụ
+                                </th>
+                                <td mat-cell *matCellDef="let element"> {{element.API_SERVICE_DESC}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="R_INSERT">
+                                <th mat-header-cell *matHeaderCellDef>Thêm mới
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <span style="width: 120px" *ngIf="element.R_INSERT"
+                                        class="leading-4 truncate text-red-500">Có</span>
+                                    <span *ngIf="!element.R_INSERT"
+                                        class="leading-4 truncate text-green-500">Không</span>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="R_EDIT">
+                                <th mat-header-cell *matHeaderCellDef>Sửa
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <span style="width: 120px" *ngIf="element.R_EDIT"
+                                        class="leading-4 truncate text-red-500">Có</span>
+                                    <span *ngIf="!element.R_EDIT" class="leading-4 truncate text-green-500">Không</span>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="R_DELETE">
+                                <th mat-header-cell *matHeaderCellDef>Xóa
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <span style="width: 120px" *ngIf="element.R_DELETE"
+                                        class="leading-4 truncate text-red-500">Có</span>
+                                    <span *ngIf="!element.R_DELETE"
+                                        class="leading-4 truncate text-green-500">Không</span>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="USER_CR_ID">
+                                <th style="width: 80px;" mat-header-cell *matHeaderCellDef>Người tạo</th>
+                                <td mat-cell *matCellDef="let element"> {{element.USER_CR_ID}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="USER_CR_DTIME">
+                                <th style="width: 145px;" mat-header-cell *matHeaderCellDef>Ngày tạo</th>
+                                <td mat-cell *matCellDef="let element"> {{element.USER_CR_DTIME |
+                                    date:'dd/MM/yyyy HH:mm:ss'}} </td>
+
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </div>
+                </div>
+                <form id="dialogForm" class="flex flex-col flex-auto p-1 sm:p-1 overflow-y-auto"
+                    [formGroup]="dialogForm" *ngIf="inputMode">
+                    <div class="py-5 px-2">
+                        <div class="grid grid-col grid-flow-row gap-2 w-full">
+                            <mat-form-field>
+                                <mat-label>Mã nhóm cha</mat-label>
+                                <div class="flexContainer">
+                                    <input type="text" style="width: 100%" matInput #selectFUNCTION_PARENT_ID
+                                        #trigger="matAutocompleteTrigger" [formControlName]="'FUNCTION_PARENT_ID'"
+                                        [matAutocomplete]="auto" readonly="true" class="inputField" (focus)="onOpenFunctionParentSelect()">
+                                    <button class="ml-2 -mr-3 inputFieldButton"  mat-flat-button [color]="'primary'"
+                                        (click)="onOpenFunctionParentSelect()">...</button>
+                                </div>
+                                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                    <mat-option value=""></mat-option>
+                                    <mat-tree [dataSource]="lstTreeListFunction"
+                                        [treeControl]="lstTreeListFunctionControl" class="tree-list">
+                                        <mat-tree-node
+                                            (click)="onTreeNodeFunctionParent(node);trigger.panelOpen ? trigger.closePanel() : trigger.openPanel()"
+                                            *matTreeNodeDef="let node" matTreeNodeToggle
+                                            [ngClass]="{'bg-primary-50 dark:bg-black dark:bg-opacity-5 selectObject': dialogForm.controls['FUNCTION_PARENT_ID'] && dialogForm.controls['FUNCTION_PARENT_ID'].value === node.object.FUNCTIONID_KEY}"
+                                            matTreeNodePadding matTreeNodePaddingIndent="25">
+                                            <mat-icon class="mat-icon-rtl-mirror"
+                                                [svgIcon]="node.object.FUNCTION_TYPE=='group'?'heroicons_outline:view-grid':'heroicons_outline:cube'">
+                                            </mat-icon>
+                                            <div class="ml-1">
+                                                {{node.object.FUNCTIONNAME}}
+                                            </div>
+                                        </mat-tree-node>
+                                        <mat-tree-node
+                                            (click)="onTreeNodeFunctionParent(node);trigger.panelOpen ? trigger.closePanel() : trigger.openPanel()"
+                                            [disabled]="node.object.FUNCTION_TYPE=='group'?false:true"
+                                            *matTreeNodeDef="let node; when: lstTreeListFunctionHasChild"
+                                            [ngClass]="{'bg-primary-50 dark:bg-black dark:bg-opacity-5 selectObject': dialogForm.controls['FUNCTION_PARENT_ID'] && dialogForm.controls['FUNCTION_PARENT_ID'].value === node.object.FUNCTIONID_KEY}"
+                                            matTreeNodePadding matTreeNodePaddingIndent="25">
+                                            <mat-icon class="mat-icon-rtl-mirror"
+                                                [svgIcon]="node.object.FUNCTION_TYPE=='group'?'heroicons_outline:view-grid':'heroicons_outline:cube'">
+                                            </mat-icon>
+                                            <div class="ml-1">
+                                                {{node.object.FUNCTIONNAME}}
+                                            </div>
+                                        </mat-tree-node>
+                                    </mat-tree>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                        </div>
+                        <div class="grid grid-cols-2 grid-flow-row gap-2 w-full">
+                            <div class="flex flex-col flex-auto">
+                                <mat-form-field>
+                                    <mat-label>Mã nhóm/chức năng</mat-label>
+                                    <input matInput [formControlName]="'FUNCTIONID'" maxlength="50">
+                                </mat-form-field>
+                            </div>
+                            <div class="flex flex-col flex-auto">
+                                <mat-form-field>
+                                    <mat-label>Tên nhóm/chức năng</mat-label>
+                                    <input matInput [formControlName]="'FUNCTIONNAME'" maxlength="100">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 grid-flow-row gap-2 w-full">
+                            <div class="flex flex-col flex-auto">
+                                <mat-form-field>
+                                    <mat-label>Mô tả nhóm/chức năng</mat-label>
+                                    <input matInput [formControlName]="'FUNCTIONNAME_SUB'" maxlength="250">
+                                </mat-form-field>
+                            </div>
+                            <div class="flex flex-col flex-auto">
+                                <mat-form-field>
+                                    <mat-label>Phân loại</mat-label>
+                                    <mat-select [formControlName]="'FUNCTION_TYPE'" #singleSelectTitle>
+                                        <mat-option [value]="'group'">Nhóm chức năng</mat-option>
+                                        <mat-option [value]="'basic'">Chức năng</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 grid-flow-row gap-2 w-full">
+                            <div class="flex flex-col flex-auto">
+                                <mat-form-field>
+                                    <mat-label>Đường dẫn chức năng</mat-label>
+                                    <input matInput [formControlName]="'LINK'" maxlength="255">
+                                </mat-form-field>
+                            </div>
+                            <div class="flex flex-col flex-auto">
+                                <mat-form-field>
+                                    <mat-label>Biểu tượng</mat-label>
+                                    <input matInput [formControlName]="'ICON'" maxlength="50">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 grid-flow-row gap-2 w-full">
+                            <div class="flex flex-col flex-auto">
+                                <mat-slide-toggle [formControlName]="'FUNCTION_EXTERNAL'" style="font-weight: normal;">
+                                    Chức năng ngoài</mat-slide-toggle>
+                            </div>
+                            <div class="flex flex-col flex-auto">
+                                <mat-form-field>
+                                    <mat-label>Đường dẫn ngoài</mat-label>
+                                    <input matInput [formControlName]="'FUNCTION_EXTERNAL_TARGET'" maxlength="250">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 grid-flow-row gap-2 w-full">
+                            <div class="flex flex-col flex-auto">
+                                <mat-form-field>
+                                    <mat-label>Ứng dụng sử dụng</mat-label>
+                                    <input matInput [formControlName]="'APPID'" maxlength="50">
+                                </mat-form-field>
+                            </div>
+                            <div class="flex flex-col flex-auto">
+                                <mat-form-field>
+                                    <mat-label>Số thứ tự</mat-label>
+                                    <input matInput [formControlName]="'FUNCTIONORD'" maxlength="10" type="number">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 grid-flow-row gap-2 w-full">
+                            <div class="flex flex-col flex-auto">
+                                <mat-slide-toggle [formControlName]="'AUTH_LOCAL'" style="font-weight: normal;">Sử dụng
+                                    mạng nội bộ
+                                </mat-slide-toggle>
+                            </div>
+
+                        </div>
+                        <div class="grid grid-cols-2 grid-flow-row gap-2 w-full">
+                            <div class="flex flex-col flex-auto">
+                                <mat-slide-toggle [formControlName]="'AUTH_INTERNET'" style="font-weight: normal;">Sử
+                                    dụng mạng Internet
+                                </mat-slide-toggle>
+
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 grid-flow-row gap-2 w-full">
+                            <div class="flex flex-col flex-auto">
+                                <mat-slide-toggle [formControlName]="'ISPUPLIC'" style="font-weight: normal;">Dùng chung
+                                </mat-slide-toggle>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 grid-flow-row gap-2 w-full">
+                            <div class="flex flex-col flex-auto">
+                                <mat-slide-toggle [formControlName]="'ENABLE'" style="font-weight: normal;">Sử
+                                    dụng
+                                </mat-slide-toggle>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full flex flex-col">
+                        <div class="w-full" formArrayName="LST_SERVICE">
+                            <table mat-table [dataSource]="lstSerivce.controls" class="tableServiceInsert"
+                                #MatTableDetail>
+                                <ng-container matColumnDef="API_SERVICEID">
+                                    <th style="width: 120px" mat-header-cell *matHeaderCellDef> Mã </th>
+                                    <td mat-cell *matCellDef="let element;let i = index" [formGroup]="element">
+                                        {{element.value.API_SERVICEID}}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="API_SERVICE_DESC">
+                                    <th style="width: 60%" mat-header-cell *matHeaderCellDef> Tên dịch vụ </th>
+                                    <td mat-cell *matCellDef="let element;" [formGroup]="element">
+                                        {{element.value.API_SERVICE_DESC}}
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="R_INSERT">
+                                    <th style="width: 120px" mat-header-cell *matHeaderCellDef> Thêm mới </th>
+                                    <td mat-cell *matCellDef="let element;" [formGroup]="element">
+                                        <mat-slide-toggle [formControlName]="'R_INSERT'" style="font-weight: normal;">
+                                        </mat-slide-toggle>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="R_EDIT">
+                                    <th style="width: 120px" mat-header-cell *matHeaderCellDef> Sửa </th>
+                                    <td mat-cell *matCellDef="let element;" [formGroup]="element">
+                                        <mat-slide-toggle [formControlName]="'R_EDIT'" style="font-weight: normal;">
+                                        </mat-slide-toggle>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="R_DELETE">
+                                    <th style="width: 120px" mat-header-cell *matHeaderCellDef> Xóa </th>
+                                    <td mat-cell *matCellDef="let element;" [formGroup]="element">
+                                        <mat-slide-toggle [formControlName]="'R_DELETE'" style="font-weight: normal;">
+                                        </mat-slide-toggle>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="ACTION">
+                                    <th style="width: 30px" mat-header-cell *matHeaderCellDef> </th>
+                                    <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                                        <button mat-icon-button [color]="'warn'" class="mx-1" *ngIf="actionDeleteDetail"
+                                            (click)="onDeleteObjectDetail(i)">
+                                            <mat-icon svgIcon="mat_outline:delete"></mat-icon>
+                                        </button>
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedColumnsInput"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumnsInput;"></tr>
+                            </table>
+                        </div>
+                        <div class="flex flex-row flex-auto p-2 w-full">
+                            <mat-form-field style="width: 100%">
+                                <mat-select [formControlName]="'LST_SERVICE_TEMP'" [multiple]="true">
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControlName]="'LST_SERVICE_TEMPFilter'"
+                                            placeholderLabel="Tìm dịch vụ...">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="let t of filteredlstService | async" [value]="t">
+                                        <span>{{t.API_SERVICEID}}</span>:
+                                        <span class="leading-4 truncate text-green-500">{{t.API_SERVICE_DESC}}</span>
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <button class="ml-2" mat-flat-button [color]="'primary'" *ngIf="actionEditDetail"
+                                (click)="onAddObjectDetail()">
+                                <mat-icon svgIcon="mat_outline:add"></mat-icon>
+                                <span>Thêm dịch vụ</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </ng-container>
+
+    
+    <ng-template #selectObjectToRead>
+
+        <div class="flex flex-col flex-auto items-center justify-center bg-gray-100 dark:bg-transparent">
+            <mat-icon class="icon-size-24" [svgIcon]="'heroicons_outline:puzzle'"></mat-icon>
+            <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Chọn chức năng để xem</div>
+        </div>
+
+    </ng-template>
+
+</div>

@@ -1,0 +1,270 @@
+<div class="flex flex-col flex-auto overflow-y-auto lg:overflow-hidden bg-card dark:bg-default">
+
+    <ng-container *ngIf="obj; else selectObjToRead">
+
+        <!-- Header -->
+        <div class="z-10 relative flex flex-col flex-0 w-full border-b">
+
+            <!-- Toolbar -->
+            <div class="flex items-center min-h-16 px-4 md:px-6 border-b bg-gray-50 dark:bg-transparent">
+
+                <button mat-flat-button [color]="'primary'" *ngIf="actionSave" (click)="onSaveObject()">
+                    <mat-icon svgIcon="mat_outline:save"></mat-icon>
+                    <span class="ml-2 mr-1">Ghi</span>
+                </button>
+
+                <button mat-flat-button [color]="'warn'" class="mx-1" *ngIf="actionDelete" (click)="onDeleteObject()">
+                    <mat-icon svgIcon="mat_outline:delete"></mat-icon>
+                    <span class="ml-2 mr-1">Xóa</span>
+                </button>
+
+                <button mat-flat-button [color]="'accent'" class="mx-1" *ngIf="actionEdit" (click)="onEditObject()">
+                    <mat-icon svgIcon="mat_outline:edit"></mat-icon>
+                    <span class="ml-2 mr-1">Sửa</span>
+                </button>
+
+                <button mat-flat-button [color]="'accent'" class="mx-1" *ngIf="actionCancel" (click)="onCancelObject()">
+                    <mat-icon svgIcon="mat_outline:restore"></mat-icon>
+                    <span class="ml-2 mr-1">Hủy bỏ</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Threads -->
+        <div class="flex flex-col flex-auto shrink-0 lg:shrink p-3 lg:overflow-y-auto" fuseScrollReset>
+            <!-- Thread -->
+            <div
+                class="flex flex-col flex-0 w-full shadow rounded-2xl overflow-hidden bg-card dark:bg-black dark:bg-opacity-10">
+                <div class="w-full" *ngIf="viewMode">
+                    <table mat-table [dataSource]="lstColumnsView(obj.LST_GRANT_ROLE)">
+                        <ng-container matColumnDef="SELECT">
+                            <th style="width: 30px;" mat-header-cell *matHeaderCellDef>
+                            </th>
+                            <td mat-cell *matCellDef="let data">
+                                <mat-checkbox disabled [checked]="true">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="ROLEDESC">
+                            <th mat-header-cell *matHeaderCellDef>Tên nhóm quyền
+                            </th>
+                            <td mat-cell *matCellDef="let element"> {{element.ROLEDESC}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="USER_CR_ID">
+                            <th style="width: 80px;" mat-header-cell *matHeaderCellDef>Người tạo</th>
+                            <td mat-cell *matCellDef="let element"> {{element.USER_CR_ID}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="USER_CR_DTIME">
+                            <th style="width: 145px;" mat-header-cell *matHeaderCellDef>Ngày tạo</th>
+                            <td mat-cell *matCellDef="let element"> {{element.USER_CR_DTIME |
+                                date:'dd/MM/yyyy HH:mm:ss'}} </td>
+
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsRoleView"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumnsRoleView;"></tr>
+                    </table>
+                    <table mat-table [dataSource]="lstTreeListFunction" class="mat-elevation-z8">
+                        <ng-container matColumnDef="SELECT">
+                            <th style="width: 30px;" mat-header-cell *matHeaderCellDef>
+                            </th>
+                            <td mat-cell *matCellDef="let data">
+                                <mat-checkbox disabled [checked]="data.object.USERID">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="FUNCTIONNAME">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <span [style.paddingLeft.px]="40"> Tên chức năng </span>
+                            </th>
+                            <td mat-cell *matCellDef="let data">
+                                <div class="flex items-center">
+                                    <button mat-icon-button [style.visibility]="!data.expandable ? 'hidden' : ''"
+                                        [style.marginLeft.px]="data.level * 32"
+                                        (click)="lstTreeListFunctionControl.toggle(data)">
+                                        <mat-icon class="mat-icon-rtl-mirror"
+                                            [svgIcon]="lstTreeListFunctionControl.isExpanded(data) ? 'expand_more' : 'chevron_right'">
+                                        </mat-icon>
+                                    </button>
+                                    <span class="leading-4 truncate">{{data.object.FUNCTIONNAME}}</span>
+                                </div>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="R_INSERT">
+                            <th style="width: 100px;" mat-header-cell *matHeaderCellDef>
+                                <span> Thêm mới </span>
+                            </th>
+                            <td mat-cell *matCellDef="let data">
+                                <mat-checkbox disabled [checked]="data.object.R_INSERT">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="R_EDIT">
+                            <th style="width: 100px;" mat-header-cell *matHeaderCellDef>
+                                <span> Sửa </span>
+                            </th>
+                            <td mat-cell *matCellDef="let data">
+                                <mat-checkbox disabled [checked]="data.object.R_EDIT">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="R_DELETE">
+                            <th style="width: 100px;" mat-header-cell *matHeaderCellDef>
+                                <span> Xóa </span>
+                            </th>
+                            <td mat-cell *matCellDef="let data">
+                                <mat-checkbox disabled [checked]="data.object.R_DELETE">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="count">
+                            <th mat-header-cell *matHeaderCellDef> Count </th>
+                            <td mat-cell *matCellDef="let data"> {{data.count}} </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsView"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumnsView;"></tr>
+                    </table>
+                </div>
+                <form id="dialogForm" [formGroup]="dialogForm" autocomplete="off" *ngIf="inputMode">
+                    <table mat-table [dataSource]="lstColumns(obj.LST_GRANT_ROLE)" class="mat-elevation-z8"
+                        #MatTableRole>
+                        <ng-container matColumnDef="SELECT">
+                            <th style="width: 35px;" mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox (change)="$event ? masterToggleRole() : null"
+                                    [checked]="selectionRole.hasValue() && isAllRoleSelected()"
+                                    [indeterminate]="selectionRole.hasValue() && !isAllRoleSelected()">
+                                </mat-checkbox>
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                                <mat-checkbox (click)="$event.stopPropagation()"
+                                    (change)="$event ? itemToggleRole(row) : null"
+                                    [checked]="selectionRole.isSelected(row.ROLEID)">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="ROLEDESC">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <span> Nhóm quyền </span>
+                            </th>
+                            <td mat-cell *matCellDef="let data">
+                                <div class="flex items-center">
+                                    {{data.ROLEDESC}}
+                                </div>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="count">
+                            <th mat-header-cell *matHeaderCellDef> Count </th>
+                            <td mat-cell *matCellDef="let data"> {{data.count}} </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsRole"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumnsRole;"></tr>
+                    </table>
+                    <table mat-table [dataSource]="lstTreeListFunction" class="mat-elevation-z8" #MatTableFunction>
+                        <ng-container matColumnDef="SELECT">
+                            <th style="width: 35px;" mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox (change)="$event ? masterToggleFunction(StateAthAdmin.view) : null"
+                                    [checked]="selectionFunction.hasValue() && isAllFunctionSelected(StateAthAdmin.view)"
+                                    [indeterminate]="selectionFunction.hasValue() && !isAllFunctionSelected(StateAthAdmin.view)">
+                                </mat-checkbox>
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                                <mat-checkbox (click)="$event.stopPropagation()"
+                                    (change)="$event ? itemToggleFunction(row,StateAthAdmin.view) : null"
+                                    [checked]="selectionFunction.isSelected(row.object.FUNCTIONID)">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="FUNCTIONNAME">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <span [style.paddingLeft.px]="40"> Tên chức năng </span>
+                            </th>
+                            <td mat-cell *matCellDef="let data">
+                                <div class="flex items-center">
+                                    <button mat-icon-button [style.visibility]="!data.expandable ? 'hidden' : ''"
+                                        [style.marginLeft.px]="data.level * 32"
+                                        (click)="lstTreeListFunctionControl.toggle(data)">
+                                        <mat-icon class="mat-icon-rtl-mirror"
+                                            [svgIcon]="lstTreeListFunctionControl.isExpanded(data) ? 'expand_more' : 'chevron_right'">
+                                        </mat-icon>
+                                    </button>
+                                    {{data.object.FUNCTIONNAME}}
+                                </div>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="R_INSERT">
+                            <th style="width: 100px;" mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox (change)="$event ? masterToggleFunction(StateAthAdmin.insert) : null"
+                                    [checked]="selectionFunctionInsert.hasValue() && isAllFunctionSelected(StateAthAdmin.insert)"
+                                    [indeterminate]="selectionFunctionInsert.hasValue() && !isAllFunctionSelected(StateAthAdmin.insert)">
+                                </mat-checkbox>
+                                <span>Thêm mới</span>
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                                <mat-checkbox (click)="$event.stopPropagation()"
+                                    (change)="$event ? itemToggleFunction(row,StateAthAdmin.insert) : null"
+                                    [checked]="selectionFunctionInsert.isSelected(row.object.FUNCTIONID)">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="R_EDIT">
+                            <th style="width: 100px;" mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox (change)="$event ? masterToggleFunction(StateAthAdmin.edit) : null"
+                                    [checked]="selectionFunctionEdit.hasValue() && isAllFunctionSelected(StateAthAdmin.edit)"
+                                    [indeterminate]="selectionFunctionEdit.hasValue() && !isAllFunctionSelected(StateAthAdmin.edit)">
+                                </mat-checkbox>
+                                <span>Sửa</span>
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                                <mat-checkbox (click)="$event.stopPropagation()"
+                                    (change)="$event ? itemToggleFunction(row,StateAthAdmin.edit) : null"
+                                    [checked]="selectionFunctionEdit.isSelected(row.object.FUNCTIONID)">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="R_DELETE">
+                            <th style="width: 100px;" mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox (change)="$event ? masterToggleFunction(StateAthAdmin.delete) : null"
+                                    [checked]="selectionFunctionDelete.hasValue() && isAllFunctionSelected(StateAthAdmin.delete)"
+                                    [indeterminate]="selectionFunctionDelete.hasValue() && !isAllFunctionSelected(StateAthAdmin.delete)">
+                                </mat-checkbox>
+                                <span>Xóa</span>
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                                <mat-checkbox (click)="$event.stopPropagation()"
+                                    (change)="$event ? itemToggleFunction(row,StateAthAdmin.delete) : null"
+                                    [checked]="selectionFunctionDelete.isSelected(row.object.FUNCTIONID)">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="count">
+                            <th mat-header-cell *matHeaderCellDef> Count </th>
+                            <td mat-cell *matCellDef="let data"> {{data.count}} </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                </form>
+            </div>
+
+        </div>
+    </ng-container>
+
+    
+    <ng-template #selectObjToRead>
+
+        <div class="flex flex-col flex-auto items-center justify-center bg-gray-100 dark:bg-transparent">
+            <mat-icon class="icon-size-24" [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
+            <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Chọn người dùng để xem</div>
+        </div>
+
+    </ng-template>
+
+</div>

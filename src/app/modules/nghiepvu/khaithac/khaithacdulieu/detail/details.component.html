@@ -1,0 +1,349 @@
+<div class="flex flex-col flex-auto overflow-y-auto lg:overflow-hidden bg-card dark:bg-default">
+
+    <ng-container *ngIf="object; else selectObjectToRead">
+
+        <!-- Header -->
+        <div class="z-10 relative flex flex-col flex-0 w-full border-b">
+
+            <!-- Toolbar -->
+            <div class="flex items-center min-h-16 px-4 md:px-6 border-b bg-gray-50 dark:bg-transparent">
+
+                <button mat-flat-button form="dialogForm" [color]="'primary'" *ngIf="actionSave"
+                    (click)="onSaveObject()">
+                    <mat-icon svgIcon="mat_outline:save"></mat-icon>
+                    <span class="ml-2 mr-1">Ghi</span>
+                </button>
+
+                <button mat-flat-button [color]="'warn'" class="mx-1" *ngIf="(sharedObject == undefined || sharedObject == null) && actionDelete" (click)="onDeleteObject()">
+                    <mat-icon svgIcon="mat_outline:delete"></mat-icon>
+                    <span class="ml-2 mr-1">Xóa</span>
+                </button>
+
+                <button mat-flat-button [color]="'accent'" class="mx-1" *ngIf="(sharedObject == undefined || sharedObject == null || sharedObject.EDITABLE || sharedObject.EDITABLE == 1) && actionEdit" (click)="onEditObject()">
+                    <mat-icon svgIcon="mat_outline:edit"></mat-icon>
+                    <span class="ml-2 mr-1">Sửa</span>
+                </button>
+
+                <button mat-flat-button [color]="'accent'" class="mx-1" *ngIf="actionCancel" (click)="onCancelObject()">
+                    <mat-icon svgIcon="mat_outline:restore"></mat-icon>
+                    <span class="ml-2 mr-1">Hủy bỏ</span>
+                </button>
+                <button mat-flat-button [color]="'primary'" class="mx-1" [disabled]="!actionGetData"
+                    (click)="onLoadData()">
+                    <mat-icon svgIcon="mat_outline:table_chart"></mat-icon>
+                    <span class="ml-2 mr-1">Xem</span>
+                </button>
+                <button mat-flat-button [color]="'primary'" class="mx-1" [disabled]="!actionGetData" (click)="onLoadDataExcel()">
+                    <mat-icon svgIcon="mat_outline:download"></mat-icon>
+                    <span class="ml-2 mr-1">Xuất Excel</span>
+                </button>
+                <button mat-flat-button [color]="'primary'" class="mx-1" *ngIf="(actionDelete || viewMode) && (sharedObject == undefined || sharedObject == null)" (click)="showShareableUsersDialog()">
+                    <mat-icon svgIcon="mat_outline:supervisor_account"></mat-icon>
+                    <span class="ml-2 mr-1">Đã chia sẻ</span>
+                </button>
+                <button mat-flat-button [color]="'primary'" class="mx-1" (click)="routeToDrawCharts()">
+                    <mat-icon svgIcon="mat_outline:bar_chart"></mat-icon>
+                    <span class="ml-2 mr-1">Vẽ biểu đồ</span>
+                </button>
+            </div>
+
+        </div>
+        <!-- Threads -->
+        <div class="flex flex-col flex-auto shrink-0 lg:shrink p-3 overflow-hidden" fuseScrollReset>
+            <div class="flex flex-col w-full border bg-gray-50 dark:bg-transparent py-5 px-6" *ngIf="viewMode">
+                <div>
+                    <span class="leading-4 truncate">Nhóm dữ liệu: </span>
+                    <span class="leading-4 truncate text-green-500">{{object.TEN_NHOM}}</span>
+                </div>
+                <div>
+                    <span class="leading-4 truncate">Bảng dữ liệu: </span>
+                    <span class="leading-4 truncate text-green-500">{{object.TEN_BANG}}</span>
+                </div>
+                <div>
+                    <span class="leading-4 truncate">Tác giả: </span>
+                    <span class="leading-4 truncate text-green-500">{{object.USER_CR_ID}} - {{object.USER_CR_DTIME |
+                        date:'dd/MM/yyyy HH:mm:ss'}}</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col flex-auto shadow rounded-2xl overflow-hidden bg-card dark:bg-black dark:bg-opacity-10 "
+                *ngIf="viewMode">
+                <div class="grid grid-cols-4 grid-flow-row w-full overflow-hidden" style="min-height: 100%;
+                height: auto;margin-bottom: -50px;">
+                    <div class="w-full overflow-y-auto" style="margin-bottom: -50px;">
+                        <table mat-table [dataSource]="lstColumns(object.LST_COT)" #MatTableColumnDetail>
+                            <ng-container matColumnDef="STT">
+                                <th class="px-2" style="width: 35px;" mat-header-cell *matHeaderCellDef> STT </th>
+                                <td class="px-2" mat-cell *matCellDef="let element; let i = index">
+                                    <span>{{element.STT}}</span>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="MO_TA">
+                                <th mat-header-cell *matHeaderCellDef> Mô tả </th>
+                                <td mat-cell *matCellDef="let element; let i = index">
+                                    <span>{{element.MO_TA}}</span>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="STATUS">
+                                <th style="width: 120px;" mat-header-cell *matHeaderCellDef>
+
+                                </th>
+                                <td class="items-center" mat-cell *matCellDef="let element; let i = index">
+                                    <div class="grid grid-cols-4 grid-flow-row gap-2 w-full">
+                                        <div class="flex flex-col flex-auto">
+                                            <mat-icon [color]="!element.VIEW?'warn':''"
+                                                [svgIcon]="element.VIEW?'heroicons_outline:eye':'heroicons_outline:eye-off'">
+                                            </mat-icon>
+                                        </div>
+                                        <div class="flex flex-col flex-auto">
+                                            <mat-icon
+                                                [svgIcon]="element.SORT?'heroicons_outline:sort-ascending':element.SORT==0?'heroicons_outline:sort-descending':'heroicons_outline:view-list'">
+                                            </mat-icon>
+                                        </div>
+                                        <div class="flex flex-col flex-auto">
+
+                                            <button mat-icon-button
+                                                (click)="element?.LST_FILTER?.length>0?openFilterViewDialog(element):true"
+                                                [color]="element?.LST_FILTER?.length>0?'warn':''">
+                                                <mat-icon svgIcon="heroicons_outline:filter">
+                                                </mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumnsInput; sticky: true"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumnsInput;"></tr>
+                        </table>
+                    </div>
+                    <div class="flex flex-col flex-auto col-span-3 lg:overflow-x-auto" style="margin-bottom: 50px;">
+                        <table mat-table [dataSource]="columnsResultDataView" #MatTableColumnDetailResult>
+                            <ng-container
+                                *ngFor="let object of displayedColumnsResultObjectView(object.LST_COT); let colIndex = index"
+                                matColumnDef="{{object.TEN_COT}}">
+                                <th style="min-width:150px;" mat-header-cell *matHeaderCellDef>
+                                    <div class="w-full items-center ml-2" style="display:flex;">
+                                        <mat-icon
+                                            [svgIcon]="object.SORT?'heroicons_outline:sort-ascending':object.SORT==0?'heroicons_outline:sort-descending':'heroicons_outline:view-list'">
+                                        </mat-icon>
+                                        <div style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{object.MO_TA}}</div>
+                                    </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element; let i = index">
+                                    <div style="display:flex;" class="ml-2">
+                                        <span
+                                            *ngIf="object.MA_KIEU_DLIEU=='KDL-1' || object.MA_KIEU_DLIEU=='KDL-2'">{{element[object.TEN_COT]}}</span>
+                                        <span *ngIf="object.MA_KIEU_DLIEU=='KDL-3'">{{element[object.TEN_COT]
+                                            | date:'dd/MM/yyyy'}}</span>
+                                        <span *ngIf="object.MA_KIEU_DLIEU=='KDL-4'">{{element[object.TEN_COT]
+                                            | date:'dd/MM/yyyy HH:mm:ss'}}</span>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row
+                                *matHeaderRowDef="displayedColumnsResultView(object.LST_COT); sticky: true"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumnsResultView(object.LST_COT);"></tr>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="flex flex-col flex-auto col-span-3">
+                    <div class="grid grid-cols-4 grid-flow-row w-full">
+                        <div class="w-full">
+
+                        </div>
+                        <div class="flex flex-col flex-auto col-span-3 items-center">
+                            <mat-paginator #paginator [length]="columnsResultDataTotalRows"
+                                [pageIndex]="columnsResultDataCurrentPage" [pageSize]="columnsResultDataPageSize"
+                                [pageSizeOptions]="columnsResultDataPageSizeOptions"
+                                (page)="columnsResultDataPageChanged($event)" aria-label="Select page">
+                            </mat-paginator>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form id="dialogForm"
+                class="flex flex-col flex-auto shadow rounded-2xl overflow-hidden bg-card dark:bg-black dark:bg-opacity-10"
+                [formGroup]="dialogForm" *ngIf="inputMode">
+                <div class="pt-5 px-2">
+                    <div class="grid grid-cols-1 grid-flow-row gap-2 w-full">
+                        <div class="flex flex-col flex-auto">
+                            <mat-form-field>
+                                <mat-label>Mô tả</mat-label>
+                                <input matInput [formControlName]="'MO_TA'" maxlength="250">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 grid-flow-row gap-2 w-full">
+                        <div class="flex flex-col flex-auto">
+                            <mat-form-field>
+                                <mat-label>Nhóm</mat-label>
+                                <div class="flexContainer">
+                                    <input type="text" style="width: 100%" matInput #selectMA_NHOM
+                                        #trigger="matAutocompleteTrigger" [formControlName]="'TEN_NHOM'"
+                                        [matAutocomplete]="auto" readonly="true" class="inputField"
+                                        (focus)="onOpenNhomDuLieuParentSelect()">
+                                    <button class="ml-2 -mr-3 inputFieldButton" mat-flat-button [color]="'primary'"
+                                        (click)="onOpenNhomDuLieuParentSelect()">...</button>
+                                </div>
+                                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                    <mat-option value=""></mat-option>
+                                    <mat-tree [dataSource]="lstTreeListNhomDuLieu"
+                                        [treeControl]="lstTreeListNhomDuLieuControl" class="tree-list">
+                                        <mat-tree-node
+                                            (click)="onTreeNodeNhomDuLieuParent(node);trigger.panelOpen ? trigger.closePanel() : trigger.openPanel()"
+                                            *matTreeNodeDef="let node" matTreeNodeToggle
+                                            [ngClass]="{'bg-primary-50 dark:bg-black dark:bg-opacity-5 selectObject': dialogForm.controls['MA_NHOM_CHA'] && dialogForm.controls['MA_NHOM_CHA'].value === node.object.MA_NHOM}"
+                                            matTreeNodePadding matTreeNodePaddingIndent="25">
+                                            <mat-icon class="mat-icon-rtl-mirror" [svgIcon]="'mat_outline:layers'">
+                                            </mat-icon>
+                                            <div class="ml-1">
+                                                {{node.object.TEN_NHOM}}
+                                            </div>
+                                        </mat-tree-node>
+                                        <mat-tree-node
+                                            (click)="onTreeNodeNhomDuLieuParent(node);trigger.panelOpen ? trigger.closePanel() : trigger.openPanel()"
+                                            *matTreeNodeDef="let node; when: lstTreeListNhomDuLieunHasChild"
+                                            [ngClass]="{'bg-primary-50 dark:bg-black dark:bg-opacity-5 selectObject': dialogForm.controls['MA_NHOM_CHA'] && dialogForm.controls['MA_NHOM_CHA'].value === node.object.MA_NHOM}"
+                                            matTreeNodePadding matTreeNodePaddingIndent="25">
+                                            <mat-icon class="mat-icon-rtl-mirror" [svgIcon]="'mat_outline:layers'">
+                                            </mat-icon>
+                                            <div class="ml-1">
+                                                {{node.object.TEN_NHOM}}
+                                            </div>
+                                        </mat-tree-node>
+                                    </mat-tree>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                        </div>
+                        <div class="flex flex-col flex-auto">
+                            <mat-form-field>
+                                <mat-label>Bảng dữ liệu</mat-label>
+                                <mat-select [formControlName]="'MA_BANG'" #singleSelectTitle>
+                                    <mat-option *ngFor="let t of listTable" [value]="t.MA_BANG">{{t.MO_TA}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="grid grid-cols-4 grid-flow-row w-full overflow-hidden">
+                    <div class="flex flex-col flex-auto w-full  overflow-y-auto" formArrayName="LST_COT">
+                        <table mat-table [dataSource]="lstCot.controls" cdkDropList cdkDropListData="lstCot.controls"
+                            (cdkDropListDropped)="dropSortRowTable($event)" class="tableCotInsert"
+                            #MatTableColumnDetail>
+                            <ng-container matColumnDef="STT">
+                                <th class="px-2" style="width: 35px;" mat-header-cell *matHeaderCellDef> STT </th>
+                                <td class="px-2" mat-cell *matCellDef="let element; let i = index"
+                                    [formGroup]="element">
+                                    <span>{{element.value.STT}}</span>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="MO_TA">
+                                <th mat-header-cell *matHeaderCellDef> Mô tả </th>
+                                <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                                    <div style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{element.value.MO_TA}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="STATUS">
+                                <th style="width: 120px;" mat-header-cell *matHeaderCellDef> </th>
+                                <td class="items-center" mat-cell *matCellDef="let element; let i = index"
+                                    [formGroup]="element">
+                                    <div class="grid grid-cols-4 grid-flow-row gap-2 w-full">
+                                        <div class="flex flex-col flex-auto">
+                                            <button mat-icon-button (click)="onViewColumn(element)">
+                                                <mat-icon [color]="!element.value.VIEW?'warn':''"
+                                                    [svgIcon]="element.value.VIEW?'heroicons_outline:eye':'heroicons_outline:eye-off'">
+                                                </mat-icon>
+                                            </button>
+                                        </div>
+                                        <div class="flex flex-col flex-auto">
+                                            <button mat-icon-button (click)="onSortColumn(element)"
+                                                [disabled]="!element.value.VIEW">
+                                                <mat-icon
+                                                    [svgIcon]="element.value.SORT?'heroicons_outline:sort-ascending':element.value.SORT==0?'heroicons_outline:sort-descending':'heroicons_outline:view-list'">
+                                                </mat-icon>
+                                            </button>
+                                        </div>
+                                        <div class="flex flex-col flex-auto">
+                                            <button mat-icon-button (click)="openFilterDialog(element)"
+                                                [color]="element.value?.LST_FILTER?.length>0?'warn':''">
+                                                <mat-icon svgIcon="heroicons_outline:filter">
+                                                </mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumnsInput; sticky: true"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumnsInput;" cdkDrag
+                                [cdkDragData]="row"></tr>
+                        </table>
+                    </div>
+                    <div class="flex flex-col flex-auto col-span-3 lg:overflow-x-auto">
+                        <table mat-table [dataSource]="columnsResultData" #MatTableColumnDetailResult>
+                            <ng-container
+                                *ngFor="let object of displayedColumnsResultObject(lstCot).controls; let colIndex = index"
+                                matColumnDef="{{object.value.TEN_COT}}">
+                                <th style="min-width:150px;" mat-header-cell *matHeaderCellDef>
+                                    <div class="w-full items-center ml-2" style="display:flex;">
+                                        <mat-icon
+                                            [svgIcon]="object.value.SORT?'heroicons_outline:sort-ascending':object.value.SORT==0?'heroicons_outline:sort-descending':'heroicons_outline:view-list'">
+                                        </mat-icon>
+                                        <div style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{object.value.MO_TA}}</div>
+                                    </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element; let i = index">
+                                    <div style="display:flex;" class="ml-2">
+                                        <span
+                                            *ngIf="object.value.MA_KIEU_DLIEU=='KDL-1' || object.value.MA_KIEU_DLIEU=='KDL-2'">{{element[object.value.TEN_COT]}}</span>
+                                        <span
+                                            *ngIf="object.value.MA_KIEU_DLIEU=='KDL-3'">{{element[object.value.TEN_COT]
+                                            | date:'dd/MM/yyyy'}}</span>
+                                        <span
+                                            *ngIf="object.value.MA_KIEU_DLIEU=='KDL-4'">{{element[object.value.TEN_COT]
+                                            | date:'dd/MM/yyyy HH:mm:ss'}}</span>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumnsResult(lstCot); sticky: true"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumnsResult(lstCot);"></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="flex flex-col flex-auto col-span-3">
+                    <div class="grid grid-cols-4 grid-flow-row w-full">
+                        <div class="w-full">
+
+                        </div>
+                        <div class="flex flex-col flex-auto col-span-3 items-center">
+                            <mat-paginator #paginator [length]="columnsResultDataTotalRows"
+                                [pageIndex]="columnsResultDataCurrentPage" [pageSize]="columnsResultDataPageSize"
+                                [pageSizeOptions]="columnsResultDataPageSizeOptions"
+                                (page)="columnsResultDataPageChanged($event)" aria-label="Select page">
+                            </mat-paginator>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </ng-container>
+
+
+    <ng-template #selectObjectToRead>
+
+        <div class="flex flex-col flex-auto items-center justify-center bg-gray-100 dark:bg-transparent">
+            <mat-icon class="icon-size-24" [svgIcon]="'heroicons_outline:database'"></mat-icon>
+            <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Chọn mẫu dữ liệu để xem</div>
+        </div>
+
+    </ng-template>
+
+</div>

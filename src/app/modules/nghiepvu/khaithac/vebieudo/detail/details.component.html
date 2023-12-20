@@ -1,0 +1,80 @@
+<div class="flex flex-col flex-auto overflow-y-auto lg:overflow-hidden bg-card dark:bg-default">
+
+    <ng-container *ngIf="object; else selectObjectToRead">
+
+        <!-- Header -->
+        <div class="z-10 relative flex flex-col flex-0 w-full border-b">
+
+            <!-- Toolbar -->
+            <div class="flex items-center min-h-16 px-4 md:px-6 border-b bg-gray-50 dark:bg-transparent">
+
+                <button mat-flat-button form="dialogForm" [color]="'primary'" *ngIf="actionSave"
+                    (click)="onSaveObject()">
+                    <mat-icon svgIcon="mat_outline:save"></mat-icon>
+                    <span class="ml-2 mr-1">Ghi</span>
+                </button>
+
+                <button mat-flat-button [color]="'warn'" class="mx-1" *ngIf="actionDelete" (click)="onDeleteObject()">
+                    <mat-icon svgIcon="mat_outline:delete"></mat-icon>
+                    <span class="ml-2 mr-1">Xóa</span>
+                </button>
+
+                <button mat-flat-button [color]="'accent'" class="mx-1" *ngIf="actionEdit" (click)="onEditObject()">
+                    <mat-icon svgIcon="mat_outline:edit"></mat-icon>
+                    <span class="ml-2 mr-1">Sửa</span>
+                </button>
+
+                <button mat-flat-button [color]="'accent'" class="mx-1" *ngIf="actionCancel" (click)="onCancelObject()">
+                    <mat-icon svgIcon="mat_outline:restore"></mat-icon>
+                    <span class="ml-2 mr-1">Hủy bỏ</span>
+                </button>
+            </div>
+
+        </div>
+        <!-- Threads -->
+        <div class="flex flex-col flex-auto shrink-0 lg:shrink p-3 overflow-hidden" fuseScrollReset>
+            <form id="dialogForm"
+                class="flex flex-col flex-auto shadow rounded-2xl overflow-hidden bg-card dark:bg-black dark:bg-opacity-10"
+                [formGroup]="dialogForm" *ngIf="inputMode">
+                <div class="pt-5 pb-5 px-2">
+                    <div class="grid grid-cols-2 grid-flow-row gap-2 w-full">
+                        <div class="flex flex-col flex-auto">
+                            <mat-form-field>
+                                <mat-label>Loại biểu đồ</mat-label>
+                                <mat-select [formControlName]="'MA_LOAI_BIEUDO'" #singleSelectObjectType>
+                                    <mat-option *ngFor="let t of listObjectType" [value]="t.MA_LOAI_BIEUDO">
+                                        <mat-icon class="icon-size-8 text-green-500 dark:text-red-600"
+                                            [svgIcon]="t.LOAI_BIEUDO_ICON">
+                                        </mat-icon>
+                                        {{t.LOAI_BIEUDO}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="flex flex-col flex-auto">
+                            <mat-form-field>
+                                <mat-label>Mô tả</mat-label>
+                                <input matInput [formControlName]="'MO_TA'" maxlength="250">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                
+            </form>
+            <div class="mt-2 shadow h-full w-full rounded-2xl overflow-hidden bg-card dark:bg-black dark:bg-opacity-10">
+                <component-details_bieudo [events]="eventsSubject"></component-details_bieudo>
+            </div>
+        </div>
+    </ng-container>
+
+
+    <ng-template #selectObjectToRead>
+
+        <div class="flex flex-col flex-auto items-center justify-center bg-gray-100 dark:bg-transparent">
+            <mat-icon class="icon-size-24" [svgIcon]="'heroicons_outline:chart-square-bar'"></mat-icon>
+            <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Chọn biểu đồ để xem</div>
+        </div>
+
+    </ng-template>
+
+</div>

@@ -1,0 +1,17 @@
+import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { Error404Component } from 'app/modules/admin/pages/error/error-404/error-404.component';
+import { error404Routes } from 'app/modules/admin/pages/error/error-404/error-404.routing';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+
+@NgModule({
+    declarations: [
+        Error404Component
+    ],
+    imports: [
+        RouterModule.forChild(error404Routes), MatIconModule, MatButtonModule,
+    ]
+})
+export class Error404Module {
+}

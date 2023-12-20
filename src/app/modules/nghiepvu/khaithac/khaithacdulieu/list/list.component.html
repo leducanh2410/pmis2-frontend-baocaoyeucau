@@ -1,0 +1,160 @@
+<div class="relative flex flex-auto w-full bg-card dark:bg-transparent">
+  <!--  list -->
+  <ng-container>
+    <div class="relative flex flex-col w-full h-full lg:min-w-90 lg:max-w-90 border-r z-10 overflow-y-scroll">
+      <div class="flex flex-auto flex-col w-full">
+        <!-- Header -->
+        <div class="relative flex flex-col px-2 bg-gray-50 dark:bg-transparent">
+          <div class="flex flex-row items-center py-1 w-full justify-between">
+            <span class="font-bold text-xl">Danh sách dữ liệu</span>
+            <div class="flex flex-row space-x-2">
+              <button mat-icon-button (click)="addNew();" matTooltip="Khai thác thêm dữ liệu" *ngIf="!showSharedCheckbox && !showCopiedCheckbox">
+                <mat-icon>add</mat-icon>
+              </button>
+              <button mat-icon-button *ngIf="!showSharedCheckbox && !showCopiedCheckbox" (click)="share();" matTooltip="Chia sẻ dữ liệu">
+                <mat-icon>share</mat-icon>
+              </button>
+              <button mat-icon-button *ngIf="showSharedCheckbox || showCopiedCheckbox" (click)="showSharedUserDialog();"
+                matTooltip="Chia sẻ tới">
+                <mat-icon>person_add</mat-icon>
+              </button>
+              <button mat-icon-button *ngIf="showSharedCheckbox" (click)="cancelShare();"
+                matTooltip="Hủy chia sẻ dữ liệu">
+                <mat-icon>close</mat-icon>
+              </button>
+              <button mat-icon-button (click)="copy();" matTooltip="Sao chép dữ liệu" *ngIf="!showCopiedCheckbox && !showSharedCheckbox">
+                <mat-icon>file_copy</mat-icon>
+              </button>
+              <button mat-icon-button *ngIf="showCopiedCheckbox" (click)="cancelCopied();"
+                matTooltip="Hủy sao chép dữ liệu">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-row items-center w-full">
+            <div class="flex items-center justify-between w-full h-16 border-b">
+              <mat-form-field appearance="fill" class="fuse-mat-no-subscript w-full">
+                <mat-icon matPrefix class="icon-size-5" [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                <input type="text" matInput placeholder="Nhập tên dữ liệu..." [(ngModel)]="searchingValue"
+                  (ngModelChange)="onSearching()">
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <div cdkDropList [cdkDropListData]="lstKhaiThacDuLieu" (cdkDropListDropped)="drop($event)" class="overflow-y-auto" #objectList>
+          <ng-container *ngFor="let object of lstKhaiThacDuLieu; let i = index; trackBy: trackByFn">
+
+            <!-- Item -->
+            <div class="relative flex border-t first:border-0 hover:bg-hover cursor-move py-1" cdkDrag
+              [ngClass]="{'bg-primary-50 dark:bg-black dark:bg-opacity-5 selectObject': selectedObject && selectedObject.MA_DULIEU === object.MA_DULIEU}"
+              [matTooltip]="object.MO_TA">
+              <div class="flex flex-row w-full space-x-1 items-center">
+                <div class="mx-2" *ngIf="showSharedCheckbox || showCopiedCheckbox">
+                  <mat-checkbox [checked]="object?.CHECKED" [disabled]="(!object?.SHAREABLE && showSharedCheckbox) || (showCopiedCheckbox && !object?.COPYABLE)"
+                    (change)="object?.CHECKED == null ? object.CHECKED = true : object.CHECKED = !object.CHECKED">
+                  </mat-checkbox>
+                </div>
+                <!-- Item content -->
+                <div (click)="onApiSelected(object)" [routerLink]="[object.MA_DULIEU]"
+                  class="flex flex-col items-start justify-start w-full py-4 pr-4 pl-5 border-l-4 border-transparent">
+                  <!-- Subject -->
+                  <div class="flex items-center w-full mt-1">
+                    <span class="leading-4 truncate font-semibold">{{object.MO_TA}}</span>
+                    <!-- Indicators -->
+                  </div>
+                  <!-- Info -->
+                  <div class="flex items-center w-full mt-2">
+                    <div class="mr-2 truncate">
+                      {{ object?.USERNAME != null ? object?.USERNAME : ''}} </div>
+                    <!-- Date -->
+                    <div class="ml-auto text-md text-right whitespace-nowrap text-hint">
+                      {{ object.USER_CR_DTIME | date:'dd/MM/yyyy HH:mm:ss' }}
+                    </div>
+                  </div>
+                  <!-- Excerpt -->
+                  <div class="mt-2 leading-normal line-clamp-1 text-secondary">
+                    <span *ngIf="object.SYS_ACTION==State.create" class="text-red-500">
+                      [Đang thêm mới] </span>
+                    <span *ngIf="object.SYS_ACTION==State.edit" class="text-red-500">
+                      [Đang sửa] </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </ng-container>
+        </div>
+      </div>
+      <!-- <div class="flex flex-auto flex-col w-full max-h[50%] h-auto overflow-y-scroll">
+        <div class="relative flex flex-col ml-2 bg-gray-50 dark:bg-transparent">
+          <div class="flex flex-row items-center w-full justify-between">
+            <span class="font-bold text-xl">Danh sách dữ liệu được chia sẻ</span>
+          </div>
+          <div class="flex flex-row items-center w-full">
+            <div class="flex items-center justify-between w-full h-16 border-b">
+              <mat-form-field appearance="fill" class="fuse-mat-no-subscript w-full">
+                <mat-icon matPrefix class="icon-size-5" [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                <input type="text" matInput placeholder="Nhập tên dữ liệu..." [(ngModel)]="searchingValue"
+                  (ngModelChange)="onSearching()">
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <div class="overflow-y-auto" #objectList>
+          <ng-container *ngFor="let object of lstKhaiThacDuLieuShared; let i = index; trackBy: trackByFn">
+            <div class="relative flex border-t first:border-0 hover:bg-hover cursor-pointer py-1"
+              [ngClass]="{'bg-primary-50 dark:bg-black dark:bg-opacity-5 selectObject': selectedObject && selectedObject.MA_DULIEU === object.MA_DULIEU}"
+              [matTooltip]="object.MO_TA">
+              <div class="flex flex-row w-full space-x-1 items-center">
+                <div class="mx-2" *ngIf="showSharedCheckbox">
+                  <mat-checkbox [checked]="object?.CHECKED" [disabled]="!object?.SHAREABLE"
+                    (change)="object?.CHECKED == null ? object.CHECKED = true : object.CHECKED = !object.CHECKED">
+                  </mat-checkbox>
+                </div>
+                <div [routerLink]="[object.MA_DULIEU]" (click)="onApiSelected(object)"
+                  class="flex flex-col items-start justify-start w-full py-4 pr-4 pl-5 border-l-4 border-transparent">
+                  <div class="flex items-center w-full">
+                    <div class="mr-2 font-semibold truncate">
+                      {{object.API_SERVICE_INPUTDESC}} </div>
+                    <div class="ml-auto text-md text-right whitespace-nowrap text-hint">
+                      {{object.USER_CR_DTIME | date:'dd/MM/yyyy HH:mm:ss'}}
+                    </div>
+                  </div>
+                  <div class="flex items-center w-full mt-1">
+                    <span class="leading-4 truncate">{{object.MO_TA}}</span>
+                  </div>
+                  <div class="mt-2 leading-normal line-clamp-1 text-secondary">
+                    <span *ngIf="object.SYS_ACTION==State.create" class="text-red-500">
+                      [Đang thêm mới] </span>
+                    <span *ngIf="object.SYS_ACTION==State.edit" class="text-red-500">
+                      [Đang sửa] </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div> -->
+    </div>
+
+  </ng-container>
+
+  <!-- No template -->
+  <ng-template #noObjects>
+    <div
+      class="z-100 absolute inset-0 flex flex-auto flex-col items-center justify-center bg-gray-100 dark:bg-transparent">
+      <mat-icon class="icon-size-24" [svgIcon]="'heroicons_outline:database'"></mat-icon>
+      <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Chọn mẫu dữ liệu để xem</div>
+    </div>
+  </ng-template>
+
+  <!-- details -->
+  <ng-container>
+    <div class="flex-auto z-20 absolute inset-0 lg:static lg:inset-auto flex">
+      <router-outlet></router-outlet>
+    </div>
+  </ng-container>
+
+</div>

@@ -1,0 +1,84 @@
+<div class="relative flex flex-auto w-full bg-card dark:bg-transparent">
+  <!-- list -->
+  <ng-container>
+    <div class="relative flex flex-auto flex-col w-full lg:min-w-120 lg:max-w-120 border-r z-10">
+
+      <!-- Header -->
+      <div class="relative flex flex-0 items-center justify-between h-16 px-4 border-b bg-gray-50 dark:bg-transparent">
+        <div class="flex items-center w-full">
+          
+          <div class="ml-2 font-semibold uppercase whitespace-nowrap"></div>
+          
+          <button mat-icon-button (click)="addNewGroup();" matTooltip="Thêm nhóm cha">
+            <mat-icon svgIcon="mat_outline:add"></mat-icon>
+          </button>
+          <span style="flex: 1 1 auto;"></span>
+          <button [disabled]="selectedObject==null || selectedObject?.SYS_ACTION== State.create" mat-icon-button
+            (click)="addNewGroupParent(selectedObject.MA_NHOM);" matTooltip="Thêm nhóm con">
+            <mat-icon svgIcon="mat_outline:add_circle_outline"></mat-icon>
+          </button>
+          
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex items-center">
+          <!-- Info -->
+          <div class="flex items-center mr-3 text-md font-medium">
+
+          </div>
+        </div>
+      </div>
+
+      <div class="overflow-y-auto" #apiList>
+        <mat-tree [dataSource]="lstTreeNhomDuLieu" [treeControl]="lstTreeNhomDuLieuControl" class="tree-list">
+          <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle
+            [routerLink]="[node.object.MA_NHOM]" class="cursor-pointer hover:bg-hover"
+            [ngClass]="{'bg-primary-50 dark:bg-black dark:bg-opacity-5 selectObject': selectedObject && selectedObject.MA_NHOM === node.object.MA_NHOM}" 
+            matTreeNodePadding matTreeNodePaddingIndent="25">            
+            <mat-icon class="mat-icon-rtl-mirror" [svgIcon]="'mat_outline:layers'"></mat-icon>
+            <div class="ml-1">
+              <span *ngIf="node.object.SYS_ACTION==State.create" class="text-red-500">
+                [Đang thêm mới] </span>
+              <span *ngIf="node.object.SYS_ACTION==State.edit" class="text-red-500">
+                [Đang sửa] </span>
+              {{node.object.TEN_NHOM}}
+            </div>
+          </mat-tree-node>
+          <mat-tree-node *matTreeNodeDef="let node; when: lstTreeNhomDuLieuHasChild" [routerLink]="[node.object.MA_NHOM]"  class="cursor-pointer hover:bg-hover"
+             [ngClass]="{'bg-primary-50 dark:bg-black dark:bg-opacity-5 selectObject': selectedObject && selectedObject.MA_NHOM === node.object.MA_NHOM}"
+            matTreeNodePadding matTreeNodePaddingIndent="25">            
+              <mat-icon class="mat-icon-rtl-mirror" [svgIcon]="'mat_outline:layers'"></mat-icon>
+              <div class="ml-1">
+                <span *ngIf="node.object.SYS_ACTION==State.create" class="text-red-500">
+                  [Đang thêm mới] </span>
+                <span *ngIf="node.object.SYS_ACTION==State.edit" class="text-red-500">
+                  [Đang sửa] </span>
+                {{node.object.TEN_NHOM}}
+              </div>            
+          </mat-tree-node>
+        </mat-tree>
+
+
+      </div>
+
+    </div>
+
+  </ng-container>
+
+  <!-- No template -->
+  <ng-template #noObjects>
+    <div
+      class="z-100 absolute inset-0 flex flex-auto flex-col items-center justify-center bg-gray-100 dark:bg-transparent">
+      <mat-icon class="icon-size-24" [svgIcon]="'mat_outline:layers'"></mat-icon>
+      <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Chọn nhóm dữ liệu để xem</div>
+    </div>
+  </ng-template>
+
+  <!-- details -->
+  <ng-container>
+    <div class="flex-auto z-20 absolute inset-0 lg:static lg:inset-auto flex">
+      <router-outlet></router-outlet>
+    </div>
+  </ng-container>
+
+</div>

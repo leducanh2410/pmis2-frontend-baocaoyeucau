@@ -1,0 +1,22 @@
+.mat-column-SELECT {
+    padding-left: 10px !important;
+}
+
+.mat-column-FUNCTIONNAME {
+    padding: 2px !important;
+}
+
+.mat-column-R_INSERT {
+    padding: 2px !important;
+}
+
+.mat-column-R_EDIT {
+    padding: 2px !important;
+}
+
+.mat-column-R_DELETE {
+    padding: 2px !important;
+}
+table {
+    width: 100%;
+}
