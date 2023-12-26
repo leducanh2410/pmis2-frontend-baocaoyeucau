@@ -52,13 +52,16 @@
         <mat-checkbox #selectAfterAdding> Select tab after adding </mat-checkbox>
       </div> -->
       <div class="flex flex-row w-full justify-end space-x-4 items-center">
+         <button (click)="popUpListDashboard()">
+            <mat-icon>grid_on</mat-icon>
+        </button> 
         <button
             mat-flat-button
             class="mx-1 bg-sky-500 text-white"
             (click)="onAddDashboard()"
         >
             <mat-icon>add</mat-icon>
-            <span class="ml-2 mr-1">Thêm tab</span>
+            <span class="ml-2 mr-1">Thêm</span>
         </button>
         <button
             mat-flat-button
@@ -192,7 +195,9 @@
                 </div> 
                 
             </mat-tab> -->
-             <mat-tab *ngFor="let tab of tabs; let index = index" [label]="dashboard.NAME">
+             <!-- <mat-tab *ngFor="let tab of tabs; let index = index" [label]="dashboards.NAME"> -->
+                <mat-tab *ngFor="let dashboard of dashboards; let index = index" [label]="dashboard.NAME">
+
              <!-- [label]="dashboardName"> -->
                <!-- [label]=" 'tab' + index"  >    -->
                   <!-- <ng-template mat-tab-label>

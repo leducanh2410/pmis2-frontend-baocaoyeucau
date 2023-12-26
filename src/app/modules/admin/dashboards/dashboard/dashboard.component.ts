@@ -14,8 +14,10 @@ import { FileSaverService } from 'app/shared/service/file-saver.service';
 import { FILE_TYPE } from 'app/core/constants/file-type';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ThemePalette } from '@angular/material/core';
-import { DashboardTabComponent } from './dashboard-tab/dashboard-tab.component';
+// import { DashboardTabComponent } from './dashboard-tab/dashboard-tab.component';
 import { FormControl } from '@angular/forms';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { DashboardListComponent } from './dashboard-list/dashboard-list.component';
 
 @Component({
     selector: 'app-dashboard',
@@ -31,7 +33,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     lstFrame2Charts: any[] = [];
     lstFrame3Charts: any[] = [];
     // dashboard: any[] = [];
-    dashboard: any = [];
+    dashboards: any = [];
 
     dashboardId: string;
     tabIndex: number;
@@ -44,7 +46,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         private _messageService: MessageService,
         public _route: ActivatedRoute,
         private _router: Router,
-        private _fileSaverService: FileSaverService
+        private _fileSaverService: FileSaverService,
+        private matDialog: MatDialog
     ) {
         this.clearData();
         this.layout = LayoutType.LT1;
@@ -162,7 +165,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
             });
             //12/11
         this._dashboardService.dashboard$.subscribe((res:any) =>{
-            this.tabs =res;
+            // this.tabs =res; 
+            this.dashboards = res;
         })
     }
 
@@ -185,9 +189,10 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     // Hiển thị dashboard lên màn hình
     async renderDashboard() {
         //Lấy dashboard theo userid
-        console.log(this.tabs, this.tabIndex);  
+        console.log(this.dashboards, this.tabIndex);  
         await this._dashboardService
-            .getDashboardData(this.tabs[this.tabIndex].MA_DASHBOARD) //edit 13-12
+            // .getDashboardData(this.tabs[this.tabIndex].MA_DASHBOARD) //edit 13-12
+            .getDashboardData(this.dashboards[this.tabIndex].MA_DASHBOARD)
             .pipe(takeUntil(this._unsubscribeAll))
             .toPromise()
             .then((response: any) => {
@@ -319,6 +324,12 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     //     this.selected.setValue(this.tabs.length - 1);
     //   }
     // }
+    popUpListDashboard(): void {
+        this.matDialog.open(DashboardListComponent, {
+            width: '994px',
+            height: '502px'
+        })
+    }
     onDeleteDashboard() {
         this._messageService.showConfirm(
             'Thông báo',

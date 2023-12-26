@@ -15,7 +15,7 @@ export class DashboardTabComponent implements OnInit {
     // @ViewChild('content', { read: ViewContainerRef }) content: ViewContainerRef;
 
     // // Declare the variables to store the tabs and the active tab id
-    // tabs: Tab[];
+    //  tabs: Tab[];
     // activeTabId: string;
   
     constructor(
@@ -26,56 +26,56 @@ export class DashboardTabComponent implements OnInit {
   
     ngOnInit(): void {
 //       Subscribe to the tabs changes from the service
-//       this.dashboardTabsService.getTabs().subscribe(tabs => {
-//         this.tabs = tabs;
-//       });
+      //  this.dashboardTabsService.getTabs().subscribe(tabs => {
+      //   this.tabs = tabs;
+      //  });
   
 //       // Get the active tab id from the service
-//       this.activeTabId = this.dashboardTabsService.getActiveTabId();
-//     }
+    //   this.activeTabId = this.dashboardTabsService.getActiveTabId();
+    //  }
   
-//     // Switch to a tab by id
-//     switchTab(id: string) {
-//       // Get the tab object by id from the service
-//       const tab = this.dashboardTabsService.getTabById(id);
+     //Switch to a tab by id
+//    switchTab(id: string) {
+//     // Get the tab object by id from the service
+//      const tab = this.dashboardTabsService.getTabById(id);
   
-//       // Create a component instance from the tab component type
-//       // const componentFactory = this.componentFactoryResolver.resolveComponentFactory(tab.component);
-//       // const componentRef = componentFactory.create(this.content.injector);
-// const viewContainerRef = this.viewContainerRef.createComponent(tab.component)
+// //       // Create a component instance from the tab component type
+//  const componentFactory = this.componentFactoryResolver.resolveComponentFactory(tab.component);
+//  const componentRef = componentFactory.create(this.content.injector);
+//   const viewContainerRef = this.viewContainerRef.createComponent(tab.component)
   
-//       // Clear the content area and insert the component instance
-//       this.content.clear();
+// //       // Clear the content area and insert the component instance
+//      this.content.clear();
 //       this.content.insert(viewContainerRef.hostView);
   
-//       // Update the active tab id in the service and the component
-//       this.dashboardTabsService.switchTab(id);
-//       this.activeTabId = id;
-//     }
+// //       // Update the active tab id in the service and the component
+//      this.dashboardTabsService.switchTab(id);
+//      this.activeTabId = id;
+//    }
   
-//     // Remove a tab by id
-//     removeTab(id: string, event: Event) {
-//       // Prevent the click event from bubbling up to the tab label
+// //     // Remove a tab by id
+//      removeTab(id: string, event: Event) {
+// //       // Prevent the click event from bubbling up to the tab label
 //       event.stopPropagation();
   
-//       // Remove the tab from the service
+// //       // Remove the tab from the service
 //       this.dashboardTabsService.removeTab(id);
   
-//       // Get the active tab id from the service
-//       this.activeTabId = this.dashboardTabsService.getActiveTabId();
-//     }
+// //       // Get the active tab id from the service
+//        this.activeTabId = this.dashboardTabsService.getActiveTabId();
+//      }
 //     addTab() {
-//       // Generate a unique id for the new tab
-//       const id = 'tab' + (this.tabs.length + 1);
+// //       // Generate a unique id for the new tab
+//        const id = 'tab' + (this.tabs.length + 1);
   
-//       // Create a new tab object with a label, a component, and some data
+// //       // Create a new tab object with a label, a component, and some data
 //       const newTab: Tab = {
-//         id: id,
+//                  id: id,
 //         label: 'New Tab',
 //         component: 'some-component',
 //         data: {
-//           input: 'some input',
-//           output: 'some output'
+//          input: 'some input',
+//            output: 'some output'
 //         }
 //       };
   
