@@ -44,8 +44,10 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
     USER_MDF_DTIME: null,
     NAME: '',
     ENABLE: null,
-    ORD:null
+    ORD:null,
+     isEdit: false
   };
+  selectedIndex: number;
 
   constructor(
     private _dashboardService: DashboardService,
@@ -268,7 +270,7 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
   onSaveDashboard(): void {
     this.dashboard.LAYOUT = this.selectedLayout;
     this.dashboard.USER_ID = this.userId;
-
+   
     if (this.dashboard.LAYOUT == undefined 
       || this.dashboard.LAYOUT == null 
       || (this.dashboard.LAYOUT != LayoutType.LT1 

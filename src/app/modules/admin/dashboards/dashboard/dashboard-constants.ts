@@ -48,7 +48,8 @@ export interface Dashboard {
     USER_MDF_DTIME: Date;
     NAME: string;
     ENABLE:boolean;
-    ORD: number
+    ORD: number;
+     isEdit: boolean 
 }
 
 export interface ChartDetail {

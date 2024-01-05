@@ -115,6 +115,7 @@ export class DashboardService {
                 { name: 'MA_DASHBOARD', value: dashboard.MA_DASHBOARD },
                 { name: 'POSITION', value: dashboard.POSITION },
                 { name: 'USER_MDF_ID', value: dashboard.USER_MDF_ID },
+                { name: 'NAME', value: dashboard.NAME}
             ]
         );
     }

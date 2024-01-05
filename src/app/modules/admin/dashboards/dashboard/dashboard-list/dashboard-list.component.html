@@ -257,21 +257,48 @@
         </thead>
         <tbody>
             <tr *ngFor="let dashboard of dashboards" >
-                <td class="w-20 text-center text-center">{{dashboard.ORD}}</td>
-                <td class="w-1/2 text-center">{{dashboard.NAME}}</td>
-                <td class="w-1/10 text-center">
-                    <mat-checkbox class="example-margin"></mat-checkbox>
+                <td class="w-20 text-center text-center"> {{dashboard.ORD}}</td>
+                <td class="w-2/5 text-center">
+                    <div *ngIf="dashboard.isEdit">
+                        <input type="text" [(ngModel)] = "dashboard.NAME" class="rounded border-solid border-2 border-inherit">
+                    </div>
+                   <div *ngIf="!dashboard.isEdit">
+                        {{dashboard.NAME}}
+                     </div> 
+                  </td>
+                <td class="w-32 text-center">
+                    <div >
+                        <mat-checkbox class="example-margin" [disabled]="!dashboard.isEdit"></mat-checkbox>
+                    </div>
+                    <!-- <div *ngIf="!dashboard.isEdit">
+                        <div *ngIf="dashboard.ENABLE">
+                            <mat-icon>check_box</mat-icon>
+                        </div>
+                        <div *ngIf="!dashboard.ENABLE">
+                            <mat-icon>check_box_outline_blank</mat-icon>
+                        </div>
+                    </div>
+                    -->
+                    <!-- <mat-checkbox class="example-margin"></mat-checkbox> -->
                 </td>
-                <td class="w-1/5 text-center">
+                <td class="w-96 text-center">
+                    <div class="flex flex-row">
                     <button class="mr-8">
                         <mat-icon>remove_red_eye</mat-icon>
                     </button>
-                    <button class="mr-8">
-                        <mat-icon svgIcon="mat_outline:edit"></mat-icon>
-                    </button>
+                    <div *ngIf="dashboard.isEdit" class="flex flex-row px-2">
+                        <button (click)="onSaveChange(dashboard)"> <mat-icon>check</mat-icon> </button>
+                        <button (click)="cancel(dashboard)"> <mat-icon>close</mat-icon> </button>
+                    </div>
+                   
+                        <button *ngIf="!dashboard.isEdit" class="mr-8" >
+                            <mat-icon svgIcon="mat_outline:edit" (click)= onEdit(dashboard)></mat-icon>
+                        </button>
+                    
                     <button>
                         <mat-icon svgIcon="mat_outline:delete" class="text-red-600"></mat-icon>
                     </button>
+                </div>
                 </td>
             </tr>
         </tbody>
