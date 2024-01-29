@@ -69,7 +69,7 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
       .subscribe((response: any) => {
         this.userId = response.userId;
       });
-
+     
     await firstValueFrom(this._dashboardService.getChartsByUserId(this.userId))
       .then(
         (response: any) => {
@@ -112,7 +112,14 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
             this.routeToHome();
           }, 200);
         } else {
-          this.loadData(getDashboardByUserId.data[0]);
+          this._dashboardService.selectedIndex$.subscribe(index => {
+            this.selectedIndex = index;
+            // Now you can use this.selectedIndex to load the correct dashboard
+            // Make sure to check if getDashboardByUserId.data has the index
+            // if (getDashboardByUserId.data && getDashboardByUserId.data.length > index) {
+              this.loadData(getDashboardByUserId.data[index]);
+            // }
+          });
         }
       }
     } else {

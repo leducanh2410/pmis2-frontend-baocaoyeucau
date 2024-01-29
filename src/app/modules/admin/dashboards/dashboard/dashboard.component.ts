@@ -52,6 +52,9 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         this.clearData();
         this.layout = LayoutType.LT1;
     }
+    selectedDashboardValue(index: number): void {
+        this._dashboardService.setSelectedIndex(index);
+      }
     // thêm tab
     links = ['First', 'Second', 'Third'];
     activeLink = this.links[0];
@@ -299,8 +302,16 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     }
      tabs = [];
      selected = new FormControl(0);
-     selectedTabValue($event) {
-        console.log('assa',$event);
+    //  selectedTabValue($event) {
+    //     console.log('assa',$event);
+    //     //thay đổi db id + gọi hàm render
+    //     // this.dashboardId = this.tabs[this.tan]
+    //     this.renderDashboard();
+    //  }
+    selectedTabValue(index: number) {
+        // console.log('assa',$event);
+        this._dashboardService.setSelectedIndex(index);
+
         //thay đổi db id + gọi hàm render
         // this.dashboardId = this.tabs[this.tan]
         this.renderDashboard();

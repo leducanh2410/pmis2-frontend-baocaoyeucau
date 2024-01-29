@@ -11,6 +11,13 @@ export class DashboardService {
     private _lstFrame2Charts: BehaviorSubject<any> = new BehaviorSubject([]);
     private _lstFrame3Charts: BehaviorSubject<any> = new BehaviorSubject([]);
     private _dashboard: BehaviorSubject<any> = new BehaviorSubject([]);
+    // private _selectedIndex = new BehaviorSubject<number>(0)
+    private _selectedIndex: BehaviorSubject<number> = new BehaviorSubject(0);
+    
+    selectedIndex$ = this._selectedIndex.asObservable();
+    setSelectedIndex(index: number) {
+        this._selectedIndex.next(index);
+      }
 
     constructor(private _serviceService: ServiceService) {}
 

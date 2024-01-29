@@ -6,6 +6,7 @@ import { UserService } from 'app/core/user/user.service';
 import { User } from 'app/core/user/user.types';
 import { Subject, takeUntil } from 'rxjs';
 import { MessageService } from 'app/shared/message.services';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dashboard-list',
@@ -31,6 +32,8 @@ dashboard: Dashboard = {
   ORD:null,
    isEdit: false
 };
+userId: string = null;
+dashboardName: string;
 user: User;
 tmpName = "";
 tmpEnable = null;
@@ -39,7 +42,8 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
   constructor(       
      private _dashboardService: DashboardService,
      private _userService: UserService,
-     private _messageService: MessageService
+     private _messageService: MessageService,
+     public dialogRef: MatDialogRef<DashboardListComponent>
     ) { }
 
   ngOnInit(): void {
@@ -58,12 +62,18 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
     dashboard.isEdit = true;
     // this.disabled = !this.disabled;
     this.tmpName = dashboard.NAME;
+    this.tmpEnable = dashboard.ENABLE;
   } 
   cancel(dashboard: any) {
     dashboard.isEdit = false;
     dashboard.NAME = this.tmpName;
+    dashboard.ENABLE = this.tmpEnable;
   }
   onSaveChange(dashboard: any) {
+    this.dashboard.USER_MDF_ID = this.userId;
+    this.dashboard.NAME = this.dashboardName;
+    // console.log(this.dashboard);
+    // return;
     this._dashboardService.updateDashboard(this.dashboard)
     .pipe(takeUntil(this._unsubscribeAll))
     .subscribe((response: any) => {
@@ -71,5 +81,14 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
       
     });
     dashboard.isEdit = false;
+  }
+  closeDialog() {
+    this.dialogRef.close();
+  }
+  toggleEnable(dashboard: any) {
+    this.dashboard.ENABLE = !this.dashboard.ENABLE;
+  }
+  showName() {
+    console.log(this.dashboardName);
   }
 }

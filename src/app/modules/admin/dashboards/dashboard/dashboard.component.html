@@ -196,7 +196,8 @@
                 
             </mat-tab> -->
              <!-- <mat-tab *ngFor="let tab of tabs; let index = index" [label]="dashboards.NAME"> -->
-                <mat-tab *ngFor="let dashboard of dashboards; let index = index" [label]="dashboard.NAME">
+                <ng-container *ngFor="let dashboard of dashboards; let index = index" >
+                <mat-tab *ngIf="dashboard.ENABLE" [label]="dashboard.NAME">
 
              <!-- [label]="dashboardName"> -->
                <!-- [label]=" 'tab' + index"  >    -->
@@ -235,6 +236,7 @@
                     </div>
                 </div>  
             </mat-tab>
+        </ng-container>
         </mat-tab-group>
         <!-- <div class="flex flex-row w-full justify-start space-x-4 items-center">
           

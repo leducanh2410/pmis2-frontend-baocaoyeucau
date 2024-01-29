@@ -260,7 +260,7 @@
                 <td class="w-20 text-center text-center"> {{dashboard.ORD}}</td>
                 <td class="w-2/5 text-center">
                     <div *ngIf="dashboard.isEdit">
-                        <input type="text" [(ngModel)] = "dashboard.NAME" class="rounded border-solid border-2 border-inherit">
+                        <input (ngModelChange)="showName()" type="text" [(ngModel)] = "dashboardName" class="rounded border-solid border-2 border-inherit">
                     </div>
                    <div *ngIf="!dashboard.isEdit">
                         {{dashboard.NAME}}
@@ -268,7 +268,9 @@
                   </td>
                 <td class="w-32 text-center">
                     <div >
-                        <mat-checkbox class="example-margin" [disabled]="!dashboard.isEdit"></mat-checkbox>
+                        <mat-checkbox class="example-margin" [disabled]="!dashboard.isEdit"
+                        [(ngModel)]="dashboard.ENABLE" (change)="toggleEnable(dashboard)">
+                    </mat-checkbox>
                     </div>
                     <!-- <div *ngIf="!dashboard.isEdit">
                         <div *ngIf="dashboard.ENABLE">
@@ -304,3 +306,8 @@
         </tbody>
     </table>
 </div>
+<mat-dialog-actions class="flex flex-row justify-end">
+    <button mat-raised-button (click)="closeDialog()" color="warn">
+        Đóng
+    </button>
+</mat-dialog-actions>
