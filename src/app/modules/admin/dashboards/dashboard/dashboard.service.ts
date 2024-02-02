@@ -116,13 +116,24 @@ export class DashboardService {
         return this._serviceService.execServiceLogin(
             'F133BA48-3864-43FB-ADB9-DF7882C54DBE',
             [
+                // { name: 'LST_CHARTS', value: dashboard.LST_CHARTS },
+                // { name: 'ORD', value: dashboard.ORD },
+                // { name: 'NAME', value: dashboard.NAME},
+                // { name: 'USER_ID', value: dashboard.USER_ID },
+                // { name: 'LAYOUT', value: dashboard.LAYOUT },
+                // { name: 'MA_DASHBOARD', value: dashboard.MA_DASHBOARD },
+                // { name: 'POSITION', value: dashboard.POSITION },
+                // { name: 'ENABLE', value: dashboard.ENABLE},
+                // { name: 'USER_MDF_ID', value: dashboard.USER_MDF_ID },
                 { name: 'LST_CHARTS', value: dashboard.LST_CHARTS },
                 { name: 'USER_ID', value: dashboard.USER_ID },
                 { name: 'LAYOUT', value: dashboard.LAYOUT },
                 { name: 'MA_DASHBOARD', value: dashboard.MA_DASHBOARD },
                 { name: 'POSITION', value: dashboard.POSITION },
                 { name: 'USER_MDF_ID', value: dashboard.USER_MDF_ID },
-                { name: 'NAME', value: dashboard.NAME}
+                { name: 'NAME', value: dashboard.NAME},
+                { name: 'ENABLE', value: dashboard.ENABLE},
+                { name: 'ORD', value: dashboard.ORD }
             ]
         );
     }

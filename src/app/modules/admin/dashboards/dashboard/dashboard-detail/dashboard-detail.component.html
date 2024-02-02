@@ -40,11 +40,16 @@
 
             <!-- Header -->
             <div class="z-10 relative flex flex-row flex-0 w-full border-b justify-between">
-                <mat-form-field class="flex items-center" appearance="fill">
-                    <mat-label>Tên dashboard</mat-label>
-                    <input matInput placeholder="Ex. Biểu đồ cột" [(ngModel)] = "dashboard.NAME">
+                <mat-form-field class="flex items-center w-80 mt-6 ml-2" appearance="fill">
+                    <!-- <mat-label>Tên dashboard</mat-label> -->
+                    <input matInput  placeholder="Nhập tên dashboard" [(ngModel)] = "dashboard.NAME">
                     <!-- [(ngModel)] = "dashboard.NAME"> -->
                   </mat-form-field>
+                <div class="flex flex-row ml-1 mt-6">
+                    <span>Cho phép sử dụng:</span>
+                    <mat-checkbox class="example-margin" [(ngModel)]="dashboard.ENABLE" >
+                    </mat-checkbox>
+                </div>
                 <div class="flex items-center min-h-16 px-4 md:px-6 border-b">
                     <button mat-flat-button [color]="'primary'" class="mx-1" (click)="onShowDialog()">
                         <mat-icon svgIcon="mat_outline:table_chart"></mat-icon>

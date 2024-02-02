@@ -34,6 +34,7 @@ dashboard: Dashboard = {
 };
 userId: string = null;
 dashboardName: string;
+dashboardEnable: boolean;
 user: User;
 tmpName = "";
 tmpEnable = null;
@@ -60,8 +61,10 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
   }
   onEdit(dashboard: any) {
     dashboard.isEdit = true;
+    this.dashboardName = dashboard.NAME;
     // this.disabled = !this.disabled;
     this.tmpName = dashboard.NAME;
+    // this.tmpName = this.dashboardName;
     this.tmpEnable = dashboard.ENABLE;
   } 
   cancel(dashboard: any) {
@@ -70,11 +73,12 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
     dashboard.ENABLE = this.tmpEnable;
   }
   onSaveChange(dashboard: any) {
-    this.dashboard.USER_MDF_ID = this.userId;
-    this.dashboard.NAME = this.dashboardName;
+    dashboard.USER_MDF_ID = this.userId;
+    // dashboard.NAME = this.dashboardName;
+    // dashboard.ENABLE = this.dashboardEnable;
     // console.log(this.dashboard);
     // return;
-    this._dashboardService.updateDashboard(this.dashboard)
+    this._dashboardService.updateDashboard(dashboard)
     .pipe(takeUntil(this._unsubscribeAll))
     .subscribe((response: any) => {
       this._messageService.showSuccessMessage("Thông báo", "Xử lý thành công");
@@ -87,6 +91,7 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
   }
   toggleEnable(dashboard: any) {
     this.dashboard.ENABLE = !this.dashboard.ENABLE;
+    // dashboard.ENABLE = !this.dashboardEnable;
   }
   showName() {
     console.log(this.dashboardName);

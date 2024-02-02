@@ -31,7 +31,7 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
   lstChartsF2: Chart[] = [];
   lstChartsF3: Chart[] = [];
   @Input() dashboardName: string;
-
+  dashboardEnable: boolean;
   dashboard: Dashboard = {
     MA_DASHBOARD: '',
     LAYOUT: '',
@@ -55,7 +55,7 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
     private _userService: UserService,
     private _dialog: MatDialog,
     private _router: Router,
-    private _route: ActivatedRoute
+    private _route: ActivatedRoute,
   ) { }
 
   ngOnDestroy(): void {
@@ -64,6 +64,7 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
+    // this.dashboardEnable = this.dashboard.ENABLE ;
     this._userService.user$
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((response: any) => {
@@ -277,7 +278,7 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
   onSaveDashboard(): void {
     this.dashboard.LAYOUT = this.selectedLayout;
     this.dashboard.USER_ID = this.userId;
-   
+    
     if (this.dashboard.LAYOUT == undefined 
       || this.dashboard.LAYOUT == null 
       || (this.dashboard.LAYOUT != LayoutType.LT1 
@@ -333,7 +334,7 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
         });
     } else if (this.mode == MODE.EDIT) {
       this.dashboard.USER_MDF_ID = this.userId;
-
+      // this.dashboard.ENABLE = this.dashboardEnable;
       this._dashboardService.updateDashboard(this.dashboard)
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((response: any) => {
@@ -376,5 +377,10 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
 
   routeToHome(): void {
     this._router.navigate(['dashboards/dashboard']);
+  }
+  toggleEnable() {
+    // this.dashboardEnable = true;
+    //  this.dashboardEnable = !this.dashboardEnable;
+    // dashboard.ENABLE = !this.dashboardEnable;
   }
 }
