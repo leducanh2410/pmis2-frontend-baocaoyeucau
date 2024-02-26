@@ -285,7 +285,9 @@
                 </td>
                 <td class="w-96 text-center">
                     <div class="flex flex-row">
-                    <button class="mr-8">
+                    <button class="mr-8" (click)="onEditDashboard(dashboard.MA_DASHBOARD)">
+                        <!-- <button class="mr-8" (click)="onEditDashboard(dashboardId)"> -->
+
                         <mat-icon>remove_red_eye</mat-icon>
                     </button>
                     <div *ngIf="dashboard.isEdit" class="flex flex-row px-2">
@@ -307,7 +309,7 @@
     </table>
 </div>
 <mat-dialog-actions class="flex flex-row justify-end">
-    <button mat-raised-button (click)="closeDialog()" color="warn">
+    <button mat-raised-button (click)="closeDialog(null)" color="warn">
         Đóng
     </button>
 </mat-dialog-actions>

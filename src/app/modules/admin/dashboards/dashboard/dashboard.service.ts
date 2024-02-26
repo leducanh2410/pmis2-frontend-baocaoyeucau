@@ -77,6 +77,13 @@ export class DashboardService {
         );
     }
 
+    getDashboardByDashboardId(dashboardId: string): Observable<any> {
+        return this._serviceService.execServiceLogin(
+            'C74C172B-7F65-4B44-A0F0-A75DC8FA76FE',
+            [{ name: 'MA_DASHBOARD', value: dashboardId }]
+        );
+
+    }
     getGroupAndDuLieuByUserId(userId: string): Observable<any> {
         return this._serviceService.execServiceLogin(
             '874A6C06-CBD4-4EAA-AFBC-F7238E483475',

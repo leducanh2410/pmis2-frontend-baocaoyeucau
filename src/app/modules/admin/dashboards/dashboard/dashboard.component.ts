@@ -36,7 +36,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     dashboards: any = [];
 
     dashboardId: string;
-    tabIndex: number;
+    tabIndex: number ;
     layout: string;
     dashboardName: string;
 
@@ -47,10 +47,11 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         public _route: ActivatedRoute,
         private _router: Router,
         private _fileSaverService: FileSaverService,
-        private matDialog: MatDialog
+        private _matDialog: MatDialog
     ) {
         this.clearData();
         this.layout = LayoutType.LT1;
+        this.tabIndex = 0;
     }
     selectedDashboardValue(index: number): void {
         this._dashboardService.setSelectedIndex(index);
@@ -192,7 +193,10 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     // Hiển thị dashboard lên màn hình
     async renderDashboard() {
         //Lấy dashboard theo userid
-        console.log(this.dashboards, this.tabIndex);  
+        console.log(this.dashboards, this.tabIndex); 
+        if (!this.dashboards || this.dashboards.length == 0) {
+            return;
+        }
         await this._dashboardService
             // .getDashboardData(this.tabs[this.tabIndex].MA_DASHBOARD) //edit 13-12
             .getDashboardData(this.dashboards[this.tabIndex].MA_DASHBOARD)
@@ -208,7 +212,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
                             response.message
                         );
                     }
-                }
+                } 
             });
         console.log(this.dashboardId);
     }
@@ -336,10 +340,17 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     //   }
     // }
     popUpListDashboard(): void {
-        this.matDialog.open(DashboardListComponent, {
+       const dialogList = this._matDialog.open(DashboardListComponent, {
             width: '994px',
             height: '502px'
-        })
+        });
+
+        dialogList.afterClosed().subscribe((response: string) => {
+            console.log(response);
+            if (response != undefined && response != null) {
+                this._router.navigate(['edit', response], { relativeTo: this._route });
+            }
+          })
     }
     onDeleteDashboard() {
         this._messageService.showConfirm(

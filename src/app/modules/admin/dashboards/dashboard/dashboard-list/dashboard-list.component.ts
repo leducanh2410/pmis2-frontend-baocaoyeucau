@@ -4,9 +4,10 @@ import { DashboardService } from '../dashboard.service';
 import { DashboardComponent } from '../dashboard.component';
 import { UserService } from 'app/core/user/user.service';
 import { User } from 'app/core/user/user.types';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, filter, takeUntil } from 'rxjs';
 import { MessageService } from 'app/shared/message.services';
 import { MatDialogRef } from '@angular/material/dialog';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard-list',
@@ -17,6 +18,7 @@ export class DashboardListComponent implements OnInit {
 dashboards: any = [
   //  "isEdit": false
 ];
+dashboardId: string;
 dashboard: Dashboard = {
   MA_DASHBOARD: '',
   LAYOUT: '',
@@ -44,7 +46,9 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
      private _dashboardService: DashboardService,
      private _userService: UserService,
      private _messageService: MessageService,
-     public dialogRef: MatDialogRef<DashboardListComponent>
+     public dialogRef: MatDialogRef<DashboardListComponent>,
+     public _route: ActivatedRoute,
+     private _router: Router
     ) { }
 
   ngOnInit(): void {
@@ -53,12 +57,78 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
     .subscribe((user: User) => {
       this.user = user;
     });
-
+  //   this._route.data.subscribe((response: any) => {
+  //     if (response == null) {
+  //         this._messageService.showErrorMessage(
+  //             'Thông báo',
+  //             'Không thể lấy dữ liệu dashboard của người dùng'
+  //         );
+  //     } else {
+  //         let resp = response.data[0];
+  //         if (resp.status == 1) {
+  //             let _data = resp.data;
+  //             if (
+  //                 _data == undefined ||
+  //                 _data == null ||
+  //                 _data.length <= 0
+  //             ) {
+  //                 this._router.navigate(['empty'], {
+  //                     relativeTo: this._route,
+  //                 });
+  //             } else {
+  //                 this.initDashboard(_data[0]);
+  //             }
+  //         } else {
+  //             this._messageService.showErrorMessage(
+  //                 'Thông báo',
+  //                 resp.message
+  //             );
+  //         }
+  //     }
+  // });
     this._dashboardService.dashboard$.subscribe((res:any) =>{
       this.dashboards = res;
   })
     // api serive table
   }
+  ngAfterViewInit(): void {
+    // this.renderDashboard();
+
+    // Bắt sự kiện khi có thay đổi url
+    // this._router.events
+    //     .pipe(filter((event) => event instanceof NavigationStart))
+    //     .pipe(takeUntil(this._unsubscribeAll))
+    //     .subscribe((response: any) => {
+    //         if (response.url === URL.VIEW) {
+    //             // this.clearData();
+    //             // this.renderDashboard(); //lấy dashboard và gọi dashboard đầu tiên
+    //             if (
+    //                 this.dashboardId == null ||
+    //                 this.dashboardId.length == 0
+    //             ) {
+    //                 this._router.navigate(['empty'], {
+    //                     relativeTo: this._route,
+    //                 });
+    //             }
+    //         }
+    //     });
+}
+
+//   initDashboard(data: any): void {
+//     this.dashboardId = data.MA_DASHBOARD;
+//     // this.layout = data.LAYOUT;
+
+//     // let layouts = data.POSITION.split(';');
+//     // layouts.forEach((e) => {
+//     //     if (e == Frame.F1) {
+//     //         this.lstFrame1Charts.push(DEFAULT_NULL_CHART);
+//     //     } else if (e == Frame.F2) {
+//     //         this.lstFrame2Charts.push(DEFAULT_NULL_CHART);
+//     //     } else {
+//     //         this.lstFrame3Charts.push(DEFAULT_NULL_CHART);
+//     //     }
+//     // });
+// }
   onEdit(dashboard: any) {
     dashboard.isEdit = true;
     this.dashboardName = dashboard.NAME;
@@ -86,8 +156,9 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
     });
     dashboard.isEdit = false;
   }
-  closeDialog() {
-    this.dialogRef.close();
+  closeDialog(MA_DASHBOARD: string) {
+    this.dialogRef.close(MA_DASHBOARD);
+    // console.log(MA_DASHBOARD);
   }
   toggleEnable(dashboard: any) {
     this.dashboard.ENABLE = !this.dashboard.ENABLE;
@@ -96,4 +167,9 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
   showName() {
     console.log(this.dashboardName);
   }
+  onEditDashboard(MA_DASHBOARD: string): void {
+    this.closeDialog(MA_DASHBOARD);
+    //  this._router.navigate(['edit', MA_DASHBOARD], { relativeTo: this._route });
+    // console.log('hello');
+}
 }

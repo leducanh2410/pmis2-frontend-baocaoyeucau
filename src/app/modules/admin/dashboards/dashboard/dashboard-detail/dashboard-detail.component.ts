@@ -32,6 +32,7 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
   lstChartsF3: Chart[] = [];
   @Input() dashboardName: string;
   dashboardEnable: boolean;
+  dashboardId:string;
   dashboard: Dashboard = {
     MA_DASHBOARD: '',
     LAYOUT: '',
@@ -99,7 +100,9 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
       this.mode = MODE.EDIT;
     }
 
-    let getDashboardByUserId = await firstValueFrom(this._dashboardService.getDashboardByUserId(this.userId));
+    let getDashboardByUserId = await firstValueFrom(this._dashboardService.getDashboardByDashboardId(this.dashboard.MA_DASHBOARD));
+    // let getDashboardByUserId = await firstValueFrom(this._dashboardService.getDashboardByUserId(this.userId));
+
     if (getDashboardByUserId.status == 1) {
       if (this.mode === MODE.CREATE) {
         // if (getDashboardByUserId.data.length > 0) {

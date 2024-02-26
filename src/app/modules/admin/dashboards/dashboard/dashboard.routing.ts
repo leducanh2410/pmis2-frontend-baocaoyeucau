@@ -3,6 +3,7 @@ import { DashboardDetailComponent } from './dashboard-detail/dashboard-detail.co
 import { DashboardComponent } from './dashboard.component';
 import { EmptyDashboardComponent } from './empty-dashboard/empty-dashboard.component';
 import { DashboardResolver } from './dashboard.resolver';
+import { DashboardListComponent } from './dashboard-list/dashboard-list.component';
 
 export const routes: Route[] = [
     {
