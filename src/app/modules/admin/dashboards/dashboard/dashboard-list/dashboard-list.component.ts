@@ -40,6 +40,8 @@ dashboardEnable: boolean;
 user: User;
 tmpName = "";
 tmpEnable = null;
+dashboardComponent: DashboardComponent
+
 // disabled = true;
 private _unsubscribeAll: Subject<any> = new Subject<any>;
   constructor(       
@@ -48,7 +50,8 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
      private _messageService: MessageService,
      public dialogRef: MatDialogRef<DashboardListComponent>,
      public _route: ActivatedRoute,
-     private _router: Router
+     private _router: Router,
+
     ) { }
 
   ngOnInit(): void {
@@ -57,39 +60,17 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
     .subscribe((user: User) => {
       this.user = user;
     });
-  //   this._route.data.subscribe((response: any) => {
-  //     if (response == null) {
-  //         this._messageService.showErrorMessage(
-  //             'Thông báo',
-  //             'Không thể lấy dữ liệu dashboard của người dùng'
-  //         );
-  //     } else {
-  //         let resp = response.data[0];
-  //         if (resp.status == 1) {
-  //             let _data = resp.data;
-  //             if (
-  //                 _data == undefined ||
-  //                 _data == null ||
-  //                 _data.length <= 0
-  //             ) {
-  //                 this._router.navigate(['empty'], {
-  //                     relativeTo: this._route,
-  //                 });
-  //             } else {
-  //                 this.initDashboard(_data[0]);
-  //             }
-  //         } else {
-  //             this._messageService.showErrorMessage(
-  //                 'Thông báo',
-  //                 resp.message
-  //             );
-  //         }
-  //     }
-  // });
-    this._dashboardService.dashboard$.subscribe((res:any) =>{
-      this.dashboards = res;
-  })
-    // api serive table
+  
+  //   this._dashboardService.dashboard$.subscribe((res:any) =>{
+  //     this.dashboards = res;
+  //     console.log(res);
+  // })
+  
+  this._dashboardService.getDashboardByUserId(this.user.userId).subscribe((res:any) =>{
+    this.dashboards = res.data;
+    // console.log(res.data);  
+})
+    
   }
   ngAfterViewInit(): void {
     // this.renderDashboard();
@@ -151,17 +132,75 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
     this._dashboardService.updateDashboard(dashboard)
     .pipe(takeUntil(this._unsubscribeAll))
     .subscribe((response: any) => {
-      this._messageService.showSuccessMessage("Thông báo", "Xử lý thành công");
-      
+      // this._messageService.showSuccessMessage("Thông báo", "Xử lý thành công");
+      if (response.status == 1) {
+        this._messageService.showSuccessMessage(
+          'Thông báo',
+          'Cập nhật dashboard thành công'
+        );
+        setTimeout(() => {
+          this.routeToHome();
+        }, 200);
+      } else {
+        this._messageService.showErrorMessage(
+          'Thông báo',
+          'Đã xảy ra lỗi khi cập nhật Dashboard'
+        );
+      }
     });
+  
     dashboard.isEdit = false;
+    
+    // for (dashboard of this.dashboards) {
+    //   if (dashboard.ENABLE == true) {
+    //     console.log(dashboard.LST_CHARTS);
+    //   }
+    // }
+   
   }
-  closeDialog(MA_DASHBOARD: string) {
+   closeDialog(MA_DASHBOARD: string) {
     this.dialogRef.close(MA_DASHBOARD);
+    // this._dashboardService
+    // .getEnableDashboardByUserId(this.user.userId)
+    // .subscribe((response: any) => {
+    //     // console.log('Thong bao', response);
+    //     // if (response.status == 1) {
+    //     //     if (response.data.length == 0) {
+    //     //         this._router.navigate(['empty'], {
+    //     //            relativeTo: this._route,
+    //     //         });
+    //     //     } else {
+    //     //         // this.dashboardComponent.renderDashboard();
+
+    //     //       //   if (this.dashboardComponent) {
+    //     //       //     this.dashboardComponent.renderDashboard();
+    //     //       // } else {
+    //     //       //     console.log("dashboardComponent is undefined or null");
+    //     //       // }
+    //     //       if (!this.dashboards || this.dashboards.length == 0) {
+    //     //             return;
+    //     //         } else {
+    //     //           this.dashboardComponent.renderDashboard();
+    //     //         }
+    //     //     }
+    //     // } else {
+    //     //     this._messageService.showErrorMessage(
+    //     //         'Thong bao',
+    //     //         response.message
+    //     //     );
+    //     // }
+    //      this.dashboards = response.data;
+    //      console.log(response.data);
+    // });
+
+    
+     
     // console.log(MA_DASHBOARD);
   }
-  toggleEnable(dashboard: any) {
-    this.dashboard.ENABLE = !this.dashboard.ENABLE;
+  toggleEnable(dashboard:any) {
+    dashboard.ENABLE = !dashboard.ENABLE;
+    console.log(dashboard.ENABLE);
+    
     // dashboard.ENABLE = !this.dashboardEnable;
   }
   showName() {
@@ -171,5 +210,8 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
     this.closeDialog(MA_DASHBOARD);
     //  this._router.navigate(['edit', MA_DASHBOARD], { relativeTo: this._route });
     // console.log('hello');
+}
+routeToHome(): void {
+  this._router.navigate(['dashboards/dashboard']);
 }
 }

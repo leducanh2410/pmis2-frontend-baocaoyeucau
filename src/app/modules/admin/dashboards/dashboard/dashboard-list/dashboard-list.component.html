@@ -257,7 +257,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let dashboard of dashboards; let i = index" >
-                <td class="w-20 text-center text-center"> {{i+1}}</td>
+                <td class="w-20 text-center"> {{i+1}}</td>
                 <td class="w-2/5 text-center">
                     <div *ngIf="dashboard.isEdit">
                         <input  type="text" [(ngModel)] = "dashboard.NAME" class="rounded border-solid border-2 border-inherit">
@@ -269,7 +269,8 @@
                 <td class="w-32 text-center">
                     <div >
                         <mat-checkbox class="example-margin" [disabled]="!dashboard.isEdit"
-                        [(ngModel)]="dashboard.ENABLE" (change)="toggleEnable(dashboard)">
+                        [(ngModel)]="dashboard.ENABLE" >
+                        <!-- (change)="toggleEnable(dashboard)"> -->
                     </mat-checkbox>
                     </div>
                     <!-- <div *ngIf="!dashboard.isEdit">

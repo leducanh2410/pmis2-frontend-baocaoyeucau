@@ -18,7 +18,7 @@ export class DashboardService {
     setSelectedIndex(index: number) {
         this._selectedIndex.next(index);
       }
-
+    dashboardId$ = this._dashboard.asObservable();
     constructor(private _serviceService: ServiceService) {}
 
     get dashboard$(): Observable<any>{
@@ -52,6 +52,26 @@ export class DashboardService {
     getDashboardByUserId(userId: string): Observable<any> {
         return this._serviceService.execServiceLogin(
             '2EE6A1BB-19EA-4922-A2D4-AA7D52BBC13F',
+            [{ name: 'USER_ID', value: userId }]
+        ).pipe(
+            tap((response: any) => {
+                this._dashboard.next(response.data);
+                //this._pagination.next(response.pagination);
+            }),
+            switchMap((response: any) => {
+                if (!response.status) {
+                    return throwError({
+                        message: 'Requested page is not available!',
+                        pagination: response.pagination
+                    });
+                }
+                return of(response);
+            })
+        );
+    }
+    getEnableDashboardByUserId(userId: string): Observable<any> {
+        return this._serviceService.execServiceLogin(
+            'E5B501EC-20E6-4104-9ED7-FAEC52C3F968',
             [{ name: 'USER_ID', value: userId }]
         ).pipe(
             tap((response: any) => {
@@ -123,24 +143,17 @@ export class DashboardService {
         return this._serviceService.execServiceLogin(
             'F133BA48-3864-43FB-ADB9-DF7882C54DBE',
             [
-                // { name: 'LST_CHARTS', value: dashboard.LST_CHARTS },
-                // { name: 'ORD', value: dashboard.ORD },
-                // { name: 'NAME', value: dashboard.NAME},
-                // { name: 'USER_ID', value: dashboard.USER_ID },
-                // { name: 'LAYOUT', value: dashboard.LAYOUT },
-                // { name: 'MA_DASHBOARD', value: dashboard.MA_DASHBOARD },
-                // { name: 'POSITION', value: dashboard.POSITION },
-                // { name: 'ENABLE', value: dashboard.ENABLE},
-                // { name: 'USER_MDF_ID', value: dashboard.USER_MDF_ID },
+                
                 { name: 'LST_CHARTS', value: dashboard.LST_CHARTS },
+                { name: 'ORD', value: dashboard.ORD },
+                { name: 'NAME', value: dashboard.NAME},
                 { name: 'USER_ID', value: dashboard.USER_ID },
                 { name: 'LAYOUT', value: dashboard.LAYOUT },
                 { name: 'MA_DASHBOARD', value: dashboard.MA_DASHBOARD },
                 { name: 'POSITION', value: dashboard.POSITION },
-                { name: 'USER_MDF_ID', value: dashboard.USER_MDF_ID },
-                { name: 'NAME', value: dashboard.NAME},
                 { name: 'ENABLE', value: dashboard.ENABLE},
-                { name: 'ORD', value: dashboard.ORD }
+                { name: 'USER_MDF_ID', value: dashboard.USER_MDF_ID }
+
             ]
         );
     }

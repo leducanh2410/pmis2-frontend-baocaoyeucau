@@ -99,7 +99,29 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         return false;
     }
-
+    getDashboard(): void {
+        this._dashboardService
+            .getEnableDashboardByUserId(this.user.userId)
+            .subscribe((response: any) => {
+                console.log('Thong bao', response);
+                if (response.status == 1) {
+                    if (response.data.length == 0) {
+                        this._router.navigate(['empty'], {
+                            relativeTo: this._route,
+                        });
+                    } else {
+                        // this.tabs = response.data;
+                        this.dashboards = response.data;
+                        this.renderDashboard();
+                    }
+                } else {
+                    this._messageService.showErrorMessage(
+                        'Thong bao',
+                        response.message
+                    );
+                }
+            });
+    }
     ngOnInit(): void {
         this._userService.user$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -136,42 +158,43 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
                 }
             }
         });
-        this._dashboardService
-            .getDashboardByUserId(this.user.userId)
-            .subscribe((response: any) => {
-                console.log('Thong bao', response);
-                if (response.status == 1) {
-                    if (response.data.length == 0) {
-                        this._router.navigate(['empty'], {
-                            relativeTo: this._route,
-                        });
-                    } else {
-                        // this.tabs = response.data;
-                        this.renderDashboard();
-                    }
-                } else {
-                    this._messageService.showErrorMessage(
-                        'Thong bao',
-                        response.message
-                    );
-                }
+        // this._dashboardService
+        //     .getEnableDashboardByUserId(this.user.userId)
+        //     .subscribe((response: any) => {
+        //         console.log('Thong bao', response);
+        //         if (response.status == 1) {
+        //             if (response.data.length == 0) {
+        //                 this._router.navigate(['empty'], {
+        //                     relativeTo: this._route,
+        //                 });
+        //             } else {
+        //                 // this.tabs = response.data;
+        //                 this.dashboards = response.data;
+        //                 this.renderDashboard();
+        //             }
+        //         } else {
+        //             this._messageService.showErrorMessage(
+        //                 'Thong bao',
+        //                 response.message
+        //             );
+        //         }
+        //         // if (response == null){
+        //         //   this._messageService.showErrorMessage('Thông báo',response.message);
 
-                // if (response == null){
-                //   this._messageService.showErrorMessage('Thông báo',response.message);
-
-                // } else {
-                // if (response.length == 0) {
-                //   this._router.navigate(['empty'], {relativeTo: this._route});
-                // } else {
-                //   this.renderDashboard();
-                // }
-                // }
-            });
-            //12/11
-        this._dashboardService.dashboard$.subscribe((res:any) =>{
-            // this.tabs =res; 
-            this.dashboards = res;
-        })
+        //         // } else {
+        //         // if (response.length == 0) {
+        //         //   this._router.navigate(['empty'], {relativeTo: this._route});
+        //         // } else {
+        //         //   this.renderDashboard();
+        //         // }
+        //         // }
+        //     });
+        //     //12/11
+        // // this._dashboardService.get.subscribe((res:any) =>{
+        // //     // this.tabs =res; 
+        // //     this.dashboards = res;
+        // // })
+        this.getDashboard();
     }
 
     initDashboard(data: any): void {
@@ -193,7 +216,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     // Hiển thị dashboard lên màn hình
     async renderDashboard() {
         //Lấy dashboard theo userid
-        console.log(this.dashboards, this.tabIndex); 
+        // console.log(this.dashboards, this.tabIndex); 
         if (!this.dashboards || this.dashboards.length == 0) {
             return;
         }
@@ -283,23 +306,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         this.lstFrame2Charts = [];
         this.lstFrame3Charts = [];
     }
-    // onEditDashboard(): void {
-    //     // Kiểm tra xem bạn đang ở trong tab mong muốn hay không
-    //     if (this.isCurrentTab()) {
-    //         this._router.navigate(['edit'], { relativeTo: this._route });
-    //     } else {
-    //         // Xử lý khi không được phép chỉnh sửa ở đây (ví dụ: thông báo người dùng)
-    //         console.log('Bạn không được phép chỉnh sửa ở đây.');
-    //     }
-    // }
-    // isCurrentTab(): boolean {
-    //     // Lấy thông tin về route hiện tại từ ActivatedRoute
-    //     const currentRoute = this._route.snapshot;
-    
-    //     // Thực hiện kiểm tra xem route hiện tại có phải là route của tab bạn muốn hay không
-    //     // Ví dụ: kiểm tra nếu route có một thông tin đặc biệt nào đó
-    //     return /* điều kiện của bạn */;
-    // }
+   
     onEditDashboard(dashboardId: string): void {
         // let currentTab = this.tabs[tabIndex];
         this._router.navigate(['edit', dashboardId], { relativeTo: this._route });
@@ -346,9 +353,11 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         });
 
         dialogList.afterClosed().subscribe((response: string) => {
-            console.log(response);
+            // console.log(response);
             if (response != undefined && response != null) {
                 this._router.navigate(['edit', response], { relativeTo: this._route });
+            } else {
+                this.getDashboard();
             }
           })
     }
@@ -424,5 +433,46 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
                     );
                 }
             });
+    }
+    hideDashboard(dashboard: any): void {
+        this._messageService.showConfirm(
+            'Thông báo',
+            `Bạn chắc chắn muốn ẩn dashboard ${dashboard.NAME}`,
+            (toast: SnotifyToast) => {
+                this._messageService.notify().remove(toast.id);
+                // dashboard.ENABLE = !dashboard.ENABLE;
+                this._dashboardService.dashboard$
+                    // .deleteDashboard(this.dashboardId, this.user.userId)
+                    .pipe(takeUntil(this._unsubscribeAll))
+                    .subscribe((response: any) => {
+                        console.log(response);
+                        
+                        switch (response.status) {
+                            
+                            case 1:
+                                this._messageService.showSuccessMessage(
+                                    'Thông báo',
+                                    'Đã ẩn dashboard'
+                                );
+                                this._router.navigate(['empty'], {
+                                    relativeTo: this._route,
+                                });
+                                break;
+                            case 0:
+                                this._messageService.showErrorMessage(
+                                    'Thông báo',
+                                    'Đã xảy ra lỗi khi ẩn dashboard'
+                                );
+                                break;
+                            case -1:
+                                this._messageService.showErrorMessage(
+                                    'Thông báo',
+                                    'Không tìm thấy dashboard cần ẩn'
+                                );
+                                break;
+                        }
+                    });
+            }
+        );
     }
 }
