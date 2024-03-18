@@ -34,7 +34,7 @@ export class EmptyDashboardComponent implements OnInit, OnDestroy {
         this.user = user;
       });
 
-    this._dashboardService.getDashboardByUserId(this.user.userId)
+    this._dashboardService.getEnableDashboardByUserId(this.user.userId)
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((response: any) => {
         if (response.status == 1) {
@@ -46,6 +46,8 @@ export class EmptyDashboardComponent implements OnInit, OnDestroy {
   }
 
   onCreateDashboard() {
+    this._dashboardService.setSectionVisible(false);
+
     this._router.navigate(['../create'], { relativeTo: this._route });
   }
 }

@@ -8,6 +8,7 @@ import { Subject, filter, takeUntil } from 'rxjs';
 import { MessageService } from 'app/shared/message.services';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { SnotifyToast } from 'ng-alt-snotify';
 
 @Component({
   selector: 'app-dashboard-list',
@@ -54,6 +55,12 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
 
     ) { }
 
+    getListDashboard(): void {
+      this._dashboardService.getDashboardByUserId(this.user.userId).subscribe((res:any) =>{
+        this.dashboards = res.data;
+        // console.log(res.data);  
+    })
+    }
   ngOnInit(): void {
     this._userService.user$
     .pipe(takeUntil(this._unsubscribeAll))
@@ -66,11 +73,10 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
   //     console.log(res);
   // })
   
-  this._dashboardService.getDashboardByUserId(this.user.userId).subscribe((res:any) =>{
-    this.dashboards = res.data;
-    // console.log(res.data);  
-})
-    
+//   this._dashboardService.getDashboardByUserId(this.user.userId).subscribe((res:any) =>{
+//     this.dashboards = res.data;
+// })
+    this.getListDashboard();
   }
   ngAfterViewInit(): void {
     // this.renderDashboard();
@@ -213,5 +219,44 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
 }
 routeToHome(): void {
   this._router.navigate(['dashboards/dashboard']);
+}
+deleteDashboard(dashboard: any) {
+  this._messageService.showConfirm(
+    'Thông báo',
+    'Bạn chắc chắn muốn xóa dashboard?',
+    (toast: SnotifyToast) => {
+        this._messageService.notify().remove(toast.id);
+        this._dashboardService
+            .deleteDashboard(dashboard.MA_DASHBOARD, this.user.userId)
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((response: any) => {
+                switch (response.status) {
+                    case 1:
+                        this._messageService.showSuccessMessage(
+                            'Thông báo',
+                            'Xóa dashboard thành công'
+                        );
+                        // this.dashboardComponent.clearData();
+                        this.getListDashboard();
+                        // this._router.navigate(['empty'], {
+                        //     relativeTo: this._route,
+                        // });
+                        break;
+                    case 0:
+                        this._messageService.showErrorMessage(
+                            'Thông báo',
+                            'Đã xảy ra lỗi khi xóa dashboard'
+                        );
+                        break;
+                    case -1:
+                        this._messageService.showErrorMessage(
+                            'Thông báo',
+                            'Không tìm thấy dashboard cần xóa'
+                        );
+                        break;
+                }
+            });
+    }
+);
 }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { UserService } from 'app/core/user/user.service';
 import { User } from 'app/core/user/user.types';
@@ -18,6 +18,7 @@ import { ThemePalette } from '@angular/material/core';
 import { FormControl } from '@angular/forms';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { DashboardListComponent } from './dashboard-list/dashboard-list.component';
+import { DashboardDetailComponent } from './dashboard-detail/dashboard-detail.component';
 
 @Component({
     selector: 'app-dashboard',
@@ -34,12 +35,13 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     lstFrame3Charts: any[] = [];
     // dashboard: any[] = [];
     dashboards: any = [];
-
+    dashboardDetail: DashboardDetailComponent ;
     dashboardId: string;
     tabIndex: number ;
     layout: string;
     dashboardName: string;
-
+    loading: boolean;
+    showHideDescription: boolean = false;
     constructor(
         private _userService: UserService,
         private _dashboardService: DashboardService,
@@ -47,11 +49,14 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         public _route: ActivatedRoute,
         private _router: Router,
         private _fileSaverService: FileSaverService,
-        private _matDialog: MatDialog
+        private _matDialog: MatDialog,
+        private _changeDetectorRef: ChangeDetectorRef,
+        // public dashboardDetailComponent: DashboardDetailComponent
     ) {
         this.clearData();
         this.layout = LayoutType.LT1;
         this.tabIndex = 0;
+        // this.dashboardDetail = new DashboardDetailComponent();
     }
     selectedDashboardValue(index: number): void {
         this._dashboardService.setSelectedIndex(index);
@@ -75,7 +80,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
             .subscribe((response: any) => {
                 if (response.url === URL.VIEW) {
                     // this.clearData();
-                    this.renderDashboard(); //lấy dashboard và gọi dashboard đầu tiên
+                    // this.renderDashboard(); //lấy dashboard và gọi dashboard đầu tiên
+                    this.getDashboard();
                     if (
                         this.dashboardId == null ||
                         this.dashboardId.length == 0
@@ -105,14 +111,22 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
             .subscribe((response: any) => {
                 console.log('Thong bao', response);
                 if (response.status == 1) {
-                    if (response.data.length == 0) {
+                    if (response.data?.length == 0) {
                         this._router.navigate(['empty'], {
                             relativeTo: this._route,
                         });
                     } else {
-                        // this.tabs = response.data;
                         this.dashboards = response.data;
-                        this.renderDashboard();
+                        // this._dashboardService.dashboardEnable$
+                        // .pipe(takeUntil(this._unsubscribeAll))
+                        // .subscribe(isEnable => {
+                        //     console.log(isEnable);
+                            
+                        //  if (isEnable == false) {
+                        //     this.renderDashboardAdjusted();
+                        //  } else {
+                            this.renderDashboard();
+                         
                     }
                 } else {
                     this._messageService.showErrorMessage(
@@ -219,15 +233,49 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         // console.log(this.dashboards, this.tabIndex); 
         if (!this.dashboards || this.dashboards.length == 0) {
             return;
+        } 
+        if (this.tabIndex >= this.dashboards.length) {
+            this.tabIndex = this.dashboards.length-1;
+        } else {
+           
         }
-        await this._dashboardService
-            // .getDashboardData(this.tabs[this.tabIndex].MA_DASHBOARD) //edit 13-12
-            .getDashboardData(this.dashboards[this.tabIndex].MA_DASHBOARD)
+
+        // console.log(this.dashboards[this.tabIndex].ENABLE);
+                await this._dashboardService
+                .getDashboardData(this.dashboards[this.tabIndex].MA_DASHBOARD)
+                .pipe(takeUntil(this._unsubscribeAll))
+                .toPromise()
+                .then((response: any) => {
+                    if (response.status == 1) {
+                        this.getChartData(response.data);
+                        console.log(this.dashboards);
+                        console.log(this.tabIndex);
+                    } else {
+                        if (response.status != 2) {
+                            this._messageService.showErrorMessage(
+                                'Thông báo',
+                                response.message
+                            );
+                        }
+                    } 
+                });
+            console.log(this.dashboardId); 
+            
+    }
+    async renderDashboardAdjusted() {
+        if (!this.dashboards || this.dashboards.length == 0) {
+            return;
+        } 
+        if (this.tabIndex>0) {
+            await this._dashboardService
+            .getDashboardData(this.dashboards[this.tabIndex-1].MA_DASHBOARD)
             .pipe(takeUntil(this._unsubscribeAll))
             .toPromise()
             .then((response: any) => {
                 if (response.status == 1) {
                     this.getChartData(response.data);
+                    console.log(this.dashboards);
+                    console.log(this.tabIndex);
                 } else {
                     if (response.status != 2) {
                         this._messageService.showErrorMessage(
@@ -238,8 +286,27 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
                 } 
             });
         console.log(this.dashboardId);
+        } else {
+            await this._dashboardService
+            .getDashboardData(this.dashboards[this.tabIndex+1].MA_DASHBOARD)
+            .pipe(takeUntil(this._unsubscribeAll))
+            .toPromise()
+            .then((response: any) => {
+                if (response.status == 1) {
+                    this.getChartData(response.data);
+                    console.log(this.dashboards);
+                    console.log(this.tabIndex);
+                } else {
+                    if (response.status != 2) {
+                        this._messageService.showErrorMessage(
+                            'Thông báo',
+                            response.message
+                        );
+                    }
+                } 
+            });
+        }
     }
-
     // Lấy kích thước của khung thứ nhất
     getFrame1Width(): string {
         if (this.layout == LayoutType.LT1) {
@@ -308,8 +375,12 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     }
    
     onEditDashboard(dashboardId: string): void {
+        this._dashboardService.setSectionVisible(true);
+
         // let currentTab = this.tabs[tabIndex];
         this._router.navigate(['edit', dashboardId], { relativeTo: this._route });
+        // this.dashboardDetail.sectionVisible = true;
+
     }
      tabs = [];
      selected = new FormControl(0);
@@ -334,9 +405,16 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     //     this.tabs.forEach(tab => tab.index = index);
     // }
     onAddDashboard(): void {
+        this._dashboardService.setSectionVisible(false);
+
+        // this._dashboardService.changeVisibility();
         this._router.navigate(['create'], {relativeTo: this._route});
-        // this.tabs.push('New');
-        // this.selected.setValue(this.tabs.length-1);
+
+        // this.dashboardDetail.sectionVisible = false;
+        // if (this.dashboardDetail) {
+        //     this.dashboardDetail.sectionVisible = false;
+        //   }
+        
     }
 
     // addTab(selectAfterAdding: boolean) {
@@ -378,9 +456,10 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
                                     'Xóa dashboard thành công'
                                 );
                                 this.clearData();
-                                this._router.navigate(['empty'], {
-                                    relativeTo: this._route,
-                                });
+                                // this._router.navigate(['empty'], {
+                                //     relativeTo: this._route,
+                                // });
+                                this.getDashboard();
                                 break;
                             case 0:
                                 this._messageService.showErrorMessage(
@@ -440,8 +519,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
             `Bạn chắc chắn muốn ẩn dashboard ${dashboard.NAME}`,
             (toast: SnotifyToast) => {
                 this._messageService.notify().remove(toast.id);
-                // dashboard.ENABLE = !dashboard.ENABLE;
-                this._dashboardService.dashboard$
+                dashboard.ENABLE = !dashboard.ENABLE;
+                this._dashboardService.updateDashboard(dashboard)
                     // .deleteDashboard(this.dashboardId, this.user.userId)
                     .pipe(takeUntil(this._unsubscribeAll))
                     .subscribe((response: any) => {
@@ -454,9 +533,12 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
                                     'Thông báo',
                                     'Đã ẩn dashboard'
                                 );
-                                this._router.navigate(['empty'], {
-                                    relativeTo: this._route,
-                                });
+                                // this._router.navigate(['empty'], {
+                                //     relativeTo: this._route,
+                                // });
+                                console.log(dashboard.ENABLE);
+                                
+                                this.getDashboard();
                                 break;
                             case 0:
                                 this._messageService.showErrorMessage(

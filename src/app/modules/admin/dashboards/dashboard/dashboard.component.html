@@ -87,13 +87,16 @@
              (selectedIndexChange)="selectedTabValue($event)" 
         >
            
-              <ng-container *ngFor="let dashboard of dashboards; let index = index" >
-                <mat-tab *ngIf="dashboard.ENABLE" >
+              <ng-container *ngFor="let dashboard of dashboards; let index = index"  >
+                <mat-tab  >
                     <ng-template mat-tab-label="">
                         <span>{{dashboard.NAME}}</span>
-                        <button mat-icon-button >
+                        <button mat-icon-button (mouseenter)="showHideDescription=true" (mouseleave)="showHideDescription=false">
                           <mat-icon class="text-red-600" (click)="hideDashboard(dashboard)">close</mat-icon>
                           </button>
+                          <div *ngIf="showHideDescription">
+                            Ẩn dashboard
+                          </div>
                     </ng-template>
 
                 <!-- <mat-tab *ngFor="let dashboard of dashboards; let index = index" *ngIf="dashboard.ENABLE">

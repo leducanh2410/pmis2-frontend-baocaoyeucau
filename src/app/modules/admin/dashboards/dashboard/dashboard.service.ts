@@ -13,10 +13,23 @@ export class DashboardService {
     private _dashboard: BehaviorSubject<any> = new BehaviorSubject([]);
     // private _selectedIndex = new BehaviorSubject<number>(0)
     private _selectedIndex: BehaviorSubject<number> = new BehaviorSubject(0);
-    
+    private _sectionVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true); 
+    private _dashboardEnable: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+
+    sectionVisible$ = this._sectionVisible.asObservable();
     selectedIndex$ = this._selectedIndex.asObservable();
+    dashboardEnable$ = this._dashboardEnable.asObservable();
     setSelectedIndex(index: number) {
         this._selectedIndex.next(index);
+      }
+      setDashboardEnable(isEnable: boolean) {
+        this._dashboardEnable.next(isEnable);
+      }
+    // changeVisibility() {
+    //     this._sectionVisible.next(!this._sectionVisible.value);
+    // }
+    setSectionVisible(visible: boolean) {
+        this._sectionVisible.next(visible);
       }
     dashboardId$ = this._dashboard.asObservable();
     constructor(private _serviceService: ServiceService) {}
@@ -104,6 +117,10 @@ export class DashboardService {
         );
 
     }
+    hideDashboard(dashboard: any): void {
+        // Thực hiện logic ẩn dashboard ở đây
+        dashboard.ENABLE = false;
+      }
     getGroupAndDuLieuByUserId(userId: string): Observable<any> {
         return this._serviceService.execServiceLogin(
             '874A6C06-CBD4-4EAA-AFBC-F7238E483475',

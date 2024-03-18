@@ -8,7 +8,7 @@ import {
   URL,
 } from '../dashboard-constants';
 import { DashboardService } from '../dashboard.service';
-import { firstValueFrom, Subject, takeUntil } from 'rxjs';
+import { firstValueFrom, Subject, takeUntil, Subscription } from 'rxjs';
 import { MessageService } from 'app/shared/message.services';
 import { UserService } from 'app/core/user/user.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -21,6 +21,7 @@ import {
 import { SnotifyToast } from 'ng-alt-snotify';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
+import { DashboardComponent } from '../dashboard.component';
 
 @Component({
   selector: 'app-dashboard-detail',
@@ -30,7 +31,8 @@ import { MatInputModule } from '@angular/material/input';
 export class DashboardDetailComponent implements OnInit, OnDestroy {
   private _unsubscribeAll: Subject<any> = new Subject<any>();
   mode: number = MODE.EDIT;
-
+  // sectionVisible: boolean = true;
+  sectionVisible: boolean = null;
   charts: Chart[] = [];
   dataSource: Chart[] = [];
   userId: string = null;
@@ -43,6 +45,7 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
   @Input() dashboardName: string;
   dashboardEnable: boolean;
   dashboardId: string;
+  dashboards: any = [];
   dashboard: Dashboard = {
     MA_DASHBOARD: '',
     LAYOUT: '',
@@ -59,7 +62,7 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
     isEdit: false,
   };
   selectedIndex: number;
-
+  dashboardComponent: DashboardComponent;
   constructor(
     private _dashboardService: DashboardService,
     private _messageService: MessageService,
@@ -67,21 +70,31 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
     private _dialog: MatDialog,
     private _router: Router,
     private _route: ActivatedRoute
-  ) { }
+  ) { 
+    // this.subscription = this._dashboardService.sectionVisible$.subscribe(
+    //   visible => (this.sectionVisible = visible)
+    // );
+  }
 
   ngOnDestroy(): void {
     this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();
+    // this.subscription.unsubscribe();
+
   }
 
   async ngOnInit() {
+    // this.sectionVisible = true;
     // this.dashboardEnable = this.dashboard.ENABLE ;
     this._userService.user$
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((response: any) => {
         this.userId = response.userId;
       });
-
+    
+    this._dashboardService.sectionVisible$.subscribe((visible: any) => {
+      this.sectionVisible = visible;
+    })
     await firstValueFrom(
       this._dashboardService.getChartsByUserId(this.userId)
     ).then((response: any) => {
@@ -110,6 +123,7 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
     
     if (this._router.url === URL.CREATE) {
       this.mode = MODE.CREATE;
+      // this._dashboardService.changeVisibility
     } else if (this._router.url.includes(URL.EDIT)) {
         this.mode = MODE.EDIT;
         this._route.params.subscribe((response: any) => {
@@ -423,7 +437,7 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
       this.dashboard.USER_CR_ID = this.userId;
       // this.dashboard.NAME = this.dashboardName;
 
-      this._dashboardService
+     this._dashboardService
         .createDashboard(this.dashboard)
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((response: any) => {
@@ -432,6 +446,7 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
               'Thông báo',
               'Tạo dashboard thành công'
             );
+            this.dashboards = response.data;
             setTimeout(() => {
               this.routeToHome();
             }, 200);
@@ -454,6 +469,8 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
               'Thông báo',
               'Cập nhật dashboard thành công'
             );
+            console.log(this.dashboard.ENABLE);
+            
             setTimeout(() => {
               this.routeToHome();
             }, 200);
@@ -512,9 +529,12 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
   routeToHome(): void {
     this._router.navigate(['dashboards/dashboard']);
   }
-  toggleEnable() {
-    // this.dashboardEnable = true;
-    //  this.dashboardEnable = !this.dashboardEnable;
-    // dashboard.ENABLE = !this.dashboardEnable;
-  }
+  onDashboardEnableChange(): void {
+    // if (!this.dashboard.ENABLE) {
+    //     // Gọi hàm hideDashboard từ service hoặc component phụ trách quản lý dashboards
+    //     this._dashboardService.hideDashboard(this.dashboard);
+    // }
+    // const isEnable = this.dashboard.ENABLE;
+    // this._dashboardService.setDashboardEnable(isEnable);
+}
 }
