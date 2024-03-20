@@ -41,7 +41,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     layout: string;
     dashboardName: string;
     loading: boolean;
-    showHideDescription: boolean = false;
     constructor(
         private _userService: UserService,
         private _dashboardService: DashboardService,

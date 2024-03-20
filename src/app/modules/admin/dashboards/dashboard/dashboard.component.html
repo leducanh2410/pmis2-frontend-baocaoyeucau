@@ -53,7 +53,7 @@
       </div> -->
       <div class="flex flex-row w-full justify-end space-x-4 items-center">
          <button (click)="popUpListDashboard()">
-            <mat-icon>grid_on</mat-icon>
+            <mat-icon matTooltip="Danh sách dashboard">grid_on</mat-icon>
         </button> 
         <button
             mat-flat-button
@@ -91,12 +91,15 @@
                 <mat-tab  >
                     <ng-template mat-tab-label="">
                         <span>{{dashboard.NAME}}</span>
-                        <button mat-icon-button (mouseenter)="showHideDescription=true" (mouseleave)="showHideDescription=false">
-                          <mat-icon class="text-red-600" (click)="hideDashboard(dashboard)">close</mat-icon>
+                        <div class="">
+                        <button mat-icon-button >
+                          <mat-icon matTooltip="Ẩn dashboard" class="text-red-600" (click)="hideDashboard(dashboard)">close</mat-icon>
                           </button>
-                          <div *ngIf="showHideDescription">
+                          <!-- <div *ngIf="showHideDescription[index]" 
+                          class="">
                             Ẩn dashboard
-                          </div>
+                          </div> -->
+                        </div>
                     </ng-template>
 
                 <!-- <mat-tab *ngFor="let dashboard of dashboards; let index = index" *ngIf="dashboard.ENABLE">

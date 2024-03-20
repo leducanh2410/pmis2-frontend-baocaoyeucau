@@ -286,7 +286,7 @@
                 </td>
                 <td class="w-96 text-center">
                     <div class="flex flex-row">
-                    <button class="mr-8" (click)="onEditDashboard(dashboard.MA_DASHBOARD)">
+                    <button matTooltip="Chi tiết dashboard" class="mr-8" (click)="onEditDashboard(dashboard.MA_DASHBOARD)">
                         <!-- <button class="mr-8" (click)="onEditDashboard(dashboardId)"> -->
 
                         <mat-icon>remove_red_eye</mat-icon>
@@ -296,11 +296,11 @@
                         <button (click)="cancel(dashboard)"> <mat-icon>close</mat-icon> </button>
                     </div>
                    
-                        <button *ngIf="!dashboard.isEdit" class="mr-8" >
+                        <button matTooltip="Sửa dashboard" *ngIf="!dashboard.isEdit" class="mr-8" >
                             <mat-icon svgIcon="mat_outline:edit" (click)= onEdit(dashboard)></mat-icon>
                         </button>
                     
-                    <button>
+                    <button matTooltip="Xóa dashboard">
                         <mat-icon svgIcon="mat_outline:delete" class="text-red-600" (click)="deleteDashboard(dashboard)"></mat-icon>
                     </button>
                 </div>
