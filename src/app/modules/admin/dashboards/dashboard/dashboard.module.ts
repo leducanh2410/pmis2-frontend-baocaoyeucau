@@ -21,7 +21,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgChartsModule } from 'ng2-charts';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {MatTabsModule} from '@angular/material/tabs';
- import { DashboardTabComponent } from './dashboard-tab/dashboard-tab.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {ReactiveFormsModule} from '@angular/forms';
 import { DashboardListComponent } from './dashboard-list/dashboard-list.component';
@@ -32,7 +31,6 @@ import { DashboardListComponent } from './dashboard-list/dashboard-list.componen
     EmptyDashboardComponent,
     DashboardDetailComponent,
     LayoutDialogComponent,
-     DashboardTabComponent,
      DashboardListComponent
   ],
   imports: [

@@ -246,7 +246,7 @@
 
 <div>
     <span  class="font-bold text-3xl">Danh sách Dashboard</span>
-    <table class="w-full border-collapse ">
+    <table class="w-full border-solid ">
         <thead>
             <tr >
                 <th class="w-20 text-center">STT</th>
@@ -255,7 +255,7 @@
                 <th class="w-1/5"> </th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="divide-y divide-gray-300">
             <tr *ngFor="let dashboard of dashboards; let i = index" >
                 <td class="w-20 text-center"> {{i+1}}</td>
                 <td class="w-2/5 text-center">
