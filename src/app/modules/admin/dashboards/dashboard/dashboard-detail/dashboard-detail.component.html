@@ -41,14 +41,14 @@
             <!-- <div class="z-10 relative flex flex-row flex-0 w-full border-b justify-between"> -->
                 <div class="z-10 relative flex flex-row flex-0 w-full border-b justify-between">
                 <div class="flex items-center min-h-16 px-4 md:px-6 border-b space-x-4">
-                    <mat-form-field class="flex items-center w-80 mt-6 ml-2" appearance="fill">
+                    <mat-form-field class="flex items-center  mt-6 ml-2" appearance="fill">
                         <!-- <mat-label>Tên dashboard</mat-label> -->
-                        <input class="w-80" matInput  placeholder="Nhập tên dashboard" [(ngModel)] = "dashboard.NAME">
+                        <input class=" w-100" matInput  placeholder="Nhập tên dashboard" [(ngModel)] = "dashboard.NAME">
                         <!-- [(ngModel)] = "dashboard.NAME"> -->
                       </mat-form-field>
                     <div class="flex flex-row ml-1 mt-2 space-x-4" *ngIf="sectionVisible">
                         <span>Cho phép sử dụng:</span>
-                        <mat-checkbox class="example-margin" [(ngModel)]="dashboard.ENABLE" (change)="onDashboardEnableChange()" >
+                        <mat-checkbox class="example-margin" [(ngModel)]="dashboard.ENABLE"  >
                         </mat-checkbox>
                     </div>
                     <div class="flex items-center min-h-16 px-4 md:px-6 border-b">

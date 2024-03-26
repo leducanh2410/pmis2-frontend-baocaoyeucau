@@ -116,14 +116,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
                         });
                     } else {
                         this.dashboards = response.data;
-                        // this._dashboardService.dashboardEnable$
-                        // .pipe(takeUntil(this._unsubscribeAll))
-                        // .subscribe(isEnable => {
-                        //     console.log(isEnable);
-                            
-                        //  if (isEnable == false) {
-                        //     this.renderDashboardAdjusted();
-                        //  } else {
+                        
                             this.renderDashboard();
                          
                     }
@@ -261,51 +254,51 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log(this.dashboardId); 
             
     }
-    async renderDashboardAdjusted() {
-        if (!this.dashboards || this.dashboards.length == 0) {
-            return;
-        } 
-        if (this.tabIndex>0) {
-            await this._dashboardService
-            .getDashboardData(this.dashboards[this.tabIndex-1].MA_DASHBOARD)
-            .pipe(takeUntil(this._unsubscribeAll))
-            .toPromise()
-            .then((response: any) => {
-                if (response.status == 1) {
-                    this.getChartData(response.data);
-                    console.log(this.dashboards);
-                    console.log(this.tabIndex);
-                } else {
-                    if (response.status != 2) {
-                        this._messageService.showErrorMessage(
-                            'Thông báo',
-                            response.message
-                        );
-                    }
-                } 
-            });
-        console.log(this.dashboardId);
-        } else {
-            await this._dashboardService
-            .getDashboardData(this.dashboards[this.tabIndex+1].MA_DASHBOARD)
-            .pipe(takeUntil(this._unsubscribeAll))
-            .toPromise()
-            .then((response: any) => {
-                if (response.status == 1) {
-                    this.getChartData(response.data);
-                    console.log(this.dashboards);
-                    console.log(this.tabIndex);
-                } else {
-                    if (response.status != 2) {
-                        this._messageService.showErrorMessage(
-                            'Thông báo',
-                            response.message
-                        );
-                    }
-                } 
-            });
-        }
-    }
+    // async renderDashboardAdjusted() {
+    //     if (!this.dashboards || this.dashboards.length == 0) {
+    //         return;
+    //     } 
+    //     if (this.tabIndex>0) {
+    //         await this._dashboardService
+    //         .getDashboardData(this.dashboards[this.tabIndex-1].MA_DASHBOARD)
+    //         .pipe(takeUntil(this._unsubscribeAll))
+    //         .toPromise()
+    //         .then((response: any) => {
+    //             if (response.status == 1) {
+    //                 this.getChartData(response.data);
+    //                 console.log(this.dashboards);
+    //                 console.log(this.tabIndex);
+    //             } else {
+    //                 if (response.status != 2) {
+    //                     this._messageService.showErrorMessage(
+    //                         'Thông báo',
+    //                         response.message
+    //                     );
+    //                 }
+    //             } 
+    //         });
+    //     console.log(this.dashboardId);
+    //     } else {
+    //         await this._dashboardService
+    //         .getDashboardData(this.dashboards[this.tabIndex+1].MA_DASHBOARD)
+    //         .pipe(takeUntil(this._unsubscribeAll))
+    //         .toPromise()
+    //         .then((response: any) => {
+    //             if (response.status == 1) {
+    //                 this.getChartData(response.data);
+    //                 console.log(this.dashboards);
+    //                 console.log(this.tabIndex);
+    //             } else {
+    //                 if (response.status != 2) {
+    //                     this._messageService.showErrorMessage(
+    //                         'Thông báo',
+    //                         response.message
+    //                     );
+    //                 }
+    //             } 
+    //         });
+    //     }
+    // }
     // Lấy kích thước của khung thứ nhất
     getFrame1Width(): string {
         if (this.layout == LayoutType.LT1) {
@@ -381,14 +374,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         // this.dashboardDetail.sectionVisible = true;
 
     }
-     tabs = [];
-     selected = new FormControl(0);
-    //  selectedTabValue($event) {
-    //     console.log('assa',$event);
-    //     //thay đổi db id + gọi hàm render
-    //     // this.dashboardId = this.tabs[this.tan]
-    //     this.renderDashboard();
-    //  }
+   
+   
     selectedTabValue(index: number) {
         // console.log('assa',$event);
         this._dashboardService.setSelectedIndex(index);
@@ -397,9 +384,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         // this.dashboardId = this.tabs[this.tan]
         this.renderDashboard();
      }
-     removeTab(index: number) {
-        this.tabs.splice(index, 1); // Remove the tab from the array
-      }
+    
     // onTabChange(index: number): void {
     //     this.tabs.forEach(tab => tab.index = index);
     // }

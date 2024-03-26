@@ -529,12 +529,5 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
   routeToHome(): void {
     this._router.navigate(['dashboards/dashboard']);
   }
-  onDashboardEnableChange(): void {
-    // if (!this.dashboard.ENABLE) {
-    //     // Gọi hàm hideDashboard từ service hoặc component phụ trách quản lý dashboards
-    //     this._dashboardService.hideDashboard(this.dashboard);
-    // }
-    // const isEnable = this.dashboard.ENABLE;
-    // this._dashboardService.setDashboardEnable(isEnable);
-}
+ 
 }
