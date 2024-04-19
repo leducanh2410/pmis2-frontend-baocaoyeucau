@@ -19,7 +19,8 @@ import { FormControl } from '@angular/forms';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { DashboardListComponent } from './dashboard-list/dashboard-list.component';
 import { DashboardDetailComponent } from './dashboard-detail/dashboard-detail.component';
-
+import { ShareUserDialogComponent } from 'app/modules/nghiepvu/khaithac/khaithacdulieu/detail/share-user-dialog/share-user-dialog.component';
+import { ListUserDialogComponent } from './list-user-dialog/list-user-dialog.component';
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
@@ -41,6 +42,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     layout: string;
     dashboardName: string;
     loading: boolean;
+    editable: boolean;
+    shareable: boolean;
     constructor(
         private _userService: UserService,
         private _dashboardService: DashboardService,
@@ -106,7 +109,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     getDashboard(): void {
         this._dashboardService
-            .getEnableDashboardByUserId(this.user.userId)
+            .getDashboardSharedAndCreatedByUserId(this.user.userId)
             .subscribe((response: any) => {
                 console.log('Thong bao', response);
                 if (response.status == 1) {
@@ -164,6 +167,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
                 }
             }
         });
+        
         // this._dashboardService
         //     .getEnableDashboardByUserId(this.user.userId)
         //     .subscribe((response: any) => {
@@ -201,6 +205,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         // //     this.dashboards = res;
         // // })
         this.getDashboard();
+        
     }
 
     initDashboard(data: any): void {
@@ -240,8 +245,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
                 .then((response: any) => {
                     if (response.status == 1) {
                         this.getChartData(response.data);
-                        console.log(this.dashboards);
-                        console.log(this.tabIndex);
+                        // console.log(this.dashboards);
+                        // console.log(this.tabIndex);
                     } else {
                         if (response.status != 2) {
                             this._messageService.showErrorMessage(
@@ -252,53 +257,32 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
                     } 
                 });
             console.log(this.dashboardId); 
+            this._dashboardService.getDashboardInfo(this.dashboardId)
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((respond: any) => {
+            console.log(this.dashboardId, this.user.userId);
+            console.log(respond.data);
+        if (respond.data.USER_CR_ID == this.user.userId) {
+            this.editable = true;
+            this.shareable = true;
+        } else {
+            
+                if (respond.data.EDITABLE) {
+                    this.editable = true;
+                } else {
+                    this.editable = false;
+                }
+                if (respond.data.SHAREABLE) {
+                    this.shareable = true;
+                } else {
+                    this.shareable = false;
+                }
+           
+        } 
+        })
             
     }
-    // async renderDashboardAdjusted() {
-    //     if (!this.dashboards || this.dashboards.length == 0) {
-    //         return;
-    //     } 
-    //     if (this.tabIndex>0) {
-    //         await this._dashboardService
-    //         .getDashboardData(this.dashboards[this.tabIndex-1].MA_DASHBOARD)
-    //         .pipe(takeUntil(this._unsubscribeAll))
-    //         .toPromise()
-    //         .then((response: any) => {
-    //             if (response.status == 1) {
-    //                 this.getChartData(response.data);
-    //                 console.log(this.dashboards);
-    //                 console.log(this.tabIndex);
-    //             } else {
-    //                 if (response.status != 2) {
-    //                     this._messageService.showErrorMessage(
-    //                         'Thông báo',
-    //                         response.message
-    //                     );
-    //                 }
-    //             } 
-    //         });
-    //     console.log(this.dashboardId);
-    //     } else {
-    //         await this._dashboardService
-    //         .getDashboardData(this.dashboards[this.tabIndex+1].MA_DASHBOARD)
-    //         .pipe(takeUntil(this._unsubscribeAll))
-    //         .toPromise()
-    //         .then((response: any) => {
-    //             if (response.status == 1) {
-    //                 this.getChartData(response.data);
-    //                 console.log(this.dashboards);
-    //                 console.log(this.tabIndex);
-    //             } else {
-    //                 if (response.status != 2) {
-    //                     this._messageService.showErrorMessage(
-    //                         'Thông báo',
-    //                         response.message
-    //                     );
-    //                 }
-    //             } 
-    //         });
-    //     }
-    // }
+    
     // Lấy kích thước của khung thứ nhất
     getFrame1Width(): string {
         if (this.layout == LayoutType.LT1) {
@@ -410,8 +394,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     // }
     popUpListDashboard(): void {
        const dialogList = this._matDialog.open(DashboardListComponent, {
-            width: '994px',
-            height: '502px'
+            width: '1100px',
+            height: '570px'
         });
 
         dialogList.afterClosed().subscribe((response: string) => {
@@ -421,6 +405,18 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
             } else {
                 this.getDashboard();
             }
+          })
+    }
+    onShareDashboard(): void {
+        const dialogList = this._matDialog.open(ListUserDialogComponent, {
+            width: '997px',
+            height: '520px',
+            data: { dashboardId: this.dashboardId }
+        });
+        dialogList.afterClosed().subscribe((response: string) => {
+            // console.log(response);
+            console.log(this.dashboardId);
+            
           })
     }
     onDeleteDashboard() {

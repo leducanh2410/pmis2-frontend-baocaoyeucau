@@ -24,6 +24,10 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {ReactiveFormsModule} from '@angular/forms';
 import { DashboardListComponent } from './dashboard-list/dashboard-list.component';
+import { ListUserDialogComponent } from './list-user-dialog/list-user-dialog.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { ShareDashboardUserDialogComponent } from './share-dashboard-user-dialog/share-dashboard-user-dialog.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +35,9 @@ import { DashboardListComponent } from './dashboard-list/dashboard-list.componen
     EmptyDashboardComponent,
     DashboardDetailComponent,
     LayoutDialogComponent,
-     DashboardListComponent
+     DashboardListComponent,
+     ListUserDialogComponent,
+     ShareDashboardUserDialogComponent
   ],
   imports: [
     CommonModule,
@@ -40,7 +46,7 @@ import { DashboardListComponent } from './dashboard-list/dashboard-list.componen
     DragDropModule, MatFormFieldModule, MatInputModule,
     FormsModule, MatDialogModule, DialogModule,
     MatProgressSpinnerModule, NgChartsModule, MatTooltipModule, MatTabsModule, MatCheckboxModule,
-    ReactiveFormsModule
+    ReactiveFormsModule, MatTableModule, MatPaginatorModule
   ],
   providers: [
     FuseSplashScreenService

@@ -224,6 +224,8 @@ export class KhaiThacDuLieuDetailsComponent extends BaseComponent implements OnI
                     .pipe(takeUntil(this._unsubscribeAll))
                     .subscribe((response: any) => {
                         this.sharedObject = response.find(e => e.MA_DULIEU == this.object.MA_DULIEU);
+                        console.log(this.sharedObject);
+                        
                     });
             });
     }

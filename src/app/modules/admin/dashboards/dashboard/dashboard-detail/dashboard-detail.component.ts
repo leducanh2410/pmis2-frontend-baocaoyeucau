@@ -22,7 +22,7 @@ import { SnotifyToast } from 'ng-alt-snotify';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { DashboardComponent } from '../dashboard.component';
-
+import { ShareDashboardUserDialogComponent } from '../share-dashboard-user-dialog/share-dashboard-user-dialog.component';
 @Component({
   selector: 'app-dashboard-detail',
   templateUrl: './dashboard-detail.component.html',
@@ -63,6 +63,7 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
   };
   selectedIndex: number;
   dashboardComponent: DashboardComponent;
+  isShared: boolean;
   constructor(
     private _dashboardService: DashboardService,
     private _messageService: MessageService,
@@ -143,60 +144,16 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
           
            
         };
-        
-        // let getDashboardByDashboardId = await firstValueFrom(this._dashboardService.getDashboardByUserId(this.userId));
-
-        // if (getDashboardByDashboardId.status == 1) {
-        //   if (this.mode === MODE.CREATE) {
-        //     // if (getDashboardByUserId.data.length > 0) {
-        //     //   setTimeout(() => {
-        //     //     this.routeToHome();
-        //     //   }, 200);
-        //     // }
-        //   }
-        //    else if (this.mode === MODE.EDIT) {
-        //     if (getDashboardByDashboardId.data.length <= 0) {
-        //       setTimeout(() => {
-        //         this.routeToHome();
-        //       }, 200);
-        //     } else {
-        //       // this._dashboardService.selectedIndex$.subscribe(index => {
-        //       //   this.selectedIndex = index;
-        //       //   // Now you can use this.selectedIndex to load the correct dashboard
-        //       //   // Make sure to check if getDashboardByUserId.data has the index
-        //       //   // if (getDashboardByUserId.data && getDashboardByUserId.data.length > index) {
-        //       //     this.loadData(getDashboardByDashboardId.data[index]);
-        //       //     console.log(getDashboardByDashboardId.data);
-        //       //   // }
-        //       // });
-
-        //       // this._dashboardService.dashboard$.subscribe(dashboard => {
-        //       //   this.dashboard = dashboard;
-        //       //   this.dashboardId = dashboard.MA_DASHBOARD;
-        //       //   this.loadData(getDashboardByDashboardId.data);
-        //       // });
-
-        //       this._dashboardService.dashboard$.subscribe(dashboard => {
-        //         // this.dashboard = dashboard;
-        //         this.dashboardId = dashboard.MA_DASHBOARD;
-        //         this.loadData(getDashboardByDashboardId.data);
-        //       })
-        //     }
-        //   }
-        // }
-        // if (getDashboardByDashboardId.status == 1) {
-        //   // if (getDashboardByDashboardId.data.length <= 0) {
-        //   //         setTimeout(() => {
-        //   //           this.routeToHome();
-        //   //         }, 200);
-        //   //       } else {
-        //   this.loadData(getDashboardByDashboardId.data);
-        // } else {
-        //   this._messageService.showErrorMessage(
-        //     'Thông báo',
-        //     getDashboardByDashboardId.message
-        //   );
-        // }
+        this._dashboardService.checkIfDashboardIsShared(this.dashboardId, this.userId)
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((respond: any) => {
+          console.log(respond);
+          if (respond.data.length > 0) {
+            this.isShared = true;
+          } else {
+            this.isShared = false;
+          }
+        })
       }
 
   
@@ -525,7 +482,19 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
       }
     );
   }
+  showSharedDashboardUsersDialog(): void {
+    const dialogRef = this._dialog.open(ShareDashboardUserDialogComponent, {
+      width: '50%',
+      height: 'auto',
+      data: {
+        userId: this.userId,
+        dashboardId: this.dashboardId
+      }
+    });
+    dialogRef.afterClosed().subscribe((response: any) => {
 
+    })
+  }
   routeToHome(): void {
     this._router.navigate(['dashboards/dashboard']);
   }

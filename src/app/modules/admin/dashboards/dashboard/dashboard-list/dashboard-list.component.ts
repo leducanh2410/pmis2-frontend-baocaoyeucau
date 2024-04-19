@@ -101,21 +101,7 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
     //     });
 }
 
-//   initDashboard(data: any): void {
-//     this.dashboardId = data.MA_DASHBOARD;
-//     // this.layout = data.LAYOUT;
 
-//     // let layouts = data.POSITION.split(';');
-//     // layouts.forEach((e) => {
-//     //     if (e == Frame.F1) {
-//     //         this.lstFrame1Charts.push(DEFAULT_NULL_CHART);
-//     //     } else if (e == Frame.F2) {
-//     //         this.lstFrame2Charts.push(DEFAULT_NULL_CHART);
-//     //     } else {
-//     //         this.lstFrame3Charts.push(DEFAULT_NULL_CHART);
-//     //     }
-//     // });
-// }
   onEdit(dashboard: any) {
     dashboard.isEdit = true;
     this.dashboardName = dashboard.NAME;

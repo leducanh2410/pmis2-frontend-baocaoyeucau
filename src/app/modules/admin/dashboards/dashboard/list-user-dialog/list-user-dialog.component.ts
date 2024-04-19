@@ -3,18 +3,19 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UserService } from 'app/core/user/user.service';
 import { User } from 'app/core/user/user.types';
 import { ReplaySubject, takeUntil } from 'rxjs';
-import { KhaiThacDuLieuService } from '../../khaithacdulieu.service';
+import { KhaiThacDuLieuService } from 'app/modules/nghiepvu/khaithac/khaithacdulieu/khaithacdulieu.service';
 import { MessageService } from 'app/shared/message.services';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MauDuLieuShare } from 'app/core/models/MauDuLieuShare';
-import { DashboardService } from 'app/modules/admin/dashboards/dashboard/dashboard.service';
+import { DashboardShare } from 'app/core/models/DashboardShare';
+import { DashboardService } from '../dashboard.service';
 @Component({
-  selector: 'app-share-dialog',
-  templateUrl: './share-dialog.component.html',
-  styleUrls: ['./share-dialog.component.scss']
+  selector: 'app-list-user-dialog',
+  templateUrl: './list-user-dialog.component.html',
+  styleUrls: ['./list-user-dialog.component.scss']
 })
-export class ShareDialogComponent implements OnInit, OnDestroy {
+export class ListUserDialogComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['CHECKBOX', 'USERID', 'USERNAME', 'EDITABLE', 'SHAREABLE'];
   user: User;
   private _unsubsribeAll: ReplaySubject<any> = new ReplaySubject(null);
@@ -22,26 +23,21 @@ export class ShareDialogComponent implements OnInit, OnDestroy {
   @ViewChild('paginator') paginator: MatPaginator;
   lstSelectedDuLieu: string[];
   filterValue: string;
-  title: string;
-  isCopy: boolean;
-
+  // title: string;
+  // isCopy: boolean;
+  dashboardId: string
   constructor(
-    @Inject(MAT_DIALOG_DATA) data: { lstSelectedDuLieu: string[], title: string, isCopy: boolean },
-    public dialogRef: MatDialogRef<ShareDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) data: { dashboardId: string },
+    public dialogRef: MatDialogRef<ListUserDialogComponent>,
     private _userService: UserService,
     private _khaiThacDuLieuService: KhaiThacDuLieuService,
     private _messageService: MessageService,
     private _dashboardService: DashboardService
   ) { 
-    this.lstSelectedDuLieu = data.lstSelectedDuLieu;
+    this.dashboardId = data.dashboardId;
     this.filterValue = '';
-    this.title = data.title;
-    this.isCopy = data.isCopy;
-    if (this.isCopy) {
-      this.displayedColumns = ['CHECKBOX', 'USERID', 'USERNAME'];
-    } else {
-      this.displayedColumns = ['CHECKBOX', 'USERID', 'USERNAME', 'EDITABLE', 'SHAREABLE'];
-    }
+    this.displayedColumns = ['CHECKBOX', 'USERID', 'USERNAME', 'EDITABLE', 'SHAREABLE'];
+    
   }
 
   ngOnDestroy(): void {
@@ -57,11 +53,12 @@ export class ShareDialogComponent implements OnInit, OnDestroy {
         this.user = response;
       });
     
-    // this._khaiThacDuLieuService.getAllUserSameOrg(this.user.userId)
     this._dashboardService.getAllUser(this.user.userId)
       .pipe(takeUntil(this._unsubsribeAll))
       .subscribe((response: any) => {
         if (response.status == 1) {
+          console.log(response);
+          
           this.lstUserDataSource = new MatTableDataSource(response.data);
           this.lstUserDataSource.paginator = this.paginator;
           this.lstUserDataSource.filterPredicate = (data: any, filter: string) => data.USERID.indexOf(filter) != -1 || data.USERNAME.indexOf(filter) != -1;
@@ -115,29 +112,29 @@ export class ShareDialogComponent implements OnInit, OnDestroy {
     record[type] = event.checked ? 1 : 0;
   }
 
-  onSave(): void {
+  onSave(dashboardId: string): void {
     try {
       this.lstUserDataSource.data.forEach(e => {
         if (e.SELECTED == 1) {
-          this.lstSelectedDuLieu.forEach(ee => {
-            if (this.isCopy) {
-              this._khaiThacDuLieuService.insertMauDuLieuCopy(ee, e.USERID, this.user.userId).subscribe();
-            } else {
-              let body: MauDuLieuShare = {
-                MA_DULIEU: ee,
-                USERID: e.USERID,
+          // this.lstSelectedDuLieu.forEach(ee => {
+            // if (this.isCopy) {
+            //   this._khaiThacDuLieuService.insertMauDuLieuCopy(ee, e.USERID, this.user.userId).subscribe();
+            // } else {
+              let body: DashboardShare = {
+                MA_DASHBOARD: dashboardId,
+                USER_ID: e.USERID,
                 USER_CR_ID: this.user.userId,
                 EDITABLE: e.EDITABLE,
                 SHAREABLE: e.SHAREABLE,
-              }
-              this._khaiThacDuLieuService.insertMauDuLieuShare(body).subscribe(); 
-            }
-          });
+               }
+              this._dashboardService.insertDashboardShare(body).subscribe(); 
+            // }
+          // });
         }
       });
-      this._messageService.showSuccessMessage('Thông báo', this.isCopy ? 'Dữ liệu được sao chép thành công' : 'Chia sẻ dữ liệu khai thác tới người dùng khác thành công');
+      this._messageService.showSuccessMessage('Thông báo', 'Chia sẻ dashboard tới người dùng khác thành công');
     } catch (error) {
-      this._messageService.showErrorMessage('Thông báo', 'Xảy ra lỗi khi chia sẻ dữ liệu khai thác tới người dùng khác');
+      this._messageService.showErrorMessage('Thông báo', 'Xảy ra lỗi khi chia sẻ dashboard tới người dùng khác');
     }
   }
 }

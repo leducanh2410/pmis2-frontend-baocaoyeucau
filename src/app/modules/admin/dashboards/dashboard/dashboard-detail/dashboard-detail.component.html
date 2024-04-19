@@ -61,7 +61,10 @@
                 
                 <!-- Toolbar -->
                 <div class="flex items-center min-h-16 px-4 md:px-6 border-b">
-
+                    <button mat-flat-button [color]="'primary'" class="mx-1" *ngIf="isShared" (click)="showSharedDashboardUsersDialog()">
+                        <mat-icon svgIcon="mat_outline:supervisor_account"></mat-icon>
+                        <span class="ml-2 mr-1">Đã chia sẻ</span>
+                    </button>
                     <button mat-flat-button form="dialogForm" [color]="'primary'" (click)="onSaveDashboard()">
                         <mat-icon svgIcon="mat_outline:save"></mat-icon>
                         <span class="ml-2 mr-1">Ghi</span>
