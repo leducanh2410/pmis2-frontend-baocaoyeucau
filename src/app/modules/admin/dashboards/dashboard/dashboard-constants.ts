@@ -49,7 +49,10 @@ export interface Dashboard {
     NAME: string;
     ENABLE:boolean;
     ORD: number;
-     isEdit: boolean 
+     isEdit: boolean;
+     CHECKED?: boolean;
+    EDITABLE?: boolean;
+    SHAREABLE?: boolean; 
 }
 
 export interface ChartDetail {

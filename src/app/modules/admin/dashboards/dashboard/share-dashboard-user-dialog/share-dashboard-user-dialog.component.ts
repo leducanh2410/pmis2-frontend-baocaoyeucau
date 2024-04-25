@@ -61,13 +61,15 @@ export class ShareDashboardUserDialogComponent implements OnInit {
   }
 
   onDeleteEvent(row: any): void {
-    this._messageService.showConfirm('Thông báo', `Bạn có chắc chắn muốn hủy chia sẻ dữ liệu cho người dùng ${row.USERNAME}?`, (toast: SnotifyToast) => {
+    this._messageService.showConfirm('Thông báo', `Bạn có chắc chắn muốn hủy chia sẻ dashboard cho người dùng ${row.USERNAME}?`, (toast: SnotifyToast) => {
       this._messageService.notify().remove(toast.id);
-      this._dashboardService.deleteSharedDashboard(this.dashboardId, row.USER_ID)
+      this._dashboardService.deleteSharedDashboard(row.USERID, this.dashboardId)
         .pipe(takeUntil(this._unsubsribeAll))
         .subscribe((response: any) => {
+          console.log(row);
+          
           if (response.status) {
-            this._messageService.showSuccessMessage('Thông báo', `Hủy chia sẻ dữ liệu tới người dùng ${row.USERNAME} thành công`);
+            this._messageService.showSuccessMessage('Thông báo', `Hủy chia sẻ dashboard tới người dùng ${row.USERNAME} thành công`);
             this.lstUserDataSource.data = this.lstUserDataSource.data.filter(e => e.USER_ID != row.USER_ID);
             this.lstUserDataSource.filterPredicate = (data: any, filter: string) => data.USER_ID.indexOf(filter) != -1 || data.USERNAME.indexOf(filter) != -1;
           } else {

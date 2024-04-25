@@ -1,9 +1,29 @@
 
 <div>
-    <span  class="font-bold text-3xl">Danh sách Dashboard</span>
-    <table class="w-full border-solid ">
+    <div class="flex flex-row justify-between">
+        <span  class="font-bold text-3xl">Danh sách Dashboard</span>
+        <div>
+        <button mat-flat-button class=" bg-emerald-800 text-white mr-30"
+        *ngIf="!showSharedCheckbox" (click)="chooseDashboardToShare()"
+    >
+        <mat-icon>share</mat-icon>
+        <span class="ml-2 mr-1">Chia sẻ</span>
+    </button>
+    <!-- <div class="flex flex-row justify-between"> -->
+    <button mat-icon-button *ngIf="showSharedCheckbox" (click)="showSharedUserDialog();"
+    matTooltip="Chia sẻ tới">
+    <mat-icon>person_add</mat-icon>
+  </button>
+  <button mat-icon-button *ngIf="showSharedCheckbox" (click)="cancelShare();"
+    matTooltip="Hủy chia sẻ dữ liệu">
+    <mat-icon>close</mat-icon>
+  </button>
+    </div>
+    </div>
+    <table class="w-full border-solid mt-5">
         <thead>
             <tr >
+                <th></th>
                 <th class="w-20 text-center">STT</th>
                 <th class="w-1/2 text-center">Tên dashboard</th>
                 <th class="w-1/10 text-center">Hiển thị</th>
@@ -12,6 +32,12 @@
         </thead>
         <tbody class="divide-y divide-gray-300">
             <tr *ngFor="let dashboard of dashboards; let i = index" >
+                <td>
+                    <mat-checkbox [checked]="dashboard?.CHECKED" *ngIf="showSharedCheckbox" 
+                    [disabled]="dashboard.SHAREABLE == false"
+                    (change)="dashboard?.CHECKED == null ? dashboard.CHECKED = true : dashboard.CHECKED = !dashboard.CHECKED">
+                  </mat-checkbox>
+                </td>
                 <td class="w-20 text-center"> {{i+1}}</td>
                 <td class="w-2/5 text-center">
                     <div *ngIf="dashboard.isEdit">

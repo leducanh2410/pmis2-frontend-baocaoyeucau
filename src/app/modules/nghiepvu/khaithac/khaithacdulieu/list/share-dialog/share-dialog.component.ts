@@ -9,6 +9,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MauDuLieuShare } from 'app/core/models/MauDuLieuShare';
 import { DashboardService } from 'app/modules/admin/dashboards/dashboard/dashboard.service';
+import { DashboardShare } from 'app/core/models/DashboardShare';
 @Component({
   selector: 'app-share-dialog',
   templateUrl: './share-dialog.component.html',
@@ -24,9 +25,10 @@ export class ShareDialogComponent implements OnInit, OnDestroy {
   filterValue: string;
   title: string;
   isCopy: boolean;
+  isShareDashboard: boolean;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) data: { lstSelectedDuLieu: string[], title: string, isCopy: boolean },
+    @Inject(MAT_DIALOG_DATA) data: { lstSelectedDuLieu: string[], title: string, isCopy: boolean, isShareDashboard: boolean },
     public dialogRef: MatDialogRef<ShareDialogComponent>,
     private _userService: UserService,
     private _khaiThacDuLieuService: KhaiThacDuLieuService,
@@ -37,6 +39,7 @@ export class ShareDialogComponent implements OnInit, OnDestroy {
     this.filterValue = '';
     this.title = data.title;
     this.isCopy = data.isCopy;
+    this.isShareDashboard = data.isShareDashboard;
     if (this.isCopy) {
       this.displayedColumns = ['CHECKBOX', 'USERID', 'USERNAME'];
     } else {
@@ -116,6 +119,29 @@ export class ShareDialogComponent implements OnInit, OnDestroy {
   }
 
   onSave(): void {
+    if (this.isShareDashboard == true) {
+      try {
+        this.lstUserDataSource.data.forEach(e => {
+          if (e.SELECTED == 1) {
+            this.lstSelectedDuLieu.forEach(ee => {
+             
+                let body: DashboardShare = {
+                  MA_DASHBOARD: ee,
+                  USER_ID: e.USERID,
+                  USER_CR_ID: this.user.userId,
+                  EDITABLE: e.EDITABLE,
+                  SHAREABLE: e.SHAREABLE,
+                 }
+                this._dashboardService.insertDashboardShare(body).subscribe(); 
+              
+            });
+          }
+        });
+        this._messageService.showSuccessMessage('Thông báo',  'Chia sẻ dashboard tới người dùng khác thành công');
+      } catch (error) {
+        this._messageService.showErrorMessage('Thông báo', 'Xảy ra lỗi khi chia sẻ dashboard tới người dùng khác');
+      }
+    } else {
     try {
       this.lstUserDataSource.data.forEach(e => {
         if (e.SELECTED == 1) {
@@ -139,5 +165,6 @@ export class ShareDialogComponent implements OnInit, OnDestroy {
     } catch (error) {
       this._messageService.showErrorMessage('Thông báo', 'Xảy ra lỗi khi chia sẻ dữ liệu khai thác tới người dùng khác');
     }
+   }
   }
 }

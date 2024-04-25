@@ -37,7 +37,6 @@ export class KhaiThacDuLieuListComponent implements OnInit, OnDestroy {
   showSharedCheckbox: boolean;
   showCopiedCheckbox: boolean;
   isCopy: boolean;
-
   /**
    * Constructor
    */
@@ -67,6 +66,8 @@ export class KhaiThacDuLieuListComponent implements OnInit, OnDestroy {
     this._khaithacdulieuService.lstKhaiThacDuLieu$
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((lstKhaiThacDuLieu: any[]) => {
+        console.log(lstKhaiThacDuLieu);
+        
         this.lstKhaiThacDuLieu = lstKhaiThacDuLieu;
         // this.lstKhaiThacDuLieu = lstKhaiThacDuLieu.filter(e => this.lstKhaiThacDuLieuShared.filter(ee => ee.MA_DULIEU == e.MA_DULIEU).length == 0);
         this.dataSource = this.lstKhaiThacDuLieu;
@@ -77,6 +78,8 @@ export class KhaiThacDuLieuListComponent implements OnInit, OnDestroy {
     this._khaithacdulieuService.Object$
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((object: any) => {
+        console.log(object);
+        
         this.selectedObject = object;
       });
 
@@ -180,7 +183,8 @@ export class KhaiThacDuLieuListComponent implements OnInit, OnDestroy {
       data: { 
         lstSelectedDuLieu: lstSelectedDuLieu,
         isCopy: this.isCopy,
-        title: this.isCopy ? 'Sao chép dữ liệu cho người dùng khác' : 'Chia sẻ dữ liệu tới người dùng khác'
+        title: this.isCopy ? 'Sao chép dữ liệu cho người dùng khác' : 'Chia sẻ dữ liệu tới người dùng khác',
+        isShareDashboard: false,
       }
     });
 

@@ -109,7 +109,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     getDashboard(): void {
         this._dashboardService
-            .getDashboardSharedAndCreatedByUserId(this.user.userId)
+            .getDashboardSharedAndCreatedEnableByUserId(this.user.userId)
             .subscribe((response: any) => {
                 console.log('Thong bao', response);
                 if (response.status == 1) {

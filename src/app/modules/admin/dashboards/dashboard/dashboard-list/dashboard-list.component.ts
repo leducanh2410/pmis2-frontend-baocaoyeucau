@@ -6,9 +6,11 @@ import { UserService } from 'app/core/user/user.service';
 import { User } from 'app/core/user/user.types';
 import { Subject, filter, takeUntil } from 'rxjs';
 import { MessageService } from 'app/shared/message.services';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { SnotifyToast } from 'ng-alt-snotify';
+import { ListUserDialogComponent } from '../list-user-dialog/list-user-dialog.component';
+import { ShareDialogComponent } from 'app/modules/nghiepvu/khaithac/khaithacdulieu/list/share-dialog/share-dialog.component';
 
 @Component({
   selector: 'app-dashboard-list',
@@ -16,9 +18,7 @@ import { SnotifyToast } from 'ng-alt-snotify';
   styleUrls: ['./dashboard-list.component.scss']
 })
 export class DashboardListComponent implements OnInit {
-dashboards: any = [
-  //  "isEdit": false
-];
+dashboards: any = [];
 dashboardId: string;
 dashboard: Dashboard = {
   MA_DASHBOARD: '',
@@ -33,7 +33,10 @@ dashboard: Dashboard = {
   NAME: '',
   ENABLE: null,
   ORD:null,
-   isEdit: false
+   isEdit: false,
+   EDITABLE: null,
+   SHAREABLE: null,
+   CHECKED: null,
 };
 userId: string = null;
 dashboardName: string;
@@ -42,9 +45,10 @@ user: User;
 tmpName = "";
 tmpEnable = null;
 dashboardComponent: DashboardComponent
-
+showSharedCheckbox: boolean;
 // disabled = true;
 private _unsubscribeAll: Subject<any> = new Subject<any>;
+  lstDashboard: any[];
   constructor(       
      private _dashboardService: DashboardService,
      private _userService: UserService,
@@ -52,13 +56,18 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
      public dialogRef: MatDialogRef<DashboardListComponent>,
      public _route: ActivatedRoute,
      private _router: Router,
+     private _matDialog: MatDialog,
 
     ) { }
 
     getListDashboard(): void {
-      this._dashboardService.getDashboardByUserId(this.user.userId).subscribe((res:any) =>{
-        this.dashboards = res.data;
-        // console.log(res.data);  
+    //   this._dashboardService.getDashboardByUserId(this.user.userId).subscribe((res:any) =>{
+    //     this.dashboards = res.data;
+    // })
+    this._dashboardService.getAllDashboardSharedAndCreatedByUserId(this.user.userId).subscribe((res:any) =>{
+      this.dashboards = res.data;
+      console.log(res);
+      
     })
     }
   ngOnInit(): void {
@@ -242,7 +251,53 @@ deleteDashboard(dashboard: any) {
                         break;
                 }
             });
+      }
+    );
+  }
+  chooseDashboardToShare(): void {
+    this.showSharedCheckbox = true;
+  }
+  showSharedUserDialog(): void {
+    let lstSelectedDuLieu = [];
+    this.dashboards.forEach(e => {
+      console.log(e);
+      
+      if (e?.CHECKED) {
+        lstSelectedDuLieu.push(e.MA_DASHBOARD);
+      }
+    });
+    // this.lstKhaiThacDuLieuShared.forEach(e => {
+    //   if (e?.CHECKED) {
+    //     lstSelectedDuLieu.push(e.MA_DULIEU);
+    //   }
+    // });
+    if (lstSelectedDuLieu.length == 0) {
+      this._messageService.showWarningMessage('Thông báo', 'Bạn chưa chọn dashboard nào.');
+      return;
     }
-);
-}
+    
+    const dialogRef = this._matDialog.open(ShareDialogComponent, {
+      width: '50%',
+      height: 'auto',
+      data: { 
+        lstSelectedDuLieu: lstSelectedDuLieu,
+        isCopy: false,
+        title: 'Chia sẻ dashboard tới người dùng khác',
+        isShareDashboard: true,
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((response: any) => {
+
+    })
+  }
+  cancelShare(): void {
+    this.showSharedCheckbox = false;
+    this.clearListChecked();
+  }
+  clearListChecked(): void {
+    this.dashboards.forEach(e => {
+      e.CHECKED = false;
+    })
+  }
 }

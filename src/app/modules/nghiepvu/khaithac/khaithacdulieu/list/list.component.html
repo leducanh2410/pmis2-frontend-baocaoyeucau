@@ -11,7 +11,7 @@
               <button mat-icon-button (click)="addNew();" matTooltip="Khai thác thêm dữ liệu" *ngIf="!showSharedCheckbox && !showCopiedCheckbox">
                 <mat-icon>add</mat-icon>
               </button>
-              <button mat-icon-button *ngIf="!showSharedCheckbox && !showCopiedCheckbox" (click)="share();" matTooltip="Chia sẻ dữ liệu">
+              <button mat-icon-button *ngIf="!showSharedCheckbox && !showCopiedCheckbox" (click)="share()" matTooltip="Chia sẻ dữ liệu">
                 <mat-icon>share</mat-icon>
               </button>
               <button mat-icon-button *ngIf="showSharedCheckbox || showCopiedCheckbox" (click)="showSharedUserDialog();"

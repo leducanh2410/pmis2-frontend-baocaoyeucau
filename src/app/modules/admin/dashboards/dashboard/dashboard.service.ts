@@ -106,7 +106,7 @@ export class DashboardService {
         );
     }
 
-    getDashboardSharedAndCreatedByUserId(userId: string): Observable<any> {
+    getDashboardSharedAndCreatedEnableByUserId(userId: string): Observable<any> {
         return this._serviceService.execServiceLogin(
             '6015B30A-E8AC-4547-9612-E7872C8B7065',
             [{ name: 'USER_ID', value: userId }]
@@ -126,7 +126,26 @@ export class DashboardService {
             })
         );
     }
-
+    getAllDashboardSharedAndCreatedByUserId(userId: string): Observable<any> {
+        return this._serviceService.execServiceLogin(
+            '2569AF6C-77CE-4B41-8012-2664129A2588',
+            [{ name: 'USER_ID', value: userId }]
+        ).pipe(
+            tap((response: any) => {
+                this._dashboard.next(response.data);
+                //this._pagination.next(response.pagination);
+            }),
+            switchMap((response: any) => {
+                if (!response.status) {
+                    return throwError({
+                        message: 'Requested page is not available!',
+                        pagination: response.pagination
+                    });
+                }
+                return of(response);
+            })
+        );
+    }
     getChartsByUserId(userId: string): Observable<any> {
         return this._serviceService.execServiceLogin(
             '4B186386-CA80-4252-8139-94EF4FA481F8',
@@ -224,7 +243,7 @@ export class DashboardService {
                 }
             ]);
     }
-    deleteSharedDashboard(dashboardId: string, userId: string): Observable<any> {
+    deleteSharedDashboard(userId: string, dashboardId: string): Observable<any> {
         return this._serviceService.execServiceLogin("9307AC64-7C64-4270-A0C2-9EED599773C0",
             [
                 {
@@ -233,6 +252,7 @@ export class DashboardService {
                 {
                     name: "MA_DASHBOARD", value: dashboardId
                 }
+               
             ]);
     }
     updateSharedDashboard(body: DashboardShare): Observable<any> {
