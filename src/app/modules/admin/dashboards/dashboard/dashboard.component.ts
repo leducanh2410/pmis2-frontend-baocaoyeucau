@@ -44,6 +44,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     loading: boolean;
     editable: boolean;
     shareable: boolean;
+    isShare: boolean;
     constructor(
         private _userService: UserService,
         private _dashboardService: DashboardService,
@@ -265,8 +266,9 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         if (respond.data.USER_CR_ID == this.user.userId) {
             this.editable = true;
             this.shareable = true;
+            this.isShare = false;
         } else {
-            
+            this.isShare = true;
                 if (respond.data.EDITABLE) {
                     this.editable = true;
                 } else {
@@ -420,6 +422,21 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
           })
     }
     onDeleteDashboard() {
+        if (this.isShare) {
+            this._messageService.showConfirm('Thông báo', 'Bạn có chắc chắn muốn xóa dashboard được chia sẻ này?', (toast: SnotifyToast) => {
+                this._messageService.notify().remove(toast.id);
+                this._dashboardService.deleteSharedDashboard(this.user.userId, this.dashboardId)
+                  .pipe(takeUntil(this._unsubscribeAll))
+                  .subscribe((response: any) => {                    
+                    if (response.status) {
+                      this._messageService.showSuccessMessage('Thông báo', 'Xóa dashboard thành công');
+                      this.getDashboard();
+                    } else {
+                      this._messageService.showErrorMessage('Thông báo', response.message);
+                    }
+                  })
+              });
+        } else {
         this._messageService.showConfirm(
             'Thông báo',
             'Bạn chắc chắn muốn xóa dashboard?',
@@ -456,7 +473,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
                         }
                     });
             }
-        );
+            );
+        } 
     }
 
     downloadCanvas(item: any, canvasId: string): void {

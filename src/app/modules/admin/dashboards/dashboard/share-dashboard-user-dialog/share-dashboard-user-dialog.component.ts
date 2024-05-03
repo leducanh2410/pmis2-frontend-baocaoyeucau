@@ -70,8 +70,8 @@ export class ShareDashboardUserDialogComponent implements OnInit {
           
           if (response.status) {
             this._messageService.showSuccessMessage('Thông báo', `Hủy chia sẻ dashboard tới người dùng ${row.USERNAME} thành công`);
-            this.lstUserDataSource.data = this.lstUserDataSource.data.filter(e => e.USER_ID != row.USER_ID);
-            this.lstUserDataSource.filterPredicate = (data: any, filter: string) => data.USER_ID.indexOf(filter) != -1 || data.USERNAME.indexOf(filter) != -1;
+            this.lstUserDataSource.data = this.lstUserDataSource.data.filter(e => e.USERID != row.USERID);
+            this.lstUserDataSource.filterPredicate = (data: any, filter: string) => data.USERID.indexOf(filter) != -1 || data.USERNAME.indexOf(filter) != -1;
           } else {
             this._messageService.showErrorMessage('Thông báo', response.message);
           }

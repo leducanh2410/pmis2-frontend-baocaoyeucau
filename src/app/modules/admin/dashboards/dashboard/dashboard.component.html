@@ -12,7 +12,7 @@
             mat-flat-button
             class="mx-1 bg-emerald-800 text-white"
             (click)="onShareDashboard()"
-            *ngIf="shareable"
+            [disabled]="!shareable"
         >
             <mat-icon>share</mat-icon>
             <span class="ml-2 mr-1">Chia sẻ</span>
@@ -30,7 +30,7 @@
             [color]="'accent'"
             class="mx-1"
             (click)="onEditDashboard(dashboardId)"
-            *ngIf="editable"
+            [disabled]="!editable"
         >
             <mat-icon svgIcon="mat_outline:edit"></mat-icon>
             <span class="ml-2 mr-1">Sửa</span>
