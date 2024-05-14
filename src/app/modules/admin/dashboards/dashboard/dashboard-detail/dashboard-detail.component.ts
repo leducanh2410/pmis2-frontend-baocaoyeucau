@@ -339,8 +339,7 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
 
   onSaveDashboard(): void {
     this.dashboard.LAYOUT = this.selectedLayout;
-    this.dashboard.USER_ID = this.userId;
-
+    
     if (
       this.dashboard.LAYOUT == undefined ||
       this.dashboard.LAYOUT == null ||
@@ -391,6 +390,8 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
     this.dashboard.POSITION = positions.join(';');
 
     if (this.mode == MODE.CREATE) {
+      this.dashboard.USER_ID = this.userId;
+
       this.dashboard.USER_CR_ID = this.userId;
       // this.dashboard.NAME = this.dashboardName;
 
@@ -415,6 +416,11 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
           }
         });
     } else if (this.mode == MODE.EDIT) {
+      if (this.dashboard.USER_ID == this.userId) {
+        this.dashboard.USER_ID = this.userId;
+      } else{
+        this.dashboard.USER_ID = this.dashboard.USER_CR_ID;
+      }
       this.dashboard.USER_MDF_ID = this.userId;
       // this.dashboard.ENABLE = this.dashboardEnable;
       this._dashboardService

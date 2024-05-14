@@ -28,7 +28,8 @@ export class DashboardResolver implements Resolve<any> {
       });
 
     const sources = [];
-   sources.push(this._dashboardService.getDashboardByUserId(this.user.userId));
+  //  sources.push(this._dashboardService.getDashboardByUserId(this.user.userId));
+      sources.push(this._dashboardService.getDashboardSharedAndCreatedEnableByUserId(this.user.userId));
 
     return forkJoin(sources)
             .pipe(

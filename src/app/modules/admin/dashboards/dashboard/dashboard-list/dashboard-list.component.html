@@ -1,15 +1,14 @@
 
 <div>
-    <div class="flex flex-row justify-between">
+    <!-- <div class="flex flex-row justify-between">
         <span  class="font-bold text-3xl">Danh sách Dashboard</span>
-        <div>
+        <div class="flex flex-row">
         <button mat-flat-button class=" bg-emerald-800 text-white mr-30"
         *ngIf="!showSharedCheckbox" (click)="chooseDashboardToShare()"
     >
         <mat-icon>share</mat-icon>
         <span class="ml-2 mr-1">Chia sẻ</span>
     </button>
-    <!-- <div class="flex flex-row justify-between"> -->
     <button mat-icon-button *ngIf="showSharedCheckbox" (click)="showSharedUserDialog();"
     matTooltip="Chia sẻ tới">
     <mat-icon>person_add</mat-icon>
@@ -18,36 +17,58 @@
     matTooltip="Hủy chia sẻ dữ liệu">
     <mat-icon>close</mat-icon>
   </button>
+        </div>
+    </div> -->
+    <div class="flex flex-row justify-between">
+        <span class="font-bold text-3xl">Danh sách Dashboard</span>
+        <div class="relative">
+            <button mat-flat-button class="bg-emerald-800 text-white mr-3"
+                *ngIf="!showSharedCheckbox" (click)="chooseDashboardToShare()">
+                <mat-icon>share</mat-icon>
+                <span class="ml-2 mr-1">Chia sẻ</span>
+            </button>
+            <div class="absolute top-0 right-0 flex items-center">
+                <button mat-icon-button *ngIf="showSharedCheckbox" (click)="showSharedUserDialog();" matTooltip="Chia sẻ tới">
+                    <mat-icon>person_add</mat-icon>
+                </button>
+                <button mat-icon-button *ngIf="showSharedCheckbox" (click)="cancelShare();" matTooltip="Hủy chia sẻ dữ liệu">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+        </div>
     </div>
-    </div>
+    
     <table class="w-full border-solid mt-5">
         <thead>
-            <tr >
-                <th></th>
-                <th class="w-20 text-center">STT</th>
-                <th class="w-1/2 text-center">Tên dashboard</th>
-                <th class="w-1/10 text-center">Hiển thị</th>
-                <th class="w-1/5"> </th>
+            <tr class="h-12">
+                <th class="w-1/12 text-center"></th>
+                <th class="w-1/12 text-center">STT</th>
+                <th class="w-4/12 text-center">Tên dashboard</th>
+                <th class="w-2/12 text-center">Tác giả</th>
+                <th class="w-1/12 text-center">Hiển thị</th>
+                <th class="w-3/12 text-center"> </th>
             </tr>
+
         </thead>
         <tbody class="divide-y divide-gray-300">
-            <tr *ngFor="let dashboard of dashboards; let i = index" >
-                <td>
+            <tr *ngFor="let dashboard of dashboards; let i = index" class="h-12" >
+                <td class="w-1/12 text-center">
                     <mat-checkbox [checked]="dashboard?.CHECKED" *ngIf="showSharedCheckbox" 
                     [disabled]="dashboard.SHAREABLE == false"
                     (change)="dashboard?.CHECKED == null ? dashboard.CHECKED = true : dashboard.CHECKED = !dashboard.CHECKED">
                   </mat-checkbox>
                 </td>
-                <td class="w-20 text-center"> {{i+1}}</td>
-                <td class="w-2/5 text-center">
+                <td class="w-1/12 text-center"> {{i+1}}</td>
+                <td class="w-4/12 text-center">
                     <div *ngIf="dashboard.isEdit">
-                        <input  type="text" [(ngModel)] = "dashboard.NAME" class="rounded border-solid border-2 border-inherit">
+                        <input  type="text" [(ngModel)] = "dashboard.NAME" class="rounded-md h-11 w-120 border-solid border-2 border-inherit">
                     </div>
                    <div *ngIf="!dashboard.isEdit">
                         {{dashboard.NAME}}
                      </div> 
                   </td>
-                <td class="w-32 text-center">
+                <td class="w-2/12 text-center">{{dashboard.USER_CR_ID}}</td>
+                <td class="w-1/12 text-center">
                     <div >
                         <mat-checkbox class="example-margin" [disabled]="!dashboard.isEdit"
                         [(ngModel)]="dashboard.ENABLE" >
@@ -65,15 +86,15 @@
                     -->
                     <!-- <mat-checkbox class="example-margin"></mat-checkbox> -->
                 </td>
-                <td class="w-96 text-center">
-                    <div class="flex flex-row">
+                <td class="w-3/12 text-center">
+                    <div class="flex flex-row items-center justify-center gap-4">
                     <button matTooltip="Chi tiết dashboard" class="mr-8" [disabled]="dashboard.EDITABLE == false"
                     (click)="onEditDashboard(dashboard.MA_DASHBOARD)">
                         <!-- <button class="mr-8" (click)="onEditDashboard(dashboardId)"> -->
 
                         <mat-icon>remove_red_eye</mat-icon>
                     </button>
-                    <div *ngIf="dashboard.isEdit" class="flex flex-row px-2">
+                    <div *ngIf="dashboard.isEdit" class="flex flex-row items-center justify-center px-2">
                         <button (click)="onSaveChange(dashboard)"> <mat-icon>check</mat-icon> </button>
                         <button (click)="cancel(dashboard)"> <mat-icon>close</mat-icon> </button>
                     </div>
