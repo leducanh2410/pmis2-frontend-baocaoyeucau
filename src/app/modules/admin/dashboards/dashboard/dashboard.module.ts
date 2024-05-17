@@ -27,7 +27,7 @@ import { DashboardListComponent } from './dashboard-list/dashboard-list.componen
 import { ListUserDialogComponent } from './list-user-dialog/list-user-dialog.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { ShareDashboardUserDialogComponent } from './share-dashboard-user-dialog/share-dashboard-user-dialog.component';
+import { ShareDashboardUserDialogComponent } from './dashboard-detail/share-dashboard-user-dialog/share-dashboard-user-dialog.component';
 
 @NgModule({
   declarations: [

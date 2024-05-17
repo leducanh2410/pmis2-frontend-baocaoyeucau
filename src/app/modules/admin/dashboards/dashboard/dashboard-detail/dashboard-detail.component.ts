@@ -22,7 +22,7 @@ import { SnotifyToast } from 'ng-alt-snotify';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { DashboardComponent } from '../dashboard.component';
-import { ShareDashboardUserDialogComponent } from '../share-dashboard-user-dialog/share-dashboard-user-dialog.component';
+import { ShareDashboardUserDialogComponent } from './share-dashboard-user-dialog/share-dashboard-user-dialog.component';
 @Component({
   selector: 'app-dashboard-detail',
   templateUrl: './dashboard-detail.component.html',
@@ -418,7 +418,7 @@ export class DashboardDetailComponent implements OnInit, OnDestroy {
     } else if (this.mode == MODE.EDIT) {
       if (this.dashboard.USER_ID == this.userId) {
         this.dashboard.USER_ID = this.userId;
-      } else{
+      } else {
         this.dashboard.USER_ID = this.dashboard.USER_CR_ID;
       }
       this.dashboard.USER_MDF_ID = this.userId;

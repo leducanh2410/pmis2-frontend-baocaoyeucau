@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ReplaySubject, takeUntil } from 'rxjs';
-import { DashboardService } from '../dashboard.service';
+import { DashboardService } from '../../dashboard.service';
 import { MessageService } from 'app/shared/message.services';
 import { SnotifyToast } from 'ng-alt-snotify';
 import { DashboardShare } from 'app/core/models/DashboardShare';

@@ -53,6 +53,7 @@ export interface Dashboard {
      CHECKED?: boolean;
     EDITABLE?: boolean;
     SHAREABLE?: boolean; 
+    enableForThisUser?: boolean;
 }
 
 export interface ChartDetail {

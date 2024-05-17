@@ -215,16 +215,53 @@ private _unsubscribeAll: Subject<any> = new Subject<any>;
 routeToHome(): void {
   this._router.navigate(['dashboards/dashboard']);
 }
-deleteDashboard(dashboard: any) {
-  this._messageService.showConfirm(
-    'Thông báo',
-    'Bạn chắc chắn muốn xóa dashboard?',
-    (toast: SnotifyToast) => {
-        this._messageService.notify().remove(toast.id);
-        this._dashboardService
-            .deleteDashboard(dashboard.MA_DASHBOARD, this.user.userId)
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((response: any) => {
+// deleteDashboard(dashboard: any) {
+//   this._messageService.showConfirm(
+//     'Thông báo',
+//     'Bạn chắc chắn muốn xóa dashboard?',
+//     (toast: SnotifyToast) => {
+//         this._messageService.notify().remove(toast.id);
+//         this._dashboardService
+//             .deleteDashboard(dashboard.MA_DASHBOARD, this.user.userId)
+//             .pipe(takeUntil(this._unsubscribeAll))
+//             .subscribe((response: any) => {
+//                 switch (response.status) {
+//                     case 1:
+//                         this._messageService.showSuccessMessage(
+//                             'Thông báo',
+//                             'Xóa dashboard thành công'
+//                         );
+//                         // this.dashboardComponent.clearData();
+//                         this.getListDashboard();
+//                         // this._router.navigate(['empty'], {
+//                         //     relativeTo: this._route,
+//                         // });
+//                         break;
+//                     case 0:
+//                         this._messageService.showErrorMessage(
+//                             'Thông báo',
+//                             'Đã xảy ra lỗi khi xóa dashboard'
+//                         );
+//                         break;
+//                     case -1:
+//                         this._messageService.showErrorMessage(
+//                             'Thông báo',
+//                             'Không tìm thấy dashboard cần xóa'
+//                         );
+//                         break;
+//                 }
+//             });
+//       }
+//     );
+//   }
+
+  deleteDashboard(dashboard: any) {
+    if (dashboard.USER_ID != dashboard.USER_CR_ID) {
+        this._messageService.showConfirm('Thông báo', 'Bạn có chắc chắn muốn xóa dashboard được chia sẻ này?', (toast: SnotifyToast) => {
+            this._messageService.notify().remove(toast.id);
+            this._dashboardService.deleteSharedDashboard(this.user.userId, dashboard.MA_DASHBOARD)
+              .pipe(takeUntil(this._unsubscribeAll))
+              .subscribe((response: any) => {                    
                 switch (response.status) {
                     case 1:
                         this._messageService.showSuccessMessage(
@@ -250,10 +287,49 @@ deleteDashboard(dashboard: any) {
                         );
                         break;
                 }
+              })
+          });
+    } else {
+    this._messageService.showConfirm(
+        'Thông báo',
+        'Bạn chắc chắn muốn xóa dashboard?',
+        (toast: SnotifyToast) => {
+            this._messageService.notify().remove(toast.id);
+            this._dashboardService
+                .deleteDashboard(dashboard.MA_DASHBOARD, this.user.userId)
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe((response: any) => {
+                  switch (response.status) {
+                    case 1:
+                        this._messageService.showSuccessMessage(
+                            'Thông báo',
+                            'Xóa dashboard thành công'
+                        );
+                        // this.dashboardComponent.clearData();
+                        this.getListDashboard();
+                        // this._router.navigate(['empty'], {
+                        //     relativeTo: this._route,
+                        // });
+                        break;
+                    case 0:
+                        this._messageService.showErrorMessage(
+                            'Thông báo',
+                            'Đã xảy ra lỗi khi xóa dashboard'
+                        );
+                        break;
+                    case -1:
+                        this._messageService.showErrorMessage(
+                            'Thông báo',
+                            'Không tìm thấy dashboard cần xóa'
+                        );
+                        break;
+                }
             });
-      }
-    );
-  }
+        }
+        );
+    } 
+}
+
   chooseDashboardToShare(): void {
     this.showSharedCheckbox = true;
   }

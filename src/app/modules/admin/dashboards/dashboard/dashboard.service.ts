@@ -208,7 +208,7 @@ export class DashboardService {
                 { name: 'LST_CHARTS', value: dashboard.LST_CHARTS },
                 { name: 'ORD', value: dashboard.ORD },
                 { name: 'NAME', value: dashboard.NAME},
-                { name: 'USER_ID', value: dashboard.USER_ID },
+                { name: 'USER_ID', value: dashboard.USER_CR_ID },
                 { name: 'LAYOUT', value: dashboard.LAYOUT },
                 { name: 'MA_DASHBOARD', value: dashboard.MA_DASHBOARD },
                 { name: 'POSITION', value: dashboard.POSITION },

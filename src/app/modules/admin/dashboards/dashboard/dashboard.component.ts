@@ -21,6 +21,7 @@ import { DashboardListComponent } from './dashboard-list/dashboard-list.componen
 import { DashboardDetailComponent } from './dashboard-detail/dashboard-detail.component';
 import { ShareUserDialogComponent } from 'app/modules/nghiepvu/khaithac/khaithacdulieu/detail/share-user-dialog/share-user-dialog.component';
 import { ListUserDialogComponent } from './list-user-dialog/list-user-dialog.component';
+import { Dashboard } from './dashboard-constants';
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
@@ -45,6 +46,26 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     editable: boolean;
     shareable: boolean;
     isShare: boolean;
+    enable: boolean;
+    dashboard: Dashboard = {
+        MA_DASHBOARD: '',
+        LAYOUT: '',
+        USER_ID: '',
+        LST_CHARTS: '',
+        POSITION: '',
+        USER_CR_ID: '',
+        USER_CR_DTIME: null,
+        USER_MDF_ID: '',
+        USER_MDF_DTIME: null,
+        NAME: '',
+        ENABLE: null,
+        ORD:null,
+         isEdit: false,
+         EDITABLE: null,
+         SHAREABLE: null,
+         CHECKED: null,
+         enableForThisUser: true
+      };
     constructor(
         private _userService: UserService,
         private _dashboardService: DashboardService,
@@ -517,6 +538,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
             `Bạn chắc chắn muốn ẩn dashboard ${dashboard.NAME}`,
             (toast: SnotifyToast) => {
                 this._messageService.notify().remove(toast.id);
+                // dashboard.enableForThisUser = !dashboard.enableForThisUser;
                 dashboard.ENABLE = !dashboard.ENABLE;
                 this._dashboardService.updateDashboard(dashboard)
                     // .deleteDashboard(this.dashboardId, this.user.userId)
@@ -554,5 +576,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
                     });
             }
         );
+    }
+    check(): boolean {
+        return true;
     }
 }

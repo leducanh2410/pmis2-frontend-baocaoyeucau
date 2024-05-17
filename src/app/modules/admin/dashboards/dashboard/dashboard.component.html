@@ -51,7 +51,7 @@
         >
            
               <ng-container *ngFor="let dashboard of dashboards; let index = index"  >
-                <mat-tab  >
+                <mat-tab *ngIf="check()" >
                     <ng-template mat-tab-label="">
                         <span>{{dashboard.NAME}}</span>
                         <div class="">
